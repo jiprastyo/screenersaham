@@ -3,159 +3,165 @@ import yfinance as yf
 import pandas as pd
 import pandas_ta as ta
 
-# --- 1. Konfigurasi Halaman & CSS Mobile-First ---
-st.set_page_config(page_title="Super Uptrend Screener", layout="wide")
+# --- 1. Konfigurasi Mobile-First & CSS ---
+st.set_page_config(page_title="Strong Uptrend Screener", layout="wide")
 
-# CSS: Hapus Hamburger, Header, Footer, Padding, dan Samakan Font
-hide_style = """
+mobile_css = """
     <style>
-    /* Sembunyikan elemen bawaan Streamlit */
+    /* Sembunyikan elemen bawaan Streamlit yang memakan tempat */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
     
-    /* Atur Font Seragam & Hemat Ruang */
-    html, body, [class*="css"]  {
-        font-family: 'Roboto', sans-serif;
-        font-size: 14px !important; 
-    }
-    
-    /* Perkecil padding atas agar konten naik */
+    /* Mengurangi Padding Atas Bawah Kiri Kanan agar Full Screen di HP */
     .block-container {
-        padding-top: 1rem;
-        padding-bottom: 1rem;
-        padding-left: 0.5rem;
-        padding-right: 0.5rem;
+        padding-top: 1rem !important;
+        padding-bottom: 1rem !important;
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
     }
     
-    /* Styling Tabel agar compact */
-    div[data-testid="stDataFrame"] {
-        font-size: 12px;
+    /* Menyamaratakan Ukuran Font & Jenis Font */
+    html, body, [class*="css"], .stDataFrame {
+        font-family: 'Roboto', sans-serif;
+        font-size: 14px !important;
+    }
+    
+    /* Mengatur Header Tabel agar tidak terlalu besar */
+    .stDataFrame th {
+        font-size: 13px !important;
+        padding: 5px !important;
     }
     </style>
 """
-st.markdown(hide_style, unsafe_allow_html=True)
+st.markdown(mobile_css, unsafe_allow_html=True)
 
-# --- 2. Database Saham & Syariah ---
-# Tips: Tambahkan saham liquid lainnya di sini
+# --- 2. Data & Setup ---
+# Tips: Tambahkan kode saham lainnya sesuai kebutuhan Anda
 daftar_saham = [
     "BBCA.JK", "BBRI.JK", "BMRI.JK", "BBNI.JK", "TLKM.JK", "ASII.JK", 
     "UNTR.JK", "ICBP.JK", "ADRO.JK", "PTBA.JK", "PGAS.JK", "ANTM.JK", 
-    "BRIS.JK", "ACES.JK", "SIDO.JK", "GOTO.JK", "MEDC.JK", "INKP.JK",
-    "KLBF.JK", "CPIN.JK", "AMRT.JK", "MAPI.JK"
+    "BRIS.JK", "ACES.JK", "SIDO.JK", "GOTO.JK", "MDKA.JK", "INKP.JK",
+    "CPIN.JK", "KLBF.JK", "SMGR.JK", "INCO.JK", "TINS.JK", "MEDC.JK"
 ]
 
-# Mapping Syariah (Manual/Contoh)
+# Database Syariah (Simulasi)
 saham_syariah = [
     "TLKM.JK", "ASII.JK", "UNTR.JK", "ICBP.JK", "ADRO.JK", "PTBA.JK", 
     "PGAS.JK", "ANTM.JK", "BRIS.JK", "ACES.JK", "SIDO.JK", "GOTO.JK",
-    "INKP.JK", "KLBF.JK", "CPIN.JK", "AMRT.JK", "MAPI.JK"
+    "MDKA.JK", "INKP.JK", "CPIN.JK", "KLBF.JK", "SMGR.JK", "INCO.JK",
+    "TINS.JK", "MEDC.JK"
 ]
 
-# --- 3. Logic Screener (Heavy Filtering) ---
-@st.cache_data(ttl=1800) # Cache 30 menit
-def get_super_uptrend_stocks(tickers, min_tx_val):
+# --- 3. Fungsi Screener (Optimized) ---
+@st.cache_data(ttl=300) # Cache 5 menit
+def get_strong_momentum_stocks(tickers):
     results = []
     
-    # Progress Bar sederhana
-    progress_text = st.empty()
+    # Progress bar kecil di atas
     bar = st.progress(0)
     
     for i, ticker in enumerate(tickers):
         bar.progress((i + 1) / len(tickers))
         try:
-            # Ambil data secukupnya (MA200 butuh ~1 tahun data trading)
-            df = yf.download(ticker, period="2y", interval="1d", progress=False)
+            # Ambil data secukupnya (6 bulan cukup untuk MA200)
+            df = yf.download(ticker, period="6mo", interval="1d", progress=False)
             
-            if df.empty or len(df) < 200: continue
+            if df.empty or len(df) < 50: continue # Skip jika data tidak cukup
             
+            # Hitung Indikator Wajib (MA Pendek)
             close = df['Close']
-            current_price = close.iloc[-1]
-            
-            # --- FILTER UTAMA: HARGA > SEMUA MA ---
-            # Kita cek satu per satu agar hemat komputasi (fail fast)
-            ma_periods = [3, 5, 10, 20, 50, 100, 200]
-            passed_all_ma = True
-            
-            for ma in ma_periods:
-                ma_val = ta.sma(close, length=ma).iloc[-1]
-                if current_price < ma_val:
-                    passed_all_ma = False
-                    break # Gagal salah satu MA, langsung skip saham ini
-            
-            if not passed_all_ma:
-                continue # Skip ke saham berikutnya
-            
-            # --- Jika Lolos Filter MA, Baru Hitung Indikator Lain ---
-            # 1. Transaksi
-            vol = df['Volume'].iloc[-1]
-            val_milyar = (current_price * vol) / 1_000_000_000
-            
-            # Filter Transaksi (dilakukan di sini agar data yang keluar bersih)
-            if val_milyar < min_tx_val:
-                continue
+            ma3 = ta.sma(close, length=3).iloc[-1]
+            ma5 = ta.sma(close, length=5).iloc[-1]
+            ma10 = ta.sma(close, length=10).iloc[-1]
+            ma20 = ta.sma(close, length=20).iloc[-1]
+            last_price = close.iloc[-1]
 
-            # 2. Indikator Tambahan
-            rsi = ta.rsi(close, length=14).iloc[-1]
-            atr = ta.atr(df['High'], df['Low'], close, length=14).iloc[-1]
-            adr_pct = ((df['High'] - df['Low']) / df['Low']).rolling(14).mean().iloc[-1] * 100
-            is_syariah = True if ticker in saham_syariah else False
+            # --- CORE LOGIC: PRE-FILTER ---
+            # Hanya ambil jika Harga > MA3, MA5, MA10, DAN MA20
+            is_strong_uptrend = (
+                last_price > ma3 and 
+                last_price > ma5 and 
+                last_price > ma10 and 
+                last_price > ma20
+            )
 
-            results.append({
-                "Kode": ticker.replace(".JK", ""),
-                "Harga": current_price,
-                "RSI": rsi,
-                "Val(M)": val_milyar,
-                "ADR%": adr_pct,
-                "ATR": atr,
-                "Syr": is_syariah # Boolean untuk checkbox
-            })
-            
+            if is_strong_uptrend:
+                # Jika lolos filter awal, baru hitung indikator tambahan (hemat resource)
+                ma50 = ta.sma(close, length=50).iloc[-1]
+                ma100 = ta.sma(close, length=100).iloc[-1]
+                ma200 = ta.sma(close, length=200).iloc[-1] if len(df) >= 200 else 0
+                
+                rsi = ta.rsi(close, length=14).iloc[-1]
+                atr = ta.atr(df['High'], df['Low'], close, length=14).iloc[-1]
+                
+                # ADR %
+                high = df['High']
+                low = df['Low']
+                daily_range_pct = ((high - low) / low) * 100
+                adr_pct = daily_range_pct.rolling(window=14).mean().iloc[-1]
+                
+                # Transaksi
+                vol = df['Volume'].iloc[-1]
+                val_m = (last_price * vol) / 1_000_000_000
+                
+                # Syariah Check
+                is_syariah = "S" if ticker in saham_syariah else "-"
+
+                results.append({
+                    "Kode": ticker.replace(".JK", ""),
+                    "Harga": last_price,
+                    "Sya": is_syariah, # Singkatan agar muat di HP
+                    "RSI": rsi,
+                    "Val(M)": val_m,
+                    "ADR%": adr_pct,
+                    "MA50": "UP" if last_price > ma50 else "DOWN", # Ringkas
+                    "MA200": "UP" if last_price > ma200 else "DOWN"
+                })
+                
         except:
             continue
             
-    progress_text.empty()
     bar.empty()
     return pd.DataFrame(results)
 
-# --- 4. Tampilan UI Compact ---
-st.write("#### 🚀 Super Uptrend (Price > All MA)")
+# --- 4. UI Compact Mobile ---
+st.write("🔥 **Strong Momentum (Price > MA 3,5,10,20)**")
 
-# Input Filter (Disederhanakan menjadi satu baris)
-col1, col2 = st.columns([1, 1])
-with col1:
-    min_val = st.number_input("Min Tx (Miliar)", value=5, step=5)
-with col2:
-    only_syariah = st.checkbox("Syariah Only", value=False)
+# Filter UI (Expander Default Tertutup agar hemat tempat)
+with st.expander("⚙️ Filter Tambahan"):
+    col1, col2 = st.columns(2)
+    min_tx = col1.number_input("Min Tx (M)", value=5)
+    filter_syariah = col2.checkbox("Syariah Only", value=True)
 
-# Tombol Eksekusi
-if st.button("Scan Market", type="primary", use_container_width=True):
+# Main Process
+df_result = get_strong_momentum_stocks(daftar_saham)
+
+if not df_result.empty:
+    # Filter Logic User
+    if filter_syariah:
+        df_result = df_result[df_result['Sya'] == "S"]
     
-    df = get_super_uptrend_stocks(daftar_saham, min_val)
+    df_result = df_result[df_result['Val(M)'] >= min_tx]
     
-    if not df.empty:
-        # Filter Syariah Terakhir (jika dicentang)
-        if only_syariah:
-            df = df[df['Syr'] == True]
-        
-        # Urutkan berdasarkan Value Transaksi terbesar (Paling Liquid di atas)
-        df = df.sort_values(by="Val(M)", ascending=False)
-
-        # Tampilkan Dataframe dengan Konfigurasi Mobile Friendly
-        st.dataframe(
-            df,
-            column_config={
-                "Kode": st.column_config.TextColumn("Kode", width="small"),
-                "Harga": st.column_config.NumberColumn("Harga", format="%d"),
-                "RSI": st.column_config.NumberColumn("RSI", format="%.0f"), # Bulatkan RSI
-                "Val(M)": st.column_config.ProgressColumn("Val (M)", format="%.1f M", min_value=0, max_value=df['Val(M)'].max()),
-                "ADR%": st.column_config.NumberColumn("ADR", format="%.1f%%"),
-                "ATR": st.column_config.NumberColumn("ATR", format="%d"),
-                "Syr": st.column_config.CheckboxColumn("Syr", width="small")
-            },
-            hide_index=True,
-            use_container_width=True
-        )
-        st.caption(f"Total: {len(df)} saham. Semua di atas MA 3,5,10,20,50,100,200.")
-    else:
-        st.warning("Tidak ada saham yang memenuhi kriteria 'Super Uptrend' saat ini.")
+    # Sort berdasarkan RSI (Kekuatan Tren)
+    df_result = df_result.sort_values(by="RSI", ascending=False)
+    
+    # Display Compact
+    st.write(f"Ditemukan: {len(df_result)} saham")
+    
+    # Styling Tabel:
+    # - Harga diberi warna background hijau tipis (karena sudah pasti uptrend)
+    # - Angka diformat tanpa desimal berlebih
+    st.dataframe(
+        df_result.style.format({
+            "Harga": "{:,.0f}",
+            "RSI": "{:.0f}",
+            "Val(M)": "{:.1f}",
+            "ADR%": "{:.1f}%"
+        }).background_gradient(subset=['RSI'], cmap='Greens'),
+        use_container_width=True,
+        hide_index=True # Sembunyikan index 0,1,2 agar hemat tempat
+    )
+else:
+    st.info("Belum ada saham yang memenuhi kriteria Super Short Term Uptrend saat ini.")
