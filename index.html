@@ -7,11 +7,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#fff;--bg2:#f5f6f8;--bg3:#eef0f3;--border:#dde1e7;--border2:#c8cdd6;--text:#1a1d23;--text2:#4a5060;--text3:#8a919e;--accent:#1a56db;--accent-bg:#eff4ff;--accent-h:#1645b0;--green:#057a55;--green-bg:#def7ec;--red:#c81e1e;--red-bg:#fde8e8;--yellow:#b45309;--yellow-bg:#fef3c7;--shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.06);--shadow-md:0 4px 6px rgba(0,0,0,.07),0 2px 4px rgba(0,0,0,.06);--font:'IBM Plex Sans',sans-serif;--mono:'IBM Plex Mono',monospace;--r:6px;--rs:4px}
-[data-theme="dark"]{--bg:#111318;--bg2:#1a1d24;--bg3:#22262f;--border:#2e3340;--border2:#3d4454;--text:#e8eaf0;--text2:#9aa0b0;--text3:#5c6370;--accent:#4d8af0;--accent-bg:#1a2540;--accent-h:#6b9ff5;--green:#31c48d;--green-bg:#062820;--red:#f05252;--red-bg:#2d1515;--yellow:#f6c90e;--yellow-bg:#2d2505;--shadow:0 1px 3px rgba(0,0,0,.3),0 1px 2px rgba(0,0,0,.2);--shadow-md:0 4px 6px rgba(0,0,0,.3),0 2px 4px rgba(0,0,0,.2)}
+:root{--bg:#fff;--bg2:#f5f6f8;--bg3:#eef0f3;--border:#dde1e7;--border2:#c8cdd6;--text:#1a1d23;--text2:#4a5060;--text3:#8a919e;--accent:#1a56db;--accent-bg:#eff4ff;--accent-h:#1645b0;--green:#057a55;--green-bg:#def7ec;--red:#c81e1e;--red-bg:#fde8e8;--yellow:#b45309;--yellow-bg:#fef3c7;--blue:#1e40af;--blue-bg:#dbeafe;--shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.06);--shadow-md:0 4px 6px rgba(0,0,0,.07),0 2px 4px rgba(0,0,0,.06);--font:'IBM Plex Sans',sans-serif;--mono:'IBM Plex Mono',monospace;--r:6px;--rs:4px}
+[data-theme="dark"]{--bg:#111318;--bg2:#1a1d24;--bg3:#22262f;--border:#2e3340;--border2:#3d4454;--text:#e8eaf0;--text2:#9aa0b0;--text3:#5c6370;--accent:#4d8af0;--accent-bg:#1a2540;--accent-h:#6b9ff5;--green:#31c48d;--green-bg:#062820;--red:#f05252;--red-bg:#2d1515;--yellow:#f6c90e;--yellow-bg:#2d2505;--blue:#60a5fa;--blue-bg:#1e2d5c;--shadow:0 1px 3px rgba(0,0,0,.3),0 1px 2px rgba(0,0,0,.2);--shadow-md:0 4px 6px rgba(0,0,0,.3),0 2px 4px rgba(0,0,0,.2)}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{font-size:14px}
 body{font-family:var(--font);background:var(--bg2);color:var(--text);min-height:100vh;line-height:1.5;transition:background .2s,color .2s}
+
+/* TOPBAR */
 .topbar{background:var(--bg);border-bottom:1px solid var(--border);padding:0 1.25rem;display:flex;align-items:center;height:54px;position:sticky;top:0;z-index:100;box-shadow:var(--shadow);gap:.75rem}
 .brand{display:flex;align-items:center;gap:.45rem;font-weight:700;font-size:.95rem;flex-shrink:0}
 .brand-ico{width:26px;height:26px;background:var(--accent);border-radius:var(--rs);display:grid;place-items:center;font-size:.58rem;font-weight:700;color:#fff;letter-spacing:.02em}
@@ -21,74 +23,138 @@ body{font-family:var(--font);background:var(--bg2);color:var(--text);min-height:
 .dot.ok{background:var(--green)}.dot.spin{background:var(--accent);animation:blink 1s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 .t-right{display:flex;align-items:center;gap:.4rem;margin-left:auto}
-.btn-sm{display:flex;align-items:center;gap:.3rem;padding:.32rem .65rem;border-radius:var(--rs);border:1px solid var(--border);background:var(--bg);color:var(--text2);font-family:var(--font);font-size:.75rem;cursor:pointer;transition:all .15s;font-weight:500}
+.btn-sm{display:flex;align-items:center;gap:.3rem;padding:.32rem .65rem;border-radius:var(--rs);border:1px solid var(--border);background:var(--bg);color:var(--text2);font-family:var(--font);font-size:.75rem;cursor:pointer;transition:all .15s;font-weight:500;white-space:nowrap}
 .btn-sm:hover{background:var(--bg3);color:var(--text)}
 .btn-sm.on{background:var(--bg3);border-color:var(--border2);color:var(--text)}
 .btn-fetch{display:flex;align-items:center;gap:.35rem;padding:.38rem .9rem;border-radius:var(--rs);border:none;background:var(--accent);color:#fff;font-family:var(--font);font-size:.78rem;cursor:pointer;font-weight:600;transition:all .15s;white-space:nowrap}
 .btn-fetch:hover{background:var(--accent-h)}
 .btn-fetch:disabled{opacity:.6;cursor:not-allowed}
+
+/* PROGRESS */
 .prog-wrap{height:3px;background:var(--border);position:sticky;top:54px;z-index:99}
 .prog-fill{height:100%;background:var(--accent);transition:width .2s ease;width:0}
-.wrap{max-width:1500px;margin:0 auto;padding:1.1rem 1.25rem}
+
+/* LAYOUT */
+.wrap{max-width:1600px;margin:0 auto;padding:1.1rem 1.25rem}
 .card{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);margin-bottom:.85rem;overflow:hidden}
 .c-p{padding:.8rem 1.1rem}
+
+/* SEARCH */
 .s-wrap{position:relative}
 .s-ico{position:absolute;left:.75rem;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none}
 .s-inp{width:100%;padding:.55rem .8rem .55rem 2.1rem;border:1px solid var(--border);border-radius:var(--rs);background:var(--bg);color:var(--text);font-family:var(--font);font-size:.85rem;outline:none;transition:border-color .15s,box-shadow .15s}
 .s-inp::placeholder{color:var(--text3)}
 .s-inp:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 15%,transparent)}
+
+/* FILTER SECTIONS */
 .f-sec{padding:.7rem 1.1rem;border-bottom:1px solid var(--border)}
 .f-sec:last-child{border-bottom:none}
 .f-lbl{font-size:.66rem;font-weight:700;letter-spacing:.1em;color:var(--text3);text-transform:uppercase;display:flex;align-items:center;gap:.3rem;margin-bottom:.5rem}
 .f-lbl::before{content:'';width:3px;height:10px;background:var(--accent);border-radius:2px;display:inline-block}
-.tag-row{display:flex;flex-wrap:wrap;gap:.3rem}
-.tag{padding:.26rem .65rem;border-radius:20px;border:1px solid var(--border);background:var(--bg);color:var(--text2);font-family:var(--font);font-size:.74rem;cursor:pointer;transition:all .15s;font-weight:500;user-select:none}
-.tag:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-bg)}
-.tag.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
-.ma-tag{padding:.2rem .55rem;border-radius:var(--rs);border:1px solid var(--border);background:var(--bg);color:var(--text2);font-family:var(--mono);font-size:.68rem;cursor:pointer;transition:all .15s;font-weight:500;user-select:none}
-.ma-tag:hover{border-color:var(--green);color:var(--green)}
-.ma-tag.on{background:var(--green-bg);border-color:var(--green);color:var(--green);font-weight:700}
+.f-lbl.vol::before{background:var(--blue)}
+.tag-row{display:flex;flex-wrap:wrap;gap:.3rem;align-items:center}
+
+/* MA filter tags */
+.ftag{padding:.22rem .6rem;border-radius:var(--rs);border:1px solid var(--border);background:var(--bg);color:var(--text2);font-family:var(--mono);font-size:.68rem;cursor:pointer;transition:all .15s;font-weight:500;user-select:none}
+.ftag:hover{border-color:var(--green);color:var(--green)}
+.ftag.on{background:var(--green-bg);border-color:var(--green);color:var(--green);font-weight:700}
+
+/* VMA filter tags */
+.vtag{padding:.22rem .6rem;border-radius:var(--rs);border:1px solid var(--border);background:var(--bg);color:var(--text2);font-family:var(--mono);font-size:.68rem;cursor:pointer;transition:all .15s;font-weight:500;user-select:none}
+.vtag:hover{border-color:var(--blue);color:var(--blue)}
+.vtag.on{background:var(--blue-bg);border-color:var(--blue);color:var(--blue);font-weight:700}
+
 .btn-r{padding:.2rem .55rem;border:1px solid var(--border);border-radius:var(--rs);background:var(--bg);color:var(--text2);font-family:var(--font);font-size:.7rem;cursor:pointer;transition:all .15s}
 .btn-r:hover{border-color:var(--border2);color:var(--text)}
+
+/* STATS BAR */
 .stats{display:flex;align-items:center;gap:1.25rem;padding:.5rem 1.1rem;border-bottom:1px solid var(--border);font-size:.74rem;color:var(--text3);flex-wrap:wrap}
 .sp{display:flex;align-items:center;gap:.3rem}
 .sp strong{color:var(--text);font-weight:600}
 .sp.bull strong{color:var(--green)}.sp.bear strong{color:var(--red)}.sp.ac strong{color:var(--accent)}
 .fetch-row{padding:.55rem 1.1rem;font-size:.73rem;color:var(--text2);border-bottom:1px solid var(--border);display:none;align-items:center;gap:.5rem}
+
+/* BADGE — data source */
+.src-badge{display:inline-flex;align-items:center;gap:.3rem;padding:.18rem .55rem;border-radius:20px;font-size:.66rem;font-weight:600}
+.src-badge.gh{background:var(--green-bg);color:var(--green);border:1px solid color-mix(in srgb,var(--green) 30%,transparent)}
+.src-badge.cache{background:var(--blue-bg);color:var(--blue);border:1px solid color-mix(in srgb,var(--blue) 30%,transparent)}
+.src-badge.live{background:var(--accent-bg);color:var(--accent);border:1px solid color-mix(in srgb,var(--accent) 30%,transparent)}
+
+/* DEBUG */
 .debug-panel{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:.65rem .9rem;margin-bottom:.85rem;font-family:var(--mono);font-size:.67rem;color:var(--text2);max-height:130px;overflow-y:auto;display:none}
 .debug-panel.show{display:block}
 .dl{padding:1px 0;border-bottom:1px solid rgba(0,0,0,.04)}.dl.ok{color:var(--green)}.dl.err{color:var(--red)}.dl.warn{color:var(--yellow)}
+
+/* TABLE */
 .t-scroll{overflow-x:auto}
 table{width:100%;border-collapse:collapse;font-size:.77rem}
 thead th{padding:.52rem .65rem;text-align:left;font-weight:600;color:var(--text2);font-size:.68rem;letter-spacing:.03em;border-bottom:2px solid var(--border);white-space:nowrap;cursor:pointer;user-select:none;background:var(--bg2);transition:color .15s}
 thead th:hover{color:var(--text)}
+thead th.nc{cursor:default}
+thead th.nc:hover{color:var(--text2)}
 thead th.sa::after{content:' ↑';color:var(--accent)}
 thead th.sd::after{content:' ↓';color:var(--accent)}
 thead th:first-child{padding-left:1.1rem}
+
+/* Column group headers */
+thead tr.th-group th{padding:.28rem .65rem;font-size:.62rem;font-weight:600;letter-spacing:.05em;border-bottom:1px solid var(--border);background:var(--bg3);color:var(--text3);text-transform:uppercase;cursor:default}
+thead tr.th-group th:first-child{padding-left:1.1rem}
+.grp-price{border-left:2px solid var(--accent)}
+.grp-ma{border-left:2px solid var(--green)}
+.grp-osc{border-left:2px solid var(--yellow)}
+.grp-vol{border-left:2px solid var(--blue)}
+.grp-trx{border-left:2px solid var(--text3)}
+thead tr.th-main th.grp-price{border-left:2px solid var(--accent)}
+thead tr.th-main th.grp-ma{border-left:2px solid var(--green)}
+thead tr.th-main th.grp-osc{border-left:2px solid var(--yellow)}
+thead tr.th-main th.grp-vol{border-left:2px solid var(--blue)}
+thead tr.th-main th.grp-trx{border-left:2px solid var(--text3)}
+
 tbody tr{border-bottom:1px solid var(--border);transition:background .1s}
 tbody tr:hover{background:var(--bg2)}
 tbody tr:last-child{border-bottom:none}
 tbody td{padding:.5rem .65rem;white-space:nowrap;vertical-align:middle}
 tbody td:first-child{padding-left:1.1rem}
-.t-no{color:var(--text3);font-size:.68rem;width:30px}
+tbody td.grp-price{border-left:2px solid color-mix(in srgb,var(--accent) 20%,transparent)}
+tbody td.grp-ma{border-left:2px solid color-mix(in srgb,var(--green) 20%,transparent)}
+tbody td.grp-osc{border-left:2px solid color-mix(in srgb,var(--yellow) 20%,transparent)}
+tbody td.grp-vol{border-left:2px solid color-mix(in srgb,var(--blue) 20%,transparent)}
+tbody td.grp-trx{border-left:2px solid color-mix(in srgb,var(--text3) 20%,transparent)}
+
+.t-no{color:var(--text3);font-size:.68rem;width:28px}
 .t-tk{font-family:var(--mono);font-weight:600;font-size:.78rem;color:var(--accent)}
-.t-co{max-width:160px;overflow:hidden;text-overflow:ellipsis;color:var(--text2);font-size:.71rem}
+.t-co{max-width:150px;overflow:hidden;text-overflow:ellipsis;color:var(--text2);font-size:.71rem}
 .t-pr{font-family:var(--mono);font-weight:600;font-size:.77rem}
-.t-pc{font-family:var(--mono);font-size:.72rem;font-weight:600}
 .t-v{font-family:var(--mono);font-size:.72rem}
 .up{color:var(--green)}.dn{color:var(--red)}.nu{color:var(--text3)}
+
+/* MA pips */
 .ma-cell{display:flex;gap:2px}
 .pip{width:22px;height:20px;border-radius:3px;font-size:.55rem;font-weight:700;display:grid;place-items:center;font-family:var(--mono);cursor:default}
 .pip.ab{background:var(--green-bg);color:var(--green)}.pip.bl{background:var(--red-bg);color:var(--red)}.pip.na{background:var(--bg3);color:var(--text3)}
+/* Volume pip */
+.pip.vab{background:var(--blue-bg);color:var(--blue)}.pip.vbl{background:var(--red-bg);color:var(--red)}
+
+/* RSI gauge */
 .g-row{display:flex;align-items:center;gap:.35rem}
 .g-bar{width:40px;height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;flex-shrink:0}
 .g-fill{height:100%;border-radius:2px}
+
+/* ADR dual display */
+.adr-cell{display:flex;flex-direction:column;gap:1px}
+.adr-pct{font-size:.72rem;font-family:var(--mono);font-weight:600}
+.adr-nom{font-size:.65rem;font-family:var(--mono);color:var(--text3)}
+
+/* EMPTY */
 .t-empty{padding:2.5rem;text-align:center;color:var(--text3);font-size:.82rem}
 .t-empty .ic{font-size:1.8rem;margin-bottom:.4rem}
+
+/* TOAST */
 .toast-wrap{position:fixed;bottom:1.25rem;right:1.25rem;display:flex;flex-direction:column;gap:.35rem;z-index:999}
-.toast{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:.5rem .85rem;font-size:.76rem;color:var(--text);box-shadow:var(--shadow-md);transform:translateX(120%);transition:transform .3s cubic-bezier(.4,0,.2,1);max-width:260px}
+.toast{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:.5rem .85rem;font-size:.76rem;color:var(--text);box-shadow:var(--shadow-md);transform:translateX(120%);transition:transform .3s cubic-bezier(.4,0,.2,1);max-width:280px}
 .toast.show{transform:translateX(0)}
 .toast.ok{border-left:3px solid var(--green)}.toast.er{border-left:3px solid var(--red)}.toast.in{border-left:3px solid var(--accent)}
+
 @keyframes spin2{to{transform:rotate(360deg)}}
 @media(max-width:900px){.t-meta{display:none}.wrap{padding:.85rem}}
 </style>
@@ -97,15 +163,16 @@ tbody td:first-child{padding-left:1.1rem}
 <header class="topbar">
   <div class="brand"><div class="brand-ico">IDX</div><span>ISSI Screener</span></div>
   <div class="t-meta">
-    <div class="t-mi"><span class="dot" id="sDot"></span><span id="sText">Belum ada data</span></div>
+    <div class="t-mi"><span class="dot" id="sDot"></span><span id="sText">Memuat...</span></div>
     <div class="t-mi" id="tsW" style="display:none"><span>🕐</span><span id="tsT">—</span></div>
+    <div class="t-mi" id="srcW" style="display:none"><span id="srcBadge"></span></div>
   </div>
   <div class="t-right">
     <button class="btn-sm" id="dbBtn" onclick="toggleDebug()">🔍 Debug</button>
     <button class="btn-sm" onclick="toggleDark()"><span id="dkIco">🌙</span> <span id="dkLbl">Dark</span></button>
-    <button class="btn-fetch" id="fetchBtn" onclick="startFetch()">
+    <button class="btn-fetch" id="fetchBtn" onclick="startLiveFetch()">
       <svg id="fIco" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
-      <span id="fLbl">Ambil Data Saham</span>
+      <span id="fLbl">Ambil Data Manual</span>
     </button>
   </div>
 </header>
@@ -114,6 +181,7 @@ tbody td:first-child{padding-left:1.1rem}
 <div class="wrap">
   <div class="debug-panel" id="dbPanel"><div id="dbLog"></div></div>
 
+  <!-- SEARCH -->
   <div class="card"><div class="c-p">
     <div class="s-wrap">
       <svg class="s-ico" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -121,90 +189,110 @@ tbody td:first-child{padding-left:1.1rem}
     </div>
   </div></div>
 
+  <!-- FILTER CARD -->
   <div class="card">
+    <!-- MA FILTER -->
     <div class="f-sec">
-      <div class="f-lbl">Filter Sinyal</div>
+      <div class="f-lbl">Filter Moving Average — harga penutupan di atas MA (kombinasi bebas)</div>
       <div class="tag-row">
-        <span class="tag on" id="sig-all"  onclick="setSig('all')">Semua</span>
-        <span class="tag"    id="sig-bull" onclick="setSig('bull')">▲ Bullish Dominan</span>
-        <span class="tag"    id="sig-bear" onclick="setSig('bear')">▼ Bearish Dominan</span>
-        <span class="tag"    id="sig-a4"   onclick="setSig('a4')">↑ Di atas EMA3/5/10/20</span>
-        <span class="tag"    id="sig-ob"   onclick="setSig('ob')">RSI Overbought &gt;70</span>
-        <span class="tag"    id="sig-os"   onclick="setSig('os')">RSI Oversold &lt;30</span>
+        <span class="ftag" id="mf-ema3"   onclick="toggleMF('ema3')">EMA 3</span>
+        <span class="ftag" id="mf-ema5"   onclick="toggleMF('ema5')">EMA 5</span>
+        <span class="ftag" id="mf-ema10"  onclick="toggleMF('ema10')">EMA 10</span>
+        <span class="ftag" id="mf-ema20"  onclick="toggleMF('ema20')">EMA 20</span>
+        <span class="ftag" id="mf-sma50"  onclick="toggleMF('sma50')">SMA 50</span>
+        <span class="ftag" id="mf-sma100" onclick="toggleMF('sma100')">SMA 100</span>
+        <span class="ftag" id="mf-sma200" onclick="toggleMF('sma200')">SMA 200</span>
+        <span class="btn-r" onclick="resetMF()" style="font-size:.68rem">Reset</span>
       </div>
     </div>
-    <div class="f-sec">
-      <div class="f-lbl">Filter MA — harga penutupan di atas (bisa kombinasi)</div>
+    <!-- VOLUME MA FILTER -->
+    <div class="f-sec" style="border-bottom:none">
+      <div class="f-lbl vol">Filter Volume MA — volume harian di atas VMA (kombinasi bebas)</div>
       <div class="tag-row">
-        <span class="ma-tag" id="mf-ema3"   onclick="toggleMA('ema3')">EMA 3</span>
-        <span class="ma-tag" id="mf-ema5"   onclick="toggleMA('ema5')">EMA 5</span>
-        <span class="ma-tag" id="mf-ema10"  onclick="toggleMA('ema10')">EMA 10</span>
-        <span class="ma-tag" id="mf-ema20"  onclick="toggleMA('ema20')">EMA 20</span>
-        <span class="ma-tag" id="mf-sma50"  onclick="toggleMA('sma50')">SMA 50</span>
-        <span class="ma-tag" id="mf-sma100" onclick="toggleMA('sma100')">SMA 100</span>
-        <span class="ma-tag" id="mf-sma200" onclick="toggleMA('sma200')">SMA 200</span>
-        <span class="btn-r"  onclick="resetMA()">Reset MA</span>
+        <span class="vtag" id="vf-vma3"  onclick="toggleVF('vma3')">Vol &gt; VMA 3</span>
+        <span class="vtag" id="vf-vma5"  onclick="toggleVF('vma5')">Vol &gt; VMA 5</span>
+        <span class="vtag" id="vf-vma20" onclick="toggleVF('vma20')">Vol &gt; VMA 20</span>
+        <span class="vtag" id="vf-vma50" onclick="toggleVF('vma50')">Vol &gt; VMA 50</span>
+        <span class="btn-r" onclick="resetVF()" style="font-size:.68rem">Reset</span>
       </div>
     </div>
   </div>
 
-  <div class="card" id="mainCard">
+  <!-- TABLE CARD -->
+  <div class="card">
     <div class="stats" id="statsRow" style="display:none">
       <span class="sp">Total: <strong id="s-tot">0</strong></span>
       <span class="sp">Tampil: <strong id="s-sho">0</strong></span>
-      <span class="sp bull">Bullish: <strong id="s-bul">0</strong></span>
-      <span class="sp bear">Bearish: <strong id="s-bea">0</strong></span>
+      <span class="sp bull">Bullish MA: <strong id="s-bul">0</strong></span>
+      <span class="sp bear">Bearish MA: <strong id="s-bea">0</strong></span>
       <span class="sp ac">Di atas 4 EMA: <strong id="s-abo">0</strong></span>
-      <span class="sp" style="margin-left:auto;color:var(--text3);font-size:.68rem" id="s-cache"></span>
+      <span class="sp" style="margin-left:auto"><span id="s-srcbadge"></span></span>
     </div>
     <div class="fetch-row" id="fetchRow"><span id="fetchRowT">Memproses...</span></div>
     <div class="t-scroll">
       <table>
-        <thead><tr>
-          <th style="cursor:default">NO</th>
-          <th onclick="sortBy('ticker')">TICKER</th>
-          <th onclick="sortBy('company')">NAMA PERUSAHAAN</th>
-          <th onclick="sortBy('price')">HARGA</th>
-          <th onclick="sortBy('pct')">% CHG</th>
-          <th style="cursor:default" title="E3 E5 E10 E20 S50 S100 S200">MA SIGNAL</th>
-          <th onclick="sortBy('rsi')">RSI(14)</th>
-          <th onclick="sortBy('stochRsi')">StochRSI</th>
-          <th onclick="sortBy('atr')">ATR(14)</th>
-          <th onclick="sortBy('adr')">ADR%</th>
-          <th onclick="sortBy('lastValue')">TRX HARI INI</th>
-          <th onclick="sortBy('avg20Value')">AVG TRX 20H</th>
-          <th onclick="sortBy('pct1avg20')">1% AVG 20H</th>
-        </tr></thead>
+        <thead>
+          <tr class="th-group">
+            <th colspan="2" style="cursor:default"></th>
+            <th colspan="4" class="grp-price">HARGA</th>
+            <th colspan="7" class="grp-ma">MOVING AVERAGE</th>
+            <th colspan="3" class="grp-osc">OSCILLATOR</th>
+            <th colspan="4" class="grp-vol">VOLUME</th>
+            <th colspan="3" class="grp-trx">NILAI TRANSAKSI</th>
+          </tr>
+          <tr class="th-main">
+            <th class="nc">NO</th>
+            <th onclick="sortBy('ticker')">TICKER / NAMA</th>
+            <th onclick="sortBy('price')" class="grp-price">HARGA</th>
+            <th onclick="sortBy('pct')" class="grp-price">% CHG</th>
+            <th onclick="sortBy('pct1today')" class="grp-price">1% TRX HARI INI</th>
+            <th onclick="sortBy('adrPct')" class="grp-price" title="Average Daily Range — persentase dan nominal">ADR</th>
+            <th class="nc grp-ma" title="E3 E5 E10 E20 S50 S100 S200">MA (7)</th>
+            <th onclick="sortBy('e3')" class="grp-ma">EMA3</th>
+            <th onclick="sortBy('e5')" class="grp-ma">EMA5</th>
+            <th onclick="sortBy('e10')" class="grp-ma">EMA10</th>
+            <th onclick="sortBy('e20')" class="grp-ma">EMA20</th>
+            <th onclick="sortBy('s50')" class="grp-ma">SMA50</th>
+            <th onclick="sortBy('s200')" class="grp-ma">SMA200</th>
+            <th onclick="sortBy('rsi')" class="grp-osc">RSI(14)</th>
+            <th onclick="sortBy('stochRsi')" class="grp-osc">StochRSI</th>
+            <th onclick="sortBy('atr')" class="grp-osc">ATR(14)</th>
+            <th class="nc grp-vol" title="Vol > VMA3 VMA5 VMA20 VMA50">VOL MA</th>
+            <th onclick="sortBy('lastVol')" class="grp-vol">VOL HARI INI</th>
+            <th onclick="sortBy('vma20')" class="grp-vol">VMA 20</th>
+            <th onclick="sortBy('vma50')" class="grp-vol">VMA 50</th>
+            <th onclick="sortBy('lastValue')" class="grp-trx">TRX HARI INI</th>
+            <th onclick="sortBy('avg20Value')" class="grp-trx">AVG TRX 20H</th>
+            <th onclick="sortBy('pct1avg20')" class="grp-trx">1% AVG 20H</th>
+          </tr>
+        </thead>
         <tbody id="tBody">
-          <tr><td colspan="13"><div class="t-empty"><div class="ic">📊</div>Klik "Ambil Data Saham" untuk memulai<br><small style="font-size:.7rem;display:block;margin-top:.3rem;color:var(--text3)">Data cache akan dimuat otomatis saat halaman dibuka kembali</small></div></td></tr>
+          <tr><td colspan="23"><div class="t-empty"><div class="ic">📊</div>Memuat data dari repository...<br><small style="font-size:.7rem;display:block;margin-top:.3rem;color:var(--text3)">Data akan diperbarui otomatis setiap hari kerja pukul 10:00 & 17:30 WIB</small></div></td></tr>
         </tbody>
       </table>
     </div>
   </div>
-  <p style="font-size:.66rem;color:var(--text3);text-align:center;padding-bottom:1.5rem">Data dari Yahoo Finance. Bukan rekomendasi investasi.</p>
+  <p style="font-size:.66rem;color:var(--text3);text-align:center;padding-bottom:1.5rem">Data dari Yahoo Finance via GitHub Actions. Bukan rekomendasi investasi.</p>
 </div>
-
 <div class="toast-wrap" id="tWrap"></div>
 
 <script>
-// ─── TICKERS ────────────────────────────────────────────────
-const TK=["AADI","AALI","ABMM","ACES","ACST","ADCP","ADES","ADHI","ADMG","ADMR","ADRO","AGAR","AGII","AIMS","AISA","AKKU","AKPI","AKRA","AKSI","ALDO","ALKA","AMAN","AMFG","AMIN","ANDI","ANJT","ANTM","APII","APLI","APLN","ARCI","AREA","ARGO","ARII","ARNA","ARTA","ASGR","ASHA","ASII","ASLC","ASLI","ASPI","ASRI","ASSA","ATAP","ATIC","ATLA","AUTO","AVIA","AWAN","AXIO","AYAM","AYLS","BABY","BAIK","BANK","BAPI","BATA","BATR","BAUT","BAYU","BBRM","BBSS","BCIP","BDKR","BEEF","BELI","BELL","BESS","BEST","BIKE","BINO","BIPP","BIRD","BISI","BKDP","BKSL","BLES","BLOG","BLTA","BLTZ","BLUE","BMHS","BMSR","BMTR","BNBR","BOAT","BOBA","BOGA","BOLA","BOLT","BRAM","BRIS","BRMS","BRNA","BRPT","BRRC","BSBK","BSDE","BSML","BSSR","BTPS","BUAH","BUKK","BULL","BUMI","BUVA","BYAN","CAKK","CAMP","CANI","CARE","CASS","CBDK","CBPE","CBRE","CCSI","CEKA","CGAS","CHEK","CHEM","CINT","CITA","CITY","CLEO","CLPI","CMNP","CMPP","CMRY","CNKO","CNMA","COAL","CPIN","CPRO","CRAB","CRSN","CSAP","CSIS","CSMI","CSRA","CTBN","CTRA","CYBR","DAAZ","DADA","DATA","DAYA","DCII","DEFI","DEPO","DEWA","DEWI","DGIK","DGNS","DGWG","DILD","DIVA","DKFT","DKHH","DMAS","DMMX","DMND","DOOH","DOSS","DRMA","DSFI","DSNG","DSSA","DUTI","DVLA","DWGL","DYAN","EAST","ECII","EDGE","EKAD","ELIT","ELPI","ELSA","ELTY","EMDE","ENAK","ENRG","EPAC","EPMT","ERAA","ERAL","ESIP","ESSA","ESTA","EXCL","FAST","FASW","FILM","FIRE","FISH","FITT","FMII","FOLK","FOOD","FORE","FPNI","FUTR","FWCT","GDST","GDYR","GEMA","GEMS","GGRP","GHON","GIAA","GJTL","GLVA","GMTD","GOLD","GOLF","GOOD","GPRA","GPSO","GRIA","GRPH","GTBO","GTRA","GTSI","GULA","GUNA","GWSA","GZCO","HADE","HAIS","HALO","HATM","HDIT","HEAL","HERO","HEXA","HGII","HITS","HOKI","HOMI","HOPE","HRME","HRUM","HUMI","HYGN","IATA","IBST","ICBP","ICON","IDPR","IFII","IFSH","IGAR","IIKP","IKAI","IKAN","IKBI","IKPM","IMPC","INCI","INCO","INDF","INDR","INDS","INDX","INDY","INET","INKP","INPP","INTD","INTP","IOTF","IPCC","IPCM","IPOL","IPTV","IRRA","IRSX","ISAT","ISSP","ITMA","ITMG","JAST","JATI","JAWA","JAYA","JECC","JGLE","JIHD","JKON","JMAS","JPFA","JRPT","JSMR","JSPT","JTPE","KAQI","KARW","KBAG","KBLI","KBLM","KDSI","KDTN","KEEN","KEJU","KETR","KIAS","KICI","KIJA","KINO","KIOS","KJEN","KKES","KKGI","KLAS","KLBF","KMDS","KOBX","KOCI","KOIN","KOKA","KONI","KOPI","KOTA","KPIG","KREN","KRYA","KSIX","KUAS","LABA","LABS","LAJU","LAND","LCKM","LION","LIVE","LMPI","LMSH","LPCK","LPIN","LPKR","LPLI","LPPF","LRNA","LSIP","LTLS","LUCK","MAHA","MAIN","MAPA","MAPB","MAPI","MARK","MAXI","MBAP","MBMA","MBTO","MCAS","MCOL","MDIY","MDKA","MDKI","MDLA","MEDC","MEDS","MERI","MERK","META","MFMI","MGNA","MHKI","MICE","MIDI","MIKA","MINA","MINE","MIRA","MITI","MKAP","MKPI","MKTR","MLIA","MLPL","MLPT","MMIX","MMLP","MNCN","MORA","MPIX","MPMX","MPOW","MPPA","MPRO","MRAT","MSIN","MSJA","MSKY","MSTI","MTDL","MTEL","MTFN","MTLA","MTMH","MTPS","MTSM","MUTU","MYOH","MYOR","NAIK","NASA","NASI","NCKL","NELY","NEST","NETV","NFCX","NICE","NICL","NIKL","NPGF","NRCA","NTBK","NZIA","OASA","OBAT","OBMD","OILS","OKAS","OMED","OMRE","PADA","PALM","PAMG","PANI","PANR","PART","PBID","PBSA","PCAR","PDES","PDPP","PEHA","PEVE","PGAS","PGEO","PGLI","PGUN","PICO","PIPA","PJAA","PJHB","PKPK","PLIN","PMJS","PMUI","PNBS","PNGO","PNSE","POLI","POLU","PORT","POWR","PPRE","PPRI","PPRO","PRAY","PRDA","PRIM","PSAB","PSAT","PSDN","PSGO","PSKT","PSSI","PTBA","PTIS","PTMP","PTMR","PTPP","PTPS","PTPW","PTSN","PTSP","PURA","PURI","PWON","PZZA","RAAM","RAFI","RAJA","RALS","RANC","RATU","RBMS","RDTX","RGAS","RIGS","RISE","RMKE","RMKO","ROCK","RODA","RONY","ROTI","RSGK","RUIS","SAFE","SAGE","SAME","SAMF","SAPX","SATU","SBMA","SCCO","SCNP","SCPI","SEMA","SGER","SGRO","SHID","SHIP","SICO","SIDO","SILO","SIMP","SIPD","SKBM","SKLT","SKRN","SLIS","SMAR","SMBR","SMCB","SMDM","SMDR","SMGA","SMGR","SMIL","SMKL","SMLE","SMMT","SMRA","SMSM","SNLK","SOCI","SOHO","SOLA","SONA","SOSS","SOTS","SPMA","SPTO","SRTG","SSIA","SSTM","STAA","STTP","SULI","SUNI","SUPR","SURI","SWID","TALF","TAMA","TAMU","TAPG","TARA","TAXI","TBMS","TCID","TCPI","TEBE","TFAS","TFCO","TGKA","TGUK","TINS","TIRA","TIRT","TKIM","TLDN","TLKM","TMAS","TMPO","TNCA","TOBA","TOOL","TOSK","TOTL","TOTO","TPIA","TPMA","TRIS","TRJA","TRON","TRST","TRUE","TRUK","TSPC","TYRE","UANG","UCID","UFOE","ULTJ","UNIC","UNIQ","UNTR","UNVR","UVCR","VAST","VERN","VICI","VISI","VKTR","VOKS","WAPO","WEGE","WEHA","WINR","WINS","WIRG","WMUU","WOOD","WOWS","WTON","YELO","YPAS","YUPI","ZATA","ZONE","ZYRX"];
+// ─── CONFIG ──────────────────────────────────────────────────
+// Ganti dengan URL repo GitHub Pages Anda setelah deploy
+// Format: https://raw.githubusercontent.com/<USER>/<REPO>/main/data/issi_data.json
+const GITHUB_DATA_URL = 'data/issi_data.json'; // relative path — bekerja di GitHub Pages
 
-// ─── PROXY STRATEGIES ────────────────────────────────────────
-// Proxy ke-1: Direct (akan gagal karena CORS di browser, tapi coba dulu)
-// Proxy ke-2 & 3: corsproxy.io dengan query1 & query2
-// Proxy ke-4: allorigins
-// Proxy ke-5: thingproxy (backup)
 const PROX=[
   s=>`https://corsproxy.io/?${encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/'+s+'?interval=1d&range=1y')}`,
   s=>`https://corsproxy.io/?${encodeURIComponent('https://query2.finance.yahoo.com/v8/finance/chart/'+s+'?interval=1d&range=1y')}`,
   s=>`https://api.allorigins.win/raw?url=${encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/'+s+'?interval=1d&range=1y')}`,
   s=>`https://thingproxy.freeboard.io/fetch/https://query1.finance.yahoo.com/v8/finance/chart/${s}?interval=1d&range=1y`,
 ];
-const SK='issi_v3', SKT='issi_v3_ts';
+const SK='issi_v4', SKT='issi_v4_ts';
+const TK=["AADI","AALI","ABMM","ACES","ACST","ADCP","ADES","ADHI","ADMG","ADMR","ADRO","AGAR","AGII","AIMS","AISA","AKKU","AKPI","AKRA","AKSI","ALDO","ALKA","AMAN","AMFG","AMIN","ANDI","ANJT","ANTM","APII","APLI","APLN","ARCI","AREA","ARGO","ARII","ARNA","ARTA","ASGR","ASHA","ASII","ASLC","ASLI","ASPI","ASRI","ASSA","ATAP","ATIC","ATLA","AUTO","AVIA","AWAN","AXIO","AYAM","AYLS","BABY","BAIK","BANK","BAPI","BATA","BATR","BAUT","BAYU","BBRM","BBSS","BCIP","BDKR","BEEF","BELI","BELL","BESS","BEST","BIKE","BINO","BIPP","BIRD","BISI","BKDP","BKSL","BLES","BLOG","BLTA","BLTZ","BLUE","BMHS","BMSR","BMTR","BNBR","BOAT","BOBA","BOGA","BOLA","BOLT","BRAM","BRIS","BRMS","BRNA","BRPT","BRRC","BSBK","BSDE","BSML","BSSR","BTPS","BUAH","BUKK","BULL","BUMI","BUVA","BYAN","CAKK","CAMP","CANI","CARE","CASS","CBDK","CBPE","CBRE","CCSI","CEKA","CGAS","CHEK","CHEM","CINT","CITA","CITY","CLEO","CLPI","CMNP","CMPP","CMRY","CNKO","CNMA","COAL","CPIN","CPRO","CRAB","CRSN","CSAP","CSIS","CSMI","CSRA","CTBN","CTRA","CYBR","DAAZ","DADA","DATA","DAYA","DCII","DEFI","DEPO","DEWA","DEWI","DGIK","DGNS","DGWG","DILD","DIVA","DKFT","DKHH","DMAS","DMMX","DMND","DOOH","DOSS","DRMA","DSFI","DSNG","DSSA","DUTI","DVLA","DWGL","DYAN","EAST","ECII","EDGE","EKAD","ELIT","ELPI","ELSA","ELTY","EMDE","ENAK","ENRG","EPAC","EPMT","ERAA","ERAL","ESIP","ESSA","ESTA","EXCL","FAST","FASW","FILM","FIRE","FISH","FITT","FMII","FOLK","FOOD","FORE","FPNI","FUTR","FWCT","GDST","GDYR","GEMA","GEMS","GGRP","GHON","GIAA","GJTL","GLVA","GMTD","GOLD","GOLF","GOOD","GPRA","GPSO","GRIA","GRPH","GTBO","GTRA","GTSI","GULA","GUNA","GWSA","GZCO","HADE","HAIS","HALO","HATM","HDIT","HEAL","HERO","HEXA","HGII","HITS","HOKI","HOMI","HOPE","HRME","HRUM","HUMI","HYGN","IATA","IBST","ICBP","ICON","IDPR","IFII","IFSH","IGAR","IIKP","IKAI","IKAN","IKBI","IKPM","IMPC","INCI","INCO","INDF","INDR","INDS","INDX","INDY","INET","INKP","INPP","INTD","INTP","IOTF","IPCC","IPCM","IPOL","IPTV","IRRA","IRSX","ISAT","ISSP","ITMA","ITMG","JAST","JATI","JAWA","JAYA","JECC","JGLE","JIHD","JKON","JMAS","JPFA","JRPT","JSMR","JSPT","JTPE","KAQI","KARW","KBAG","KBLI","KBLM","KDSI","KDTN","KEEN","KEJU","KETR","KIAS","KICI","KIJA","KINO","KIOS","KJEN","KKES","KKGI","KLAS","KLBF","KMDS","KOBX","KOCI","KOIN","KOKA","KONI","KOPI","KOTA","KPIG","KREN","KRYA","KSIX","KUAS","LABA","LABS","LAJU","LAND","LCKM","LION","LIVE","LMPI","LMSH","LPCK","LPIN","LPKR","LPLI","LPPF","LRNA","LSIP","LTLS","LUCK","MAHA","MAIN","MAPA","MAPB","MAPI","MARK","MAXI","MBAP","MBMA","MBTO","MCAS","MCOL","MDIY","MDKA","MDKI","MDLA","MEDC","MEDS","MERI","MERK","META","MFMI","MGNA","MHKI","MICE","MIDI","MIKA","MINA","MINE","MIRA","MITI","MKAP","MKPI","MKTR","MLIA","MLPL","MLPT","MMIX","MMLP","MNCN","MORA","MPIX","MPMX","MPOW","MPPA","MPRO","MRAT","MSIN","MSJA","MSKY","MSTI","MTDL","MTEL","MTFN","MTLA","MTMH","MTPS","MTSM","MUTU","MYOH","MYOR","NAIK","NASA","NASI","NCKL","NELY","NEST","NETV","NFCX","NICE","NICL","NIKL","NPGF","NRCA","NTBK","NZIA","OASA","OBAT","OBMD","OILS","OKAS","OMED","OMRE","PADA","PALM","PAMG","PANI","PANR","PART","PBID","PBSA","PCAR","PDES","PDPP","PEHA","PEVE","PGAS","PGEO","PGLI","PGUN","PICO","PIPA","PJAA","PJHB","PKPK","PLIN","PMJS","PMUI","PNBS","PNGO","PNSE","POLI","POLU","PORT","POWR","PPRE","PPRI","PPRO","PRAY","PRDA","PRIM","PSAB","PSAT","PSDN","PSGO","PSKT","PSSI","PTBA","PTIS","PTMP","PTMR","PTPP","PTPS","PTPW","PTSN","PTSP","PURA","PURI","PWON","PZZA","RAAM","RAFI","RAJA","RALS","RANC","RATU","RBMS","RDTX","RGAS","RIGS","RISE","RMKE","RMKO","ROCK","RODA","RONY","ROTI","RSGK","RUIS","SAFE","SAGE","SAME","SAMF","SAPX","SATU","SBMA","SCCO","SCNP","SCPI","SEMA","SGER","SGRO","SHID","SHIP","SICO","SIDO","SILO","SIMP","SIPD","SKBM","SKLT","SKRN","SLIS","SMAR","SMBR","SMCB","SMDM","SMDR","SMGA","SMGR","SMIL","SMKL","SMLE","SMMT","SMRA","SMSM","SNLK","SOCI","SOHO","SOLA","SONA","SOSS","SOTS","SPMA","SPTO","SRTG","SSIA","SSTM","STAA","STTP","SULI","SUNI","SUPR","SURI","SWID","TALF","TAMA","TAMU","TAPG","TARA","TAXI","TBMS","TCID","TCPI","TEBE","TFAS","TFCO","TGKA","TGUK","TINS","TIRA","TIRT","TKIM","TLDN","TLKM","TMAS","TMPO","TNCA","TOBA","TOOL","TOSK","TOTL","TOTO","TPIA","TPMA","TRIS","TRJA","TRON","TRST","TRUE","TRUK","TSPC","TYRE","UANG","UCID","UFOE","ULTJ","UNIC","UNIQ","UNTR","UNVR","UVCR","VAST","VERN","VICI","VISI","VKTR","VOKS","WAPO","WEGE","WEHA","WINR","WINS","WIRG","WMUU","WOOD","WOWS","WTON","YELO","YPAS","YUPI","ZATA","ZONE","ZYRX"];
 
 // ─── STATE ───────────────────────────────────────────────────
-let AD=[], DD=[], fetching=false, sigF='all', maF=new Set(), sCol='pct', sDir=-1, dbOn=false;
+let AD=[], DD=[], fetching=false, maF=new Set(), volF=new Set(), sCol='pct', sDir=-1, dbOn=false;
 let pStats=[0,0,0,0], bestProxy=0;
 
 // ─── DARK MODE ───────────────────────────────────────────────
@@ -215,8 +303,7 @@ function updDk(t){document.getElementById('dkIco').textContent=t==='dark'?'☀�
 // ─── DEBUG ───────────────────────────────────────────────────
 let dbLines=[];
 function dLog(m,t=''){
-  dbLines.push({m,t});
-  if(dbLines.length>60)dbLines.shift();
+  dbLines.push({m,t});if(dbLines.length>60)dbLines.shift();
   if(!dbOn)return;
   const el=document.getElementById('dbLog');
   el.innerHTML=dbLines.slice(-25).map(l=>`<div class="dl ${l.t}">${l.m}</div>`).join('');
@@ -230,246 +317,183 @@ function toggleDebug(){
 }
 
 // ─── MATH ────────────────────────────────────────────────────
-function calcEMA(arr,p){
-  if(!arr||arr.length<p)return null;
-  const k=2/(p+1);let v=arr.slice(0,p).reduce((a,b)=>a+b,0)/p;
-  for(let i=p;i<arr.length;i++)v=arr[i]*k+v*(1-k);return v;
-}
-function calcSMA(arr,p){
-  if(!arr||arr.length<p)return null;
-  return arr.slice(-p).reduce((a,b)=>a+b,0)/p;
-}
-function calcRSI(arr){
-  if(!arr||arr.length<15)return null;
-  const s=arr.slice(-15);let g=0,l=0;
-  for(let i=1;i<s.length;i++){const d=s[i]-s[i-1];if(d>0)g+=d;else l-=d}
-  const ag=g/14,al=l/14;if(al===0)return 100;return 100-100/(1+ag/al);
-}
-function calcStochRSI(arr,rp=14,sp=14){
-  if(!arr||arr.length<rp+sp+5)return null;
-  const ra=[];
-  for(let i=rp+1;i<=arr.length;i++){
-    const sl=arr.slice(0,i),n=sl.length;
-    const s=sl.slice(-15);let g=0,l=0;
-    for(let j=1;j<s.length;j++){const d=s[j]-s[j-1];if(d>0)g+=d;else l-=d}
-    const ag=g/14,al=l/14;
-    ra.push(al===0?100:100-100/(1+ag/al));
+function ema(a,p){if(!a||a.length<p)return null;const k=2/(p+1);let v=a.slice(0,p).reduce((x,y)=>x+y,0)/p;for(let i=p;i<a.length;i++)v=a[i]*k+v*(1-k);return v}
+function sma(a,p){if(!a||a.length<p)return null;return a.slice(-p).reduce((x,y)=>x+y,0)/p}
+function rsi14(a){if(!a||a.length<15)return null;const s=a.slice(-15);let g=0,l=0;for(let i=1;i<s.length;i++){const d=s[i]-s[i-1];if(d>0)g+=d;else l-=d}const ag=g/14,al=l/14;if(al===0)return 100;return 100-100/(1+ag/al)}
+function stochRSI(a,rp=14,sp=14){if(!a||a.length<rp+sp+5)return null;const ra=[];for(let i=rp+1;i<=a.length;i++){const s=a.slice(0,i).slice(-15);let g=0,l=0;for(let j=1;j<s.length;j++){const d=s[j]-s[j-1];if(d>0)g+=d;else l-=d}const ag=g/14,al=l/14;ra.push(al===0?100:100-100/(1+ag/al))}if(ra.length<sp)return null;const rec=ra.slice(-sp),mn=Math.min(...rec),mx=Math.max(...rec);if(mx===mn)return 50;return((ra[ra.length-1]-mn)/(mx-mn))*100}
+function atr14(rows){if(!rows||rows.length<15)return null;const trs=[];for(let i=1;i<rows.length;i++)trs.push(Math.max(rows[i].h-rows[i].l,Math.abs(rows[i].h-rows[i-1].c),Math.abs(rows[i].l-rows[i-1].c)));return trs.length>=14?trs.slice(-14).reduce((a,b)=>a+b,0)/14:null}
+function adr14(rows){if(!rows||rows.length<14)return null;const r=rows.slice(-14);return{nom:r.reduce((a,b)=>a+(b.h-b.l),0)/14,pct:r.reduce((a,b)=>a+(b.h-b.l)/b.l,0)/14*100}}
+
+// ─── PROCESS RAW YAHOO DATA ──────────────────────────────────
+function processYahoo(ticker, res){
+  const meta=res.meta||{};
+  const raw=res.indicators?.quote?.[0]||{};
+  const ts=res.timestamp||[];
+  const rows=[];
+  for(let i=0;i<ts.length;i++){
+    const c=raw.close?.[i],h=raw.high?.[i],l=raw.low?.[i],v=raw.volume?.[i];
+    if(c!=null&&h!=null&&l!=null&&v!=null&&!isNaN(c)&&!isNaN(h)&&!isNaN(l)&&c>0&&h>0&&l>0)rows.push({c,h,l,v});
   }
-  if(ra.length<sp)return null;
-  const rec=ra.slice(-sp),mn=Math.min(...rec),mx=Math.max(...rec);
-  if(mx===mn)return 50;
-  return((ra[ra.length-1]-mn)/(mx-mn))*100;
-}
-// FIX: ATR uses aligned rows (tidak filter array terpisah)
-function calcATR(rows,p=14){
-  if(!rows||rows.length<p+1)return null;
-  const trs=[];
-  for(let i=1;i<rows.length;i++){
-    trs.push(Math.max(rows[i].h-rows[i].l,Math.abs(rows[i].h-rows[i-1].c),Math.abs(rows[i].l-rows[i-1].c)));
-  }
-  return trs.length>=p?trs.slice(-p).reduce((a,b)=>a+b,0)/p:null;
-}
-function calcADR(rows,p=14){
-  if(!rows||rows.length<p)return null;
-  const r=rows.slice(-p);
-  return r.reduce((a,b)=>a+(b.h-b.l)/b.l,0)/p*100;
+  if(rows.length<20)return null;
+  const closes=rows.map(x=>x.c),vols=rows.map(x=>x.v);
+  const last=closes.at(-1),prev=closes.at(-2)??last;
+  const pct=((last-prev)/prev)*100;
+  const e3=ema(closes,3),e5=ema(closes,5),e10=ema(closes,10),e20=ema(closes,20);
+  const s50=sma(closes,50),s100=sma(closes,100),s200=sma(closes,200);
+  const rsiV=rsi14(closes),srsiV=stochRSI(closes);
+  const atrV=atr14(rows),adrV=adr14(rows);
+  const lastVol=vols.at(-1)??0;
+  const lastValue=lastVol*last;
+  const vm3=sma(vols,3),vm5=sma(vols,5),vm20=sma(vols,20),vm50=sma(vols,50);
+  const avg20Value=(vm20??lastVol)*last;
+  const pct1avg20=avg20Value*0.01;
+  const pct1today=lastValue*0.01;
+  const ms={ema3:e3!==null&&last>e3,ema5:e5!==null&&last>e5,ema10:e10!==null&&last>e10,ema20:e20!==null&&last>e20,sma50:s50!==null&&last>s50,sma100:s100!==null&&last>s100,sma200:s200!==null&&last>s200,vma3:vm3!==null&&lastVol>vm3,vma5:vm5!==null&&lastVol>vm5,vma20:vm20!==null&&lastVol>vm20,vma50:vm50!==null&&lastVol>vm50};
+  const above4=ms.ema3&&ms.ema5&&ms.ema10&&ms.ema20;
+  let bull=0,bear=0;['ema3','ema5','ema10','ema20','sma50','sma100','sma200'].forEach(k=>{if(ms[k])bull++;else bear++;});
+  if(rsiV!==null){if(rsiV>50)bull++;else bear++;}
+  if(srsiV!==null){if(srsiV>50)bull++;else bear++;}
+  const company=(meta.longName||meta.shortName||'').replace(/\s*\([^)]*\)\s*/g,'').trim()||ticker;
+  return{ticker,company,price:last,pct,e3,e5,e10,e20,s50,s100,s200,maStatus:ms,above4,rsi:rsiV,stochRsi:srsiV,atr:atrV,adrPct:adrV?.pct??null,adrNom:adrV?.nom??null,lastVol,vma3:vm3,vma5:vm5,vma20:vm20,vma50:vm50,lastValue,avg20Value,pct1avg20,pct1today,bull,bear};
 }
 
-// ─── FETCH WITH MANUAL TIMEOUT ───────────────────────────────
-function fetchTO(url,ms=10000){
+// ─── PRIORITY 1: LOAD FROM GITHUB REPO (JSON file) ──────────
+async function loadFromGitHub(){
+  try{
+    dLog('Mencoba load dari GitHub repo...');
+    const url=GITHUB_DATA_URL+'?t='+Date.now();
+    const res=await fetch(url,{signal:AbortSignal.timeout?AbortSignal.timeout(10000):undefined});
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    const j=await res.json();
+    if(!j.data||j.data.length===0)throw new Error('Empty data');
+    dLog(`GitHub OK: ${j.data.length} saham, fetchedAt=${j.fetchedAtWIB}`,'ok');
+    return{data:j.data,ts:j.fetchedAt?new Date(j.fetchedAt).getTime():Date.now(),src:'gh',label:j.fetchedAtWIB||'—'};
+  }catch(e){
+    dLog(`GitHub load gagal: ${e.message}`,'warn');
+    return null;
+  }
+}
+
+// ─── PRIORITY 2: LOAD FROM localStorage ──────────────────────
+function loadFromCache(){
+  try{
+    const raw=localStorage.getItem(SK),ts=localStorage.getItem(SKT);
+    if(!raw||raw.length<10)return null;
+    const data=JSON.parse(raw);
+    if(!data||data.length===0)return null;
+    dLog(`Cache OK: ${data.length} saham`,'ok');
+    return{data,ts:ts?parseInt(ts):Date.now(),src:'cache'};
+  }catch(e){dLog('Cache load error: '+e.message,'err');return null}
+}
+
+// ─── AUTO LOAD ON START ──────────────────────────────────────
+window.addEventListener('load',async()=>{
+  // Try GitHub first, then cache
+  const gh=await loadFromGitHub();
+  if(gh&&gh.data.length>0){
+    loadData(gh.data,gh.ts,'gh',gh.label);
+    return;
+  }
+  const cache=loadFromCache();
+  if(cache&&cache.data.length>0){
+    loadData(cache.data,cache.ts,'cache');
+    return;
+  }
+  setDot('');
+  document.getElementById('sText').textContent='Data tidak tersedia — klik "Ambil Data Manual"';
+  dLog('Tidak ada data tersedia');
+});
+
+function loadData(data,ts,src,ghLabel){
+  AD=data;
+  const ago=timeAgo(ts);
+  const srcMap={gh:'📦 GitHub Repo',cache:'💾 Cache Lokal',live:'🔴 Live Fetch'};
+  const badge=`<span class="src-badge ${src}">${srcMap[src]||src}</span>`;
+  document.getElementById('sText').textContent=`${AD.length} saham`;
+  document.getElementById('tsW').style.display='flex';
+  document.getElementById('tsT').textContent=src==='gh'?`Update: ${ghLabel||ago}`:`Cache: ${ago}`;
+  document.getElementById('srcW').style.display='flex';
+  document.getElementById('srcBadge').innerHTML=badge;
+  document.getElementById('statsRow').style.display='flex';
+  document.getElementById('s-srcbadge').innerHTML=badge;
+  setDot('ok');
+  updateStats();applyF();renderT();
+  toast(`${AD.length} saham dimuat (${srcMap[src]||src})`,'in');
+}
+
+// ─── LIVE FETCH (manual button) ──────────────────────────────
+async function fetchTO(url,ms=10000){
   return new Promise((res,rej)=>{
     const ctrl=new AbortController(),tid=setTimeout(()=>{ctrl.abort();rej(new Error('timeout'))},ms);
     fetch(url,{signal:ctrl.signal}).then(r=>{clearTimeout(tid);res(r)}).catch(e=>{clearTimeout(tid);rej(e)});
   });
 }
-
 async function fetchOne(ticker){
   const sym=ticker+'.JK';
-  // Try best proxy first, then others
   const order=[bestProxy,...[0,1,2,3].filter(i=>i!==bestProxy)];
-  
   for(const pi of order){
     const url=PROX[pi](sym);
     try{
       dLog(`[${ticker}] P${pi+1}`);
       const r=await fetchTO(url,10000);
-      if(!r.ok){dLog(`[${ticker}] P${pi+1} HTTP${r.status}`,'warn');continue}
+      if(!r.ok)continue;
       const txt=await r.text();
-      let j;
-      try{j=JSON.parse(txt)}catch(e){dLog(`[${ticker}] P${pi+1} JSON error`,'warn');continue}
-      
-      const res=j?.chart?.result?.[0];
-      if(!res){
-        // allorigins wraps in contents field
-        const j2=j?.contents?JSON.parse(j.contents):null;
-        const res2=j2?.chart?.result?.[0];
-        if(!res2){dLog(`[${ticker}] P${pi+1} no result`,'warn');continue}
-        return processResult(ticker,res2,pi);
-      }
-      return processResult(ticker,res,pi);
-    }catch(e){dLog(`[${ticker}] P${pi+1} ERR:${e.message.substring(0,40)}`,'err')}
+      let j;try{j=JSON.parse(txt)}catch{continue}
+      const res=j?.chart?.result?.[0]||(j?.contents?JSON.parse(j.contents)?.chart?.result?.[0]:null);
+      if(!res)continue;
+      const d=processYahoo(ticker,res);
+      if(!d)continue;
+      pStats[pi]++;if(pStats[pi]>pStats[bestProxy])bestProxy=pi;
+      dLog(`[${ticker}] OK P${pi+1}`,'ok');
+      return d;
+    }catch(e){dLog(`[${ticker}] P${pi+1} ERR:${e.message.substring(0,30)}`,'err')}
   }
-  dLog(`[${ticker}] ALL FAILED`,'err');
-  return null;
+  dLog(`[${ticker}] ALL FAILED`,'err');return null;
 }
 
-function processResult(ticker,res,pi){
-  const meta=res.meta||{};
-  const raw=res.indicators?.quote?.[0]||{};
-  const ts=res.timestamp||[];
-  
-  // Build aligned valid rows
-  const rows=[];
-  for(let i=0;i<ts.length;i++){
-    const c=raw.close?.[i],h=raw.high?.[i],l=raw.low?.[i],v=raw.volume?.[i];
-    if(c!=null&&h!=null&&l!=null&&v!=null&&!isNaN(c)&&!isNaN(h)&&!isNaN(l)&&c>0&&h>0&&l>0)
-      rows.push({c,h,l,v});
-  }
-  if(rows.length<20){dLog(`[${ticker}] only ${rows.length} valid rows`,'warn');return null}
-  
-  const closes=rows.map(x=>x.c), vols=rows.map(x=>x.v);
-  const last=closes.at(-1), prev=closes.at(-2)??last;
-  const pct=((last-prev)/prev)*100;
-  
-  const e3=calcEMA(closes,3),e5=calcEMA(closes,5),e10=calcEMA(closes,10),e20=calcEMA(closes,20);
-  const s50=calcSMA(closes,50),s100=calcSMA(closes,100),s200=calcSMA(closes,200);
-  const rsiV=calcRSI(closes), srsiV=calcStochRSI(closes);
-  const atr=calcATR(rows,14), adr=calcADR(rows,14);
-  
-  const lastVol=vols.at(-1)??0;
-  const lastValue=lastVol*last;
-  const avg20Vol=calcSMA(vols,20)??lastVol;
-  const avg20Value=avg20Vol*last;
-  const pct1avg20=avg20Value*0.01;
-  
-  const ms={
-    ema3:e3!==null&&last>e3, ema5:e5!==null&&last>e5,
-    ema10:e10!==null&&last>e10, ema20:e20!==null&&last>e20,
-    sma50:s50!==null&&last>s50, sma100:s100!==null&&last>s100, sma200:s200!==null&&last>s200
-  };
-  const above4=ms.ema3&&ms.ema5&&ms.ema10&&ms.ema20;
-  let bull=0,bear=0;
-  Object.values(ms).forEach(v=>{if(v)bull++;else bear++});
-  if(rsiV!==null){if(rsiV>50)bull++;else bear++}
-  if(srsiV!==null){if(srsiV>50)bull++;else bear++}
-  
-  pStats[pi]++;
-  if(pStats[pi]>pStats[bestProxy])bestProxy=pi;
-  dLog(`[${ticker}] OK P${pi+1} close=${last.toFixed(0)} n=${rows.length}`,'ok');
-  
-  const company=(meta.longName||meta.shortName||'').replace(/\s*\([^)]*\)\s*/g,'').trim()||ticker;
-  return{ticker,company,price:last,pct,e3,e5,e10,e20,s50,s100,s200,maStatus:ms,above4,
-         rsi:rsiV,stochRsi:srsiV,atr,adr,lastValue,avg20Value,pct1avg20,bull,bear};
-}
-
-// ─── MAIN FETCH LOOP ─────────────────────────────────────────
-async function startFetch(){
+async function startLiveFetch(){
   if(fetching)return;
-  fetching=true; AD=[]; pStats=[0,0,0,0]; bestProxy=0;
-  
+  fetching=true;AD=[];pStats=[0,0,0,0];bestProxy=0;
   document.getElementById('fetchBtn').disabled=true;
   document.getElementById('fIco').style.animation='spin2 .7s linear infinite';
   document.getElementById('fLbl').textContent='Mengambil...';
   document.getElementById('fetchRow').style.display='flex';
   document.getElementById('statsRow').style.display='flex';
-  setDot('spin'); setProg(3);
-  
+  setDot('spin');setProg(3);
   const BATCH=6,total=TK.length;let done=0,ok=0,fail=0;
-  
   for(let i=0;i<total;i+=BATCH){
     const chunk=TK.slice(i,i+BATCH);
     const res=await Promise.allSettled(chunk.map(t=>fetchOne(t)));
-    res.forEach(r=>{
-      if(r.status==='fulfilled'&&r.value){AD.push(r.value);ok++}
-      else fail++;
-      done++;
-    });
+    res.forEach(r=>{if(r.status==='fulfilled'&&r.value){AD.push(r.value);ok++}else fail++;done++;});
     setProg(3+Math.round((done/total)*93));
-    document.getElementById('fetchRowT').innerHTML=
-      `Memproses <strong>${done}/${total}</strong> — ✅ ${ok} berhasil — ❌ ${fail} gagal — Proxy [${pStats.join('|')}]`;
-    updateStats(); applyF(); renderT();
+    document.getElementById('fetchRowT').innerHTML=`Memproses <strong>${done}/${total}</strong> — ✅ ${ok} — ❌ ${fail} — Proxy [${pStats.join('|')}]`;
+    updateStats();applyF();renderT();
     await new Promise(r=>setTimeout(r,30));
   }
-  
-  // Save to localStorage
-  try{
-    localStorage.setItem(SK,JSON.stringify(AD));
-    localStorage.setItem(SKT,Date.now().toString());
-    dLog(`Saved to localStorage: ${AD.length} items, ${(JSON.stringify(AD).length/1024).toFixed(0)}KB`,'ok');
-  }catch(e){dLog(`localStorage error: ${e.message}`,'err');toast('Cache gagal (storage penuh?)','er')}
-  
+  try{localStorage.setItem(SK,JSON.stringify(AD));localStorage.setItem(SKT,Date.now().toString())}catch(e){toast('Cache gagal','er')}
   fetching=false;
   document.getElementById('fetchBtn').disabled=false;
   document.getElementById('fIco').style.animation='';
-  document.getElementById('fLbl').textContent='Ambil Data Saham';
+  document.getElementById('fLbl').textContent='Ambil Data Manual';
   document.getElementById('fetchRow').style.display='none';
-  setDot(ok>0?'ok':'');
-  setProg(100);setTimeout(()=>setProg(0),800);
-  
+  setDot(ok>0?'ok':'');setProg(100);setTimeout(()=>setProg(0),800);
   const now=new Date().toLocaleString('id-ID');
-  document.getElementById('sText').textContent=`${ok} saham (${fail} gagal)`;
-  document.getElementById('tsW').style.display='flex';
-  document.getElementById('tsT').textContent='Update: '+now;
-  document.getElementById('s-cache').textContent='';
-  toast(`Selesai: ${ok} saham berhasil${fail>0?', '+fail+' gagal':''}`,ok>0?'ok':'er');
-  dLog(`=== DONE ok=${ok} fail=${fail} proxy=[${pStats.join('/')}] ===`,'ok');
+  loadData(AD,Date.now(),'live',now);
+  toast(`Selesai: ${ok} berhasil${fail>0?', '+fail+' gagal':''}`,ok>0?'ok':'er');
 }
 
-// ─── LOAD CACHE ──────────────────────────────────────────────
-window.addEventListener('load',()=>{
-  try{
-    const raw=localStorage.getItem(SK),ts=localStorage.getItem(SKT);
-    if(raw&&raw.length>10){
-      AD=JSON.parse(raw);
-      if(AD&&AD.length>0){
-        const ago=ts?timeAgo(parseInt(ts)):'?';
-        document.getElementById('sText').textContent=`${AD.length} saham (cache ${ago})`;
-        document.getElementById('tsW').style.display='flex';
-        document.getElementById('tsT').textContent=ts?'Cache: '+new Date(parseInt(ts)).toLocaleString('id-ID'):'—';
-        document.getElementById('statsRow').style.display='flex';
-        document.getElementById('s-cache').textContent='• dari cache';
-        setDot('ok'); updateStats(); applyF(); renderT();
-        toast(`Cache: ${AD.length} saham (${ago})`,'in');
-        dLog(`Cache loaded: ${AD.length} saham`,'ok');
-        return;
-      }
-    }
-  }catch(e){dLog(`Cache load error: ${e.message}`,'err')}
-  setDot(''); dLog('No cache — click Ambil Data');
-});
-function timeAgo(ts){
-  const d=Date.now()-ts,h=Math.floor(d/3600000),m=Math.floor((d%3600000)/60000);
-  if(h>=24)return Math.floor(h/24)+'h lalu';
-  if(h>0)return h+'j '+m+'m lalu';
-  return m+'m lalu';
-}
+// ─── FILTER ──────────────────────────────────────────────────
+function toggleMF(k){maF.has(k)?maF.delete(k):maF.add(k);document.getElementById('mf-'+k).classList.toggle('on',maF.has(k));applyF();renderT()}
+function resetMF(){maF.clear();['ema3','ema5','ema10','ema20','sma50','sma100','sma200'].forEach(k=>document.getElementById('mf-'+k).classList.remove('on'));applyF();renderT()}
+function toggleVF(k){volF.has(k)?volF.delete(k):volF.add(k);document.getElementById('vf-'+k).classList.toggle('on',volF.has(k));applyF();renderT()}
+function resetVF(){volF.clear();['vma3','vma5','vma20','vma50'].forEach(k=>document.getElementById('vf-'+k).classList.remove('on'));applyF();renderT()}
 
-// ─── FILTER & SORT ───────────────────────────────────────────
-function setSig(f){
-  sigF=f;
-  ['all','bull','bear','a4','ob','os'].forEach(s=>document.getElementById('sig-'+s).classList.toggle('on',s===f));
-  applyF();renderT();
-}
-function toggleMA(k){
-  maF.has(k)?maF.delete(k):maF.add(k);
-  document.getElementById('mf-'+k).classList.toggle('on',maF.has(k));
-  applyF();renderT();
-}
-function resetMA(){
-  maF.clear();
-  ['ema3','ema5','ema10','ema20','sma50','sma100','sma200'].forEach(k=>document.getElementById('mf-'+k).classList.remove('on'));
-  applyF();renderT();
-}
 function applyF(){
   const q=document.getElementById('sInp').value.trim().toUpperCase();
   let d=[...AD];
   if(q)d=d.filter(x=>x.ticker.includes(q)||(x.company||'').toUpperCase().includes(q));
-  if(sigF==='bull')d=d.filter(x=>x.bull>x.bear);
-  if(sigF==='bear')d=d.filter(x=>x.bear>x.bull);
-  if(sigF==='a4')d=d.filter(x=>x.above4);
-  if(sigF==='ob')d=d.filter(x=>x.rsi!=null&&x.rsi>70);
-  if(sigF==='os')d=d.filter(x=>x.rsi!=null&&x.rsi<30);
   maF.forEach(k=>{d=d.filter(x=>x.maStatus&&x.maStatus[k]===true)});
+  volF.forEach(k=>{d=d.filter(x=>x.maStatus&&x.maStatus[k]===true)});
   d.sort((a,b)=>{
     let va=a[sCol]??-Infinity,vb=b[sCol]??-Infinity;
     if(sCol==='ticker'||sCol==='company'){va=String(va||'');vb=String(vb||'');return va.localeCompare(vb)*sDir}
@@ -479,10 +503,8 @@ function applyF(){
 }
 function sortBy(c){
   if(sCol===c)sDir*=-1;else{sCol=c;sDir=-1}
-  document.querySelectorAll('thead th').forEach(t=>t.classList.remove('sa','sd'));
-  const m={ticker:1,company:2,price:3,pct:4,rsi:6,stochRsi:7,atr:8,adr:9,lastValue:10,avg20Value:11,pct1avg20:12};
-  const th=document.querySelectorAll('thead th')[m[c]];
-  if(th)th.classList.add(sDir===1?'sa':'sd');
+  document.querySelectorAll('thead tr.th-main th').forEach(t=>t.classList.remove('sa','sd'));
+  event.currentTarget.classList.add(sDir===1?'sa':'sd');
   applyF();renderT();
 }
 function updateStats(){
@@ -493,45 +515,55 @@ function updateStats(){
 }
 
 // ─── FORMAT ──────────────────────────────────────────────────
-const idr=n=>{if(n==null||isNaN(n))return'—';return n.toLocaleString('id-ID',{maximumFractionDigits:0})};
+const idr=n=>{if(n==null||isNaN(n))return'—';return Math.round(n).toLocaleString('id-ID')};
 const bil=n=>{if(!n||isNaN(n)||n===0)return'—';if(n>=1e12)return(n/1e12).toFixed(2)+' T';if(n>=1e9)return(n/1e9).toFixed(2)+' M';if(n>=1e6)return(n/1e6).toFixed(1)+' Jt';return idr(n)};
-const fPct=n=>{if(n==null||isNaN(n))return'—';return(n>=0?'+':'')+n.toFixed(2)+'%'};
-const fix=(n,d=1)=>{if(n==null||isNaN(n))return'—';return n.toFixed(d)};
-const rsiC=v=>{if(v==null)return'var(--text3)';if(v>70)return'var(--red)';if(v<30)return'var(--green)';if(v>55)return'var(--green)';if(v<45)return'var(--red)';return'var(--text2)'};
+const fP=n=>{if(n==null||isNaN(n))return'—';return(n>=0?'+':'')+n.toFixed(2)+'%'};
+const fx=(n,d=1)=>{if(n==null||isNaN(n))return'—';return n.toFixed(d)};
+const rC=v=>{if(v==null)return'var(--text3)';if(v>70)return'var(--red)';if(v<30)return'var(--green)';if(v>55)return'var(--green)';if(v<45)return'var(--red)';return'var(--text2)'};
 const MAK=['ema3','ema5','ema10','ema20','sma50','sma100','sma200'];
 const MAL=['E3','E5','E10','E20','S50','S1','S2'];
+const VK=['vma3','vma5','vma20','vma50'];
+const VL=['V3','V5','V20','V50'];
 
 // ─── RENDER ──────────────────────────────────────────────────
 function renderT(){
   const tb=document.getElementById('tBody');
   if(DD.length===0){
-    tb.innerHTML=`<tr><td colspan="13"><div class="t-empty"><div class="ic">${fetching?'⟳':'∅'}</div>${fetching?'Mengambil data...':'Tidak ada data sesuai filter'}</div></td></tr>`;
+    tb.innerHTML=`<tr><td colspan="23"><div class="t-empty"><div class="ic">${fetching?'⟳':'∅'}</div>${fetching?'Mengambil data...':'Tidak ada data sesuai filter'}</div></td></tr>`;
     return;
   }
   tb.innerHTML=DD.map((d,i)=>{
     const pU=d.pct>=0;
-    const pips=MAK.map((k,ki)=>{
-      const v=d.maStatus?.[k];
-      const cls=v===true?'ab':v===false?'bl':'na';
-      return`<span class="pip ${cls}" title="${k.toUpperCase()}: ${v===true?'Di atas':v===false?'Di bawah':'N/A'}">${MAL[ki]}</span>`;
-    }).join('');
-    const rC=rsiC(d.rsi),sC=rsiC(d.stochRsi);
+    const maPips=MAK.map((k,ki)=>{const v=d.maStatus?.[k];const cls=v===true?'ab':v===false?'bl':'na';return`<span class="pip ${cls}" title="${k.toUpperCase()}: ${v===true?'Di atas':v===false?'Di bawah':'N/A'}">${MAL[ki]}</span>`}).join('');
+    const vPips=VK.map((k,ki)=>{const v=d.maStatus?.[k];const cls=v===true?'vab':v===false?'vbl':'na';return`<span class="pip ${cls}" title="Vol ${v===true?'>':'<'} ${k.toUpperCase()}">${VL[ki]}</span>`}).join('');
     const rP=d.rsi!=null?Math.min(100,Math.max(0,d.rsi)):0;
     const sP=d.stochRsi!=null?Math.min(100,Math.max(0,d.stochRsi)):0;
+    const rCv=rC(d.rsi),sCv=rC(d.stochRsi);
+    const adrClass=d.adrPct!=null?(d.adrPct>4?'up':d.adrPct<1.5?'nu':''):'';
     return`<tr>
 <td class="t-no">${i+1}</td>
-<td class="t-tk">${d.ticker}</td>
-<td class="t-co" title="${d.company||''}">${d.company||'—'}</td>
-<td class="t-pr">${idr(d.price)}</td>
-<td class="t-pc ${pU?'up':'dn'}">${fPct(d.pct)}</td>
-<td><div class="ma-cell">${pips}</div></td>
-<td><div class="g-row"><div class="g-bar"><div class="g-fill" style="width:${rP}%;background:${rC}"></div></div><span style="color:${rC};font-family:var(--mono);font-size:.7rem">${fix(d.rsi)}</span></div></td>
-<td><div class="g-row"><div class="g-bar"><div class="g-fill" style="width:${sP}%;background:${sC}"></div></div><span style="color:${sC};font-family:var(--mono);font-size:.7rem">${fix(d.stochRsi)}</span></div></td>
-<td class="t-v">${fix(d.atr,1)}</td>
-<td class="t-v ${d.adr!=null?d.adr>3?'up':d.adr<1?'dn':'':'nu'}">${d.adr!=null?fix(d.adr,2)+'%':'—'}</td>
-<td class="t-v">${bil(d.lastValue)}</td>
-<td class="t-v">${bil(d.avg20Value)}</td>
-<td class="t-v" style="color:var(--accent);font-weight:600">${bil(d.pct1avg20)}</td>
+<td><div class="t-tk">${d.ticker}</div><div class="t-co" title="${d.company||''}">${d.company||'—'}</div></td>
+<td class="t-pr grp-price">${idr(d.price)}</td>
+<td class="grp-price t-v ${pU?'up':'dn'}">${fP(d.pct)}</td>
+<td class="grp-price t-v" style="color:var(--accent);font-weight:600">${bil(d.pct1today)}</td>
+<td class="grp-price"><div class="adr-cell"><div class="adr-pct ${adrClass}">${fx(d.adrPct,2)}%</div><div class="adr-nom">${idr(d.adrNom)}</div></div></td>
+<td class="grp-ma"><div class="ma-cell">${maPips}</div></td>
+<td class="grp-ma t-v ${d.maStatus?.ema3?'up':'dn'}">${idr(d.e3)}</td>
+<td class="grp-ma t-v ${d.maStatus?.ema5?'up':'dn'}">${idr(d.e5)}</td>
+<td class="grp-ma t-v ${d.maStatus?.ema10?'up':'dn'}">${idr(d.e10)}</td>
+<td class="grp-ma t-v ${d.maStatus?.ema20?'up':'dn'}">${idr(d.e20)}</td>
+<td class="grp-ma t-v ${d.maStatus?.sma50?'up':'dn'}">${idr(d.s50)}</td>
+<td class="grp-ma t-v ${d.maStatus?.sma200?'up':'dn'}">${idr(d.s200)}</td>
+<td class="grp-osc"><div class="g-row"><div class="g-bar"><div class="g-fill" style="width:${rP}%;background:${rCv}"></div></div><span style="color:${rCv};font-family:var(--mono);font-size:.7rem">${fx(d.rsi)}</span></div></td>
+<td class="grp-osc"><div class="g-row"><div class="g-bar"><div class="g-fill" style="width:${sP}%;background:${sCv}"></div></div><span style="color:${sCv};font-family:var(--mono);font-size:.7rem">${fx(d.stochRsi)}</span></div></td>
+<td class="grp-osc t-v">${fx(d.atr,1)}</td>
+<td class="grp-vol"><div class="ma-cell">${vPips}</div></td>
+<td class="grp-vol t-v ${d.maStatus?.vma20?'up':'dn'}">${bil(d.lastVol)}</td>
+<td class="grp-vol t-v nu">${bil(d.vma20)}</td>
+<td class="grp-vol t-v nu">${bil(d.vma50)}</td>
+<td class="grp-trx t-v">${bil(d.lastValue)}</td>
+<td class="grp-trx t-v">${bil(d.avg20Value)}</td>
+<td class="grp-trx t-v" style="color:var(--accent);font-weight:600">${bil(d.pct1avg20)}</td>
 </tr>`;
   }).join('');
 }
@@ -539,12 +571,8 @@ function renderT(){
 // ─── UTILS ───────────────────────────────────────────────────
 function setProg(p){document.getElementById('prog').style.width=p+'%'}
 function setDot(s){const d=document.getElementById('sDot');d.className='dot';if(s==='ok')d.classList.add('ok');if(s==='spin')d.classList.add('spin')}
-function toast(m,t='in'){
-  const el=document.createElement('div');el.className=`toast ${t}`;el.textContent=m;
-  document.getElementById('tWrap').appendChild(el);
-  requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.add('show')));
-  setTimeout(()=>{el.classList.remove('show');setTimeout(()=>el.remove(),400)},3500);
-}
+function timeAgo(ts){const d=Date.now()-ts,h=Math.floor(d/3600000),m=Math.floor((d%3600000)/60000);if(h>=24)return Math.floor(h/24)+'h lalu';if(h>0)return h+'j '+m+'m lalu';return m+'m lalu'}
+function toast(m,t='in'){const el=document.createElement('div');el.className=`toast ${t}`;el.textContent=m;document.getElementById('tWrap').appendChild(el);requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.add('show')));setTimeout(()=>{el.classList.remove('show');setTimeout(()=>el.remove(),400)},3500)}
 </script>
 </body>
 </html>
