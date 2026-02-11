@@ -2,8 +2,12 @@ name: Update ISSI Data
 
 on:
   schedule:
+    # Sesi 1 IDX (09:00 WIB = 02:00 UTC) — data pembukaan
+    - cron: '0 2 * * 1-5'
+    # Tengah hari / jeda sesi (12:00 WIB = 05:00 UTC)
+    - cron: '0 5 * * 1-5'
+    # Post-closing IDX (17:30 WIB = 10:30 UTC)
     - cron: '30 10 * * 1-5'
-    - cron: '0 3 * * 1-5'
   workflow_dispatch:
 
 jobs:
@@ -11,26 +15,21 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-
       - name: Install dependencies
         run: npm install node-fetch@3
-
-      - name: Fetch ISSI data from Yahoo Finance
+      - name: Fetch ISSI data
         run: node fetch_data.js
-
-      - name: Commit and push data
+      - name: Commit & push
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add data/issi_data.json
-          git diff --staged --quiet || git commit -m "chore: update ISSI data $(date +'%Y-%m-%d %H:%M WIB')"
+          git diff --staged --quiet || git commit -m "data: update $(TZ='Asia/Jakarta' date +'%Y-%m-%d %H:%M WIB')"
           git push
