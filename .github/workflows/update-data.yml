@@ -1,12 +1,12 @@
-name: Update ISSI Data
+name: Update Data Saham
 
 on:
   schedule:
-    # Sesi 1 IDX (09:00 WIB = 02:00 UTC) — data pembukaan
+    # 09:00 WIB = 02:00 UTC — awal sesi 1
     - cron: '0 2 * * 1-5'
-    # Tengah hari / jeda sesi (12:00 WIB = 05:00 UTC)
+    # 12:00 WIB = 05:00 UTC — jeda sesi
     - cron: '0 5 * * 1-5'
-    # Post-closing IDX (17:30 WIB = 10:30 UTC)
+    # 17:30 WIB = 10:30 UTC — post-closing
     - cron: '30 10 * * 1-5'
   workflow_dispatch:
 
@@ -18,14 +18,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+
       - name: Install dependencies
         run: npm install node-fetch@3
-      - name: Fetch ISSI data
+
+      - name: Fetch data saham
         run: node fetch_data.js
+
       - name: Commit & push
         run: |
           git config --local user.email "action@github.com"
