@@ -48,8 +48,8 @@ async function fetchOne(ticker){
       const rsiV=rsi(closes),srsiV=stochRSI(closes),macdV=macd(closes);
       const atrV=atr(rows),adrV=adr(rows);
       const lastVol=vols.at(-1)??0,lastValue=lastVol*last,pct1today=lastValue*0.01;
-      const vm3=sma(vols,3),vm5=sma(vols,5),vm10=sma(vols,10),vm20=sma(vols,20),vm50=sma(vols,50),vm200=sma(vols,200);
-      const ms={ema3:e3!==null&&last>e3,ema5:e5!==null&&last>e5,ema10:e10!==null&&last>e10,ema20:e20!==null&&last>e20,sma50:s50!==null&&last>s50,sma100:s100!==null&&last>s100,sma200:s200!==null&&last>s200,vma3:vm3!==null&&lastVol>vm3,vma5:vm5!==null&&lastVol>vm5,vma10:vm10!==null&&lastVol>vm10,vma20:vm20!==null&&lastVol>vm20,vma50:vm50!==null&&lastVol>vm50,vma200:vm200!==null&&lastVol>vm200};
+      const vm3=sma(vols,3),vm5=sma(vols,5),vm10=sma(vols,10),vm20=sma(vols,20),vm50=sma(vols,50),vm100=sma(vols,100),vm200=sma(vols,200);
+      const ms={ema3:e3!==null&&last>e3,ema5:e5!==null&&last>e5,ema10:e10!==null&&last>e10,ema20:e20!==null&&last>e20,sma50:s50!==null&&last>s50,sma100:s100!==null&&last>s100,sma200:s200!==null&&last>s200,vma3:vm3!==null&&lastVol>vm3,vma5:vm5!==null&&lastVol>vm5,vma10:vm10!==null&&lastVol>vm10,vma20:vm20!==null&&lastVol>vm20,vma50:vm50!==null&&lastVol>vm50,vma100:vm100!==null&&lastVol>vm100,vma200:vm200!==null&&lastVol>vm200};
       const above4=ms.ema3&&ms.ema5&&ms.ema10&&ms.ema20;
       let bull=0,bear=0;['ema3','ema5','ema10','ema20','sma50','sma100','sma200'].forEach(k=>{if(ms[k])bull++;else bear++});
       if(rsiV!==null){if(rsiV>50)bull++;else bear++}
