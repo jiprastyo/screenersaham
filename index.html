@@ -1689,7 +1689,16 @@ const TM={
 };
 
 
-const DATA_URL = './data/issi_data.json';
+// Try multiple paths in case of deployment issues
+const BASE_PATH = window.location.pathname.endsWith('/') 
+  ? window.location.pathname 
+  : window.location.pathname.replace(/\/[^\/]*$/, '/');
+const DATA_PATHS = [
+  'data/issi_data.json',           // Relative
+  './data/issi_data.json',         // Relative with dot
+  BASE_PATH + 'data/issi_data.json', // Absolute from base
+];
+let DATA_URL = DATA_PATHS[0]; // Start with first
 const SK = 'scr2_v1', SKT = 'scr2_v1_ts';
 
 let AD=[], DD=[];
@@ -1826,6 +1835,8 @@ function _enrich(data){
 window.addEventListener('load',async()=>{
   try{
     dLog('Loading issi_data.json…');
+    dLog('Full URL: ' + new URL(DATA_URL, window.location.href).href);
+    dLog('Base path: ' + window.location.pathname);
     const res=await fetch(DATA_URL+'?_='+Date.now());
     if(res.ok){
       const j=await res.json();
