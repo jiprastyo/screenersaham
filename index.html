@@ -154,6 +154,28 @@ a{color:inherit;text-decoration:none}
 /* ═══════════════════════════════════════════════
    CARDS
 ═══════════════════════════════════════════════ */
+/* Active filter indicator */
+.active-filters{
+  display:flex;align-items:center;gap:.4rem;padding:.4rem .75rem;
+  border-bottom:1px solid var(--border);font-size:.65rem;flex-wrap:wrap;
+  background:var(--surface2);
+}
+.af-label{color:var(--text3);font-weight:600;flex-shrink:0}
+.af-tags{display:flex;flex-wrap:wrap;gap:.25rem}
+.af-tag{
+  display:inline-flex;align-items:center;padding:.12rem .4rem;
+  border-radius:20px;font-size:.58rem;font-weight:600;
+  background:var(--gold-bg);color:var(--gold);border:1px solid var(--gold);
+  white-space:nowrap;
+}
+.af-tag.preset{background:var(--green-bg);color:var(--green);border-color:var(--green)}
+.af-tag.idx{background:var(--teal-bg);color:var(--teal);border-color:var(--teal)}
+.af-tag.papan{background:var(--amber-bg);color:var(--amber);border-color:var(--amber)}
+.af-tag.sektor{background:var(--blue-bg);color:var(--blue);border-color:var(--blue)}
+.af-tag.ma{background:var(--green-bg);color:var(--green);border-color:var(--green)}
+.af-tag.osc{background:var(--purple-bg);color:var(--purple);border-color:var(--purple)}
+.af-tag.vol{background:var(--blue-bg);color:var(--blue);border-color:var(--blue)}
+.af-tag.price{background:var(--amber-bg);color:var(--amber);border-color:var(--amber)}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow-sm);margin-bottom:.6rem;overflow:hidden}
 .card-pad{padding:.7rem .9rem}
 
@@ -248,6 +270,7 @@ a{color:inherit;text-decoration:none}
 .pchip.p2:hover,.pchip.p2.on{border-color:var(--teal);color:var(--teal);background:var(--teal-bg);box-shadow:0 0 0 1px var(--teal-bg)}
 .pchip.p3:hover,.pchip.p3.on{border-color:var(--blue);color:var(--blue);background:var(--blue-bg);box-shadow:0 0 0 1px var(--blue-bg)}
 .pchip.p4:hover,.pchip.p4.on{border-color:var(--purple);color:var(--purple);background:var(--purple-bg);box-shadow:0 0 0 1px var(--purple-bg)}
+.pchip.p5:hover,.pchip.p5.on{border-color:var(--amber);color:var(--amber);background:var(--amber-bg);box-shadow:0 0 0 1px var(--amber-bg)}
 
 /* reset button */
 .creset{
@@ -375,25 +398,28 @@ tbody td:first-child{padding-left:.9rem;text-align:left}
 .pct-badge.dn{background:var(--red-bg);color:var(--red)}
 .pct-badge.nu{background:var(--surface3);color:var(--text3)}
 
-/* ── TREND CELL (MA dots) ──────────────────── */
-.ma-dots{display:flex;gap:2px;justify-content:flex-end;align-items:center}
-.ma-dot{
-  width:9px;height:9px;border-radius:50%;flex-shrink:0;
-  transition:background .15s;
+/* ── TREND CELL (MA squares with labels) ──── */
+.ma-squares{display:flex;gap:2px;justify-content:flex-end;align-items:center;flex-wrap:nowrap}
+.ma-sq{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:auto;min-width:1.4rem;height:1.15rem;border-radius:3px;flex-shrink:0;
+  font-size:.5rem;font-weight:700;font-family:var(--mono);letter-spacing:-.01em;
+  padding:0 .15rem;line-height:1;
 }
-.ma-dot.on{background:var(--green)}
-.ma-dot.off{background:var(--border2)}
-.ma-dot.na{background:var(--border);opacity:.4}
+.ma-sq.on{background:var(--green-bg);color:var(--green)}
+.ma-sq.off{background:var(--red-bg);color:var(--red)}
 .trend-score{font-family:var(--mono);font-size:.62rem;color:var(--text3);margin-right:.25rem;flex-shrink:0}
 
-/* ── VOLUME CELL (7 dots) ──────────────────── */
-.vol-dots{display:flex;gap:2px;justify-content:flex-end;align-items:center}
-.vol-dot{
-  width:8px;height:8px;border-radius:50%;flex-shrink:0;
-  transition:background .15s;
+/* ── VOLUME CELL (7 squares with labels) ──── */
+.vol-squares{display:flex;gap:2px;justify-content:flex-end;align-items:center;flex-wrap:nowrap}
+.vol-sq{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:auto;min-width:1.2rem;height:1.15rem;border-radius:3px;flex-shrink:0;
+  font-size:.5rem;font-weight:700;font-family:var(--mono);letter-spacing:-.01em;
+  padding:0 .15rem;line-height:1;
 }
-.vol-dot.on{background:var(--blue)}
-.vol-dot.off{background:var(--border2)}
+.vol-sq.on{background:var(--blue-bg);color:var(--blue)}
+.vol-sq.off{background:var(--red-bg);color:var(--red)}
 
 /* ── RSI / STOCHRSI CELL — proper column alignment ── */
 .osc-cell{
@@ -490,7 +516,6 @@ table { font-size: 0.76rem; }
 tbody td { padding: 0.42rem 0.5rem; }
 thead th { padding: 0.42rem 0.5rem; }
 .score-badge { width: 2.5rem; height: 1.55rem; font-size: 0.72rem; }
-.ma-dot { width: 8px; height: 8px; }
 .ctk { font-size: 0.82rem; }
 .cco { font-size: 0.68rem; max-width: 135px; }
 .bpapan, .bidx, .bsektor { font-size: 0.56rem; padding: 0.04rem 0.24rem; }
@@ -551,11 +576,12 @@ thead th { padding: 0.42rem 0.5rem; }
     <div class="preset-info">
       <div class="preset-info-title">Keterangan Preset Strategi</div>
       <div class="preset-info-grid">
-        <span class="pi-item"><b>Siap Breakout:</b> EMA5 + EMA20 di atas harga, RSI 50–70, MACD Bullish, Volume > VMA20</span>
-        <span class="pi-item"><b>Uptrend Kuat:</b> Minimal 5/7 MA di atas harga, MACD Bullish, EMA20 di atas harga</span>
-        <span class="pi-item"><b>Momentum Naik:</b> RSI 55–75, MACD Bullish, EMA20 di atas harga</span>
-        <span class="pi-item"><b>Volume Spike:</b> Volume > VMA3 + VMA5 + VMA20, EMA20 di atas harga</span>
-        <span class="pi-item"><b>Jenuh Jual:</b> RSI di bawah 35 — kandidat rebound</span>
+        <span class="pi-item"><b>Trend Kuat</b> (Minervini): 5+ MA di atas harga, EMA20 + SMA50 aktif, MACD Bullish, RSI 45–80. Saham dalam Stage 2 uptrend terkonfirmasi.</span>
+        <span class="pi-item"><b>Siap Breakout</b> (O'Neil): EMA 3/5/10/20 semua di atas harga, RSI 50–70 (sweet spot), MACD Bullish, volume di atas VMA. Momentum mulai membangun.</span>
+        <span class="pi-item"><b>Momentum</b> (Elder): EMA10 + EMA20 di atas harga, RSI 50–75, MACD Bullish. Impulse naik aktif — tren dan momentum selaras.</span>
+        <span class="pi-item"><b>Akumulasi Vol</b> (Weinstein): 4+ VMA di atas rata-rata + EMA20 aktif. Indikasi akumulasi institusional — volume tinggi mendukung tren.</span>
+        <span class="pi-item"><b>Jenuh Jual</b> (Elder): RSI di bawah 35. Kandidat rebound dari zona oversold — konfirmasi tambahan diperlukan sebelum entry.</span>
+        <span class="pi-item"><b>Golden Cross</b>: EMA10 + EMA20 di atas harga, belum tembus SMA200, MACD baru cross bullish. Transisi awal ke uptrend — potensi besar, risiko tinggi.</span>
       </div>
     </div>
     <div class="search-wrap">
@@ -572,20 +598,23 @@ thead th { padding: 0.42rem 0.5rem; }
     <div class="frow">
       <span class="flabel preset">Preset Strategi</span>
       <div class="preset-chips">
-        <button class="pchip p0" id="ps-breakout" onclick="togglePreset('breakout')">
-          <span class="pico">🚀</span> Siap Breakout
+        <button class="pchip p0" id="ps-trendkuat" onclick="togglePreset('trendkuat')">
+          Trend Kuat
         </button>
-        <button class="pchip p1" id="ps-uptrend" onclick="togglePreset('uptrend')">
-          <span class="pico">📈</span> Uptrend Kuat
+        <button class="pchip p1" id="ps-breakout" onclick="togglePreset('breakout')">
+          Siap Breakout
         </button>
         <button class="pchip p2" id="ps-momentum" onclick="togglePreset('momentum')">
-          <span class="pico">⚡</span> Momentum Naik
+          Momentum
         </button>
-        <button class="pchip p3" id="ps-volspike" onclick="togglePreset('volspike')">
-          <span class="pico">🔊</span> Volume Spike
+        <button class="pchip p3" id="ps-volakum" onclick="togglePreset('volakum')">
+          Akumulasi Vol
         </button>
         <button class="pchip p4" id="ps-oversold" onclick="togglePreset('oversold')">
-          <span class="pico">🔍</span> Jenuh Jual
+          Jenuh Jual
+        </button>
+        <button class="pchip p5" id="ps-goldcross" onclick="togglePreset('goldcross')">
+          Golden Cross
         </button>
         <button class="creset" onclick="resetAll()">↺ Reset Semua</button>
       </div>
@@ -681,6 +710,10 @@ thead th { padding: 0.42rem 0.5rem; }
 
   <!-- TABLE CARD -->
   <div class="card">
+    <div class="active-filters" id="activeFilters" style="display:none">
+      <span class="af-label">Filter aktif:</span>
+      <div class="af-tags" id="afTags"></div>
+    </div>
     <div class="stats" id="statsBar" style="display:none">
       <span class="st">Tampil: <b id="s-sho">0</b></span>
       <span class="st">Total: <b id="s-tot">0</b></span>
@@ -897,25 +930,44 @@ function scoreLabel(s){
    PRESET DEFINITIONS
 ══════════════════════════════════════════════ */
 const PRESETS={
+  // Minervini Trend Template: Stage 2 uptrend confirmed
+  // Price above 5+ MAs, MA stacking (short > long), MACD bull, RSI healthy
+  trendkuat: d=>{
+    const ms=d.maStatus||{};
+    const maCnt=MA_KEYS.filter(k=>ms[k]).length;
+    return maCnt>=5 && ms.ema20 && ms.sma50 && d.macdBull===true && d.rsi!=null && d.rsi>=45 && d.rsi<=80;
+  },
+  // O'Neil/Minervini Breakout: Momentum building before breakout
+  // Short EMAs aligned, RSI sweet spot, MACD bull, volume confirmation
   breakout: d=>{
     const ms=d.maStatus||{};
-    return ms.ema20&&ms.ema5&&d.rsi!=null&&d.rsi>=50&&d.rsi<=70&&d.macdBull===true&&ms.vma20;
+    return ms.ema3 && ms.ema5 && ms.ema10 && ms.ema20
+      && d.rsi!=null && d.rsi>=50 && d.rsi<=70
+      && d.macdBull===true
+      && (ms.vma3 || ms.vma5 || ms.vma20);
   },
-  uptrend: d=>{
-    const ms=d.maStatus||{};
-    const maCnt=['ema3','ema5','ema10','ema20','sma50','sma100','sma200'].filter(k=>ms[k]).length;
-    return maCnt>=5&&d.macdBull===true&&ms.ema20;
-  },
+  // Elder Impulse: EMA rising + MACD histogram positive + RSI momentum
   momentum: d=>{
     const ms=d.maStatus||{};
-    return d.rsi!=null&&d.rsi>=55&&d.rsi<=75&&d.macdBull===true&&ms.ema20;
+    return ms.ema10 && ms.ema20
+      && d.rsi!=null && d.rsi>=50 && d.rsi<=75
+      && d.macdBull===true;
   },
-  volspike: d=>{
+  // Weinstein/O'Neil Volume Accumulation: Institutional buying signal
+  // Volume above multiple VMAs = heavy accumulation
+  volakum: d=>{
     const ms=d.maStatus||{};
-    return ms.vma3&&ms.vma5&&ms.vma20&&ms.ema20;
+    const volCnt=VOL_KEYS.filter(k=>ms[k]).length;
+    return volCnt>=4 && ms.ema20;
   },
+  // Elder Second Screen: Oversold pullback in context (RSI < 35)
   oversold: d=>{
-    return d.rsi!=null&&d.rsi<35;
+    return d.rsi!=null && d.rsi<35;
+  },
+  // Golden Cross: Short EMA recently crossed above long SMA + MACD confirming
+  goldcross: d=>{
+    const ms=d.maStatus||{};
+    return ms.ema10 && ms.ema20 && !ms.sma200 && d.macdBull===true && d.macdCross===true;
   }
 };
 
@@ -1221,6 +1273,58 @@ function applyF(){
 
   DD=d;
   document.getElementById('s-sho').textContent=d.length;
+  _updateActiveFilters();
+}
+
+// ═══════════════════════════════════════════════
+// ACTIVE FILTER DISPLAY
+// ═══════════════════════════════════════════════
+function _updateActiveFilters(){
+  const tags=[];
+  // Preset
+  if(activePreset){
+    const names={trendkuat:'Trend Kuat',breakout:'Siap Breakout',momentum:'Momentum',volakum:'Akumulasi Vol',oversold:'Jenuh Jual',goldcross:'Golden Cross'};
+    tags.push({label:'Preset: '+(names[activePreset]||activePreset),cls:'preset'});
+  }
+  // Search
+  const q=(document.getElementById('sInp')?.value||'').trim();
+  if(q) tags.push({label:'Cari: '+q,cls:''});
+  // Indeks
+  idxF.forEach(k=>tags.push({label:'Indeks: '+(IDX_MAP[k]||k).toUpperCase(),cls:'idx'}));
+  // Papan
+  papanF.forEach(k=>tags.push({label:'Papan: '+(PAPAN_MAP[k]||k),cls:'papan'}));
+  // Sektor
+  sektorF.forEach(s=>tags.push({label:'Sektor: '+s,cls:'sektor'}));
+  // MA
+  maF.forEach(k=>{
+    const i=MA_KEYS.indexOf(k);
+    tags.push({label:'MA: '+(i>=0?MA_TIPS[i]:k),cls:'ma'});
+  });
+  // VMA
+  vmaF.forEach(k=>{
+    const i=VOL_KEYS.indexOf(k);
+    tags.push({label:'Vol: '+(i>=0?VOL_TIPS[i]:k),cls:'vol'});
+  });
+  // Oscillator
+  const oscNames={'rsi-sweet':'RSI 50–70','rsi-os':'RSI <35','rsi-bull':'RSI >50','macd-bull':'MACD Bull','macd-cross':'MACD Cross'};
+  oscF.forEach(k=>tags.push({label:oscNames[k]||k,cls:'osc'}));
+  // Fraksi
+  const frakNames={'1':'Fraksi Rp 1','2':'Fraksi Rp 2','5':'Fraksi Rp 5','10':'Fraksi Rp 10','25':'Fraksi Rp 25'};
+  frakF.forEach(k=>tags.push({label:frakNames[k]||k,cls:'price'}));
+  // Price range
+  const minP=document.getElementById('priceMin')?.value||'';
+  const maxP=document.getElementById('priceMax')?.value||'';
+  if(minP||maxP) tags.push({label:'Harga: '+(minP||'0')+' – '+(maxP||'~'),cls:'price'});
+
+  const el=document.getElementById('activeFilters');
+  const tagsEl=document.getElementById('afTags');
+  if(tags.length>0){
+    el.style.display='flex';
+    tagsEl.innerHTML=tags.map(t=>`<span class="af-tag ${t.cls}">${t.label}</span>`).join('');
+  }else{
+    el.style.display='none';
+    tagsEl.innerHTML='';
+  }
 }
 
 function sortBy(c){
@@ -1243,16 +1347,31 @@ function _updateStats(){
    FORMAT HELPERS
 ══════════════════════════════════════════════ */
 function _price(n){if(n==null||isNaN(n))return'—';if(n>=1000)return Math.round(n).toLocaleString('id-ID');return n.toFixed(n>=10?0:2)}
-function _fmt(n){if(n==null||isNaN(n)||n===0)return'—';const a=Math.abs(n);if(a>=1e12)return(n/1e12).toFixed(2)+'T';if(a>=1e9)return(n/1e9).toFixed(2)+'M';if(a>=1e6)return(n/1e6).toFixed(1)+'Jt';if(a>=1e3)return(n/1e3).toFixed(1)+'Rb';return n.toFixed(0)}
+function _fmt(n){if(n==null||isNaN(n)||n===0)return'—';const a=Math.abs(n);if(a>=1e12)return'Rp '+(n/1e12).toFixed(1)+' T';if(a>=1e9)return'Rp '+(n/1e9).toFixed(1)+' Mil';if(a>=1e6)return'Rp '+(n/1e6).toFixed(1)+' Jt';if(a>=1e3)return'Rp '+(n/1e3).toFixed(1)+' Rb';return'Rp '+n.toFixed(0)}
 
 function _pct(n){if(n==null||isNaN(n))return'—';return(n>=0?'+':'')+n.toFixed(2)+'%'}
 function _dec(n,d=1){if(n==null||isNaN(n))return'—';return n.toFixed(d)}
+
+// Round price DOWN to nearest IHSG tick (fraksi harga)
+function _fraksiFloor(p){
+  if(p==null||isNaN(p)||p<=0)return'—';
+  let tick;
+  if(p<200)tick=1;
+  else if(p<500)tick=2;
+  else if(p<2000)tick=5;
+  else if(p<5000)tick=10;
+  else tick=25;
+  const rounded=Math.floor(p/tick)*tick;
+  return rounded.toLocaleString('id-ID');
+}
 function _rsiColor(v){if(v==null)return'var(--text3)';if(v>80||v<20)return'var(--red)';if(v>=50&&v<=70)return'var(--green)';if(v>70)return'var(--amber)';if(v<35)return'var(--teal)';return'var(--text2)'}
 function _rsiZoneLabel(v){if(v==null)return'';if(v>80)return'JB';if(v>70)return'OB';if(v>=50&&v<=70)return'OK';if(v>=35)return'–';return'JS'}
 
 const MA_KEYS=['ema3','ema5','ema10','ema20','sma50','sma100','sma200'];
+const MA_LABELS=['E3','E5','E10','E20','S50','S1','S2'];
 const MA_TIPS=['EMA 3','EMA 5','EMA 10','EMA 20','SMA 50','SMA 100','SMA 200'];
 const VOL_KEYS=['vma3','vma5','vma10','vma20','vma50','vma100','vma200'];
+const VOL_LABELS=['V3','V5','V10','V20','V50','V1','V2'];
 const VOL_TIPS=['VMA 3','VMA 5','VMA 10','VMA 20','VMA 50','VMA 100','VMA 200'];
 
 /* ══════════════════════════════════════════════
@@ -1285,17 +1404,18 @@ function renderT(){
     const bIdx=(d.indeks||[]).filter(x=>x!=='ISSI').map(x=>`<span class="bidx">${x}</span>`).join('');
     const metaRow=(bPapan||bSektor||bIdx)?`<div class="cmeta">${bPapan}${bSektor}${bIdx}</div>`:'';
 
-    // MA dots (7)
+    // MA squares (7)
     const maDotCount=MA_KEYS.filter(k=>ms[k]).length;
-    const maDots=MA_KEYS.map((k,i)=>{
-      const v=ms[k];
-      return`<span class="ma-dot ${v===true?'on':'off'}" title="${MA_TIPS[i]}"></span>`;
+    const maSquares=MA_KEYS.map((k,i)=>{
+      const on=ms[k]===true;
+      return`<span class="ma-sq ${on?'on':'off'}" title="${MA_TIPS[i]}">${MA_LABELS[i]}</span>`;
     }).join('');
 
-    // Volume dots (7) — same visual as MA dots
+    // Volume squares (7)
     const volDotCount=VOL_KEYS.filter(k=>ms[k]).length;
-    const volDots=VOL_KEYS.map((k,i)=>{
-      return`<span class="vol-dot ${ms[k]===true?'on':'off'}" title="${VOL_TIPS[i]}"></span>`;
+    const volSquares=VOL_KEYS.map((k,i)=>{
+      const on=ms[k]===true;
+      return`<span class="vol-sq ${on?'on':'off'}" title="${VOL_TIPS[i]}">${VOL_LABELS[i]}</span>`;
     }).join('');
 
     // RSI
@@ -1353,15 +1473,15 @@ function renderT(){
   <div class="cnum">${_fmt(d.pct1today)}</div>
 </td>
 <td class="bd-trend">
-  <div class="ma-dots">
+  <div class="ma-squares">
     <span class="trend-score">${maDotCount}/7</span>
-    ${maDots}
+    ${maSquares}
   </div>
 </td>
 <td class="bd-trend">
-  <div class="vol-dots">
+  <div class="vol-squares">
     <span class="trend-score">${volDotCount}/7</span>
-    ${volDots}
+    ${volSquares}
   </div>
 </td>
 <td class="bd-osc">
@@ -1386,7 +1506,7 @@ function renderT(){
 <td class="bd-osc">
   <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
     <span style="font-size:0.7rem;font-weight:600">${_dec(d.atrV)}</span>
-    <span style="font-size:0.56rem;color:var(--text3)" title="Stop Loss">SL:${_dec(d.price-(d.atrV||0)*2)}</span>
+    <span style="font-size:0.56rem;color:var(--text3)" title="Stop Loss (2×ATR)">SL ${_fraksiFloor(d.price-(d.atrV||0)*2)}</span>
   </div>
 </td>
 <td class="bd-osc">
