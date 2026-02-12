@@ -79,7 +79,10 @@ async function fetchOne(ticker){
   mkdirSync('data',{recursive:true});
   const now=new Date();
   const wib=now.toLocaleString('id-ID',{timeZone:'Asia/Jakarta'});
-  const out={fetchedAt:now.toISOString(),fetchedAtWIB:wib,count:results.length,data:results};
+  // Clean time format: "17.30 WIB"
+  const hh=now.toLocaleString('id-ID',{timeZone:'Asia/Jakarta',hour:'2-digit',minute:'2-digit',hour12:false}).replace(':','.');
+  const wibTime=hh+' WIB';
+  const out={fetchedAt:now.toISOString(),fetchedAtWIB:wib,fetchedTimeWIB:wibTime,count:results.length,data:results};
   writeFileSync('data/issi_data.json',JSON.stringify(out));
   console.log(`Saved data/issi_data.json (${(JSON.stringify(out).length/1024).toFixed(0)} KB)`);
 })();
