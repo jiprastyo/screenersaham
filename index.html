@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Skriner</title>
+<title>Screener Saham Indonesia</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -93,7 +93,7 @@
    BASE
 ═══════════════════════════════════════════════ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{font-size:14.5px;-webkit-text-size-adjust:100%}
+html{font-size:18px;-webkit-text-size-adjust:100%}
 body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5;transition:background .2s,color .2s}
 a{color:inherit;text-decoration:none}
 
@@ -104,18 +104,12 @@ a{color:inherit;text-decoration:none}
   background:var(--surface);
   border-bottom:1px solid var(--border);
   padding:0 1.1rem;display:flex;align-items:center;
-  height:52px;gap:.5rem;position:sticky;top:0;z-index:300;
+  height:56px;gap:.5rem;position:sticky;top:0;z-index:300;
   box-shadow:var(--shadow);
 }
-.brand{display:flex;align-items:center;gap:.5rem;flex-shrink:0}
-.brand-logo{
-  width:30px;height:30px;background:var(--gold);border-radius:7px;
-  display:grid;place-items:center;font-family:var(--mono);font-size:.58rem;
-  font-weight:600;color:#000;letter-spacing:.04em;flex-shrink:0;
-  box-shadow:0 2px 8px rgba(245,166,35,.35);
-}
-.brand-text{font-weight:700;font-size:.92rem;letter-spacing:-.02em;line-height:1}
-.brand-sub{font-size:.65rem;color:var(--text3);font-weight:400;margin-top:1px}
+.brand{display:flex;align-items:center;gap:.3rem;flex-shrink:0}
+.brand-text{font-weight:700;font-size:.95rem;letter-spacing:-.02em;line-height:1}
+.brand-sub{font-size:.62rem;color:var(--text3);font-weight:400;margin-top:1px}
 
 .topbar-meta{
   display:flex;align-items:center;gap:.8rem;font-size:.7rem;
@@ -144,7 +138,7 @@ a{color:inherit;text-decoration:none}
 /* ═══════════════════════════════════════════════
    PROGRESS BAR
 ═══════════════════════════════════════════════ */
-.pbar{height:2px;background:var(--border);position:sticky;top:52px;z-index:299}
+.pbar{height:2px;background:var(--border);position:sticky;top:56px;z-index:299}
 .pbar-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--green));width:0;transition:width .25s}
 
 /* ═══════════════════════════════════════════════
@@ -153,10 +147,8 @@ a{color:inherit;text-decoration:none}
 .page{max-width:1680px;margin:0 auto;padding:.85rem .85rem 2rem}
 
 /* DISCLAIMER BANNER */
-.disclaimer{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r);padding:.65rem .95rem;margin-bottom:.75rem;font-size:.76rem;line-height:1.6;color:var(--text2);display:flex;align-items:flex-start;gap:.5rem}
-.disclaimer-icon{font-size:1rem;flex-shrink:0;margin-top:.05rem}
-.disclaimer-text{flex:1}
-.disclaimer-text strong{color:var(--text);font-weight:600}
+.disclaimer{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r);padding:.55rem .95rem;margin-bottom:.75rem;font-size:.72rem;line-height:1.6;color:var(--text3)}
+.disclaimer-text{}
 
 
 /* ═══════════════════════════════════════════════
@@ -168,10 +160,9 @@ a{color:inherit;text-decoration:none}
 /* ═══════════════════════════════════════════════
    SEARCH
 ═══════════════════════════════════════════════ */
-.search-wrap{position:relative}
-.s-ico{position:absolute;left:.75rem;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none;flex-shrink:0}
+.search-wrap{position:relative;display:flex;align-items:center}
 .s-inp{
-  width:100%;padding:.55rem .75rem .55rem 2.15rem;
+  width:100%;padding:.5rem .75rem;padding-right:2.2rem;
   border:1px solid var(--border);border-radius:var(--rs);
   background:var(--surface2);color:var(--text);
   font-family:var(--font);font-size:.85rem;outline:none;
@@ -180,15 +171,15 @@ a{color:inherit;text-decoration:none}
 .s-inp::placeholder{color:var(--text3)}
 .s-inp:focus{border-color:var(--gold);background:var(--surface);box-shadow:0 0 0 3px var(--gold-bg)}
 .s-clr{
-  position:absolute;right:.55rem;top:50%;transform:translateY(-50%);
-  width:20px;height:20px;border-radius:50%;border:none;
+  position:absolute;right:.5rem;top:50%;transform:translateY(-50%);
+  width:22px;height:22px;border-radius:50%;border:none;
   background:var(--surface3);color:var(--text3);cursor:pointer;
   display:none;align-items:center;justify-content:center;
-  font-size:.72rem;transition:all .12s;padding:0;line-height:1;
+  font-size:.7rem;transition:all .12s;padding:0;line-height:1;
 }
 .s-clr:hover{background:var(--border2);color:var(--text)}
 .s-clr.show{display:flex}
-.s-hint{font-size:.7rem;color:var(--text3);margin-top:.35rem;line-height:1.5}
+.s-hint{font-size:.68rem;color:var(--text3);margin-top:.3rem;line-height:1.5}
 
 
 /* ═══════════════════════════════════════════════
@@ -349,6 +340,7 @@ tbody td:first-child{padding-left:.9rem;text-align:left}
 .cmeta{display:flex;flex-wrap:wrap;gap:.18rem;margin-top:3px}
 .bpapan{display:inline-block;font-size:.57rem;font-weight:600;padding:.04rem .28rem;border-radius:3px;color:var(--amber);background:var(--amber-bg);letter-spacing:.02em;line-height:1.45}
 .bidx{display:inline-block;font-size:.57rem;font-weight:600;padding:.04rem .28rem;border-radius:3px;color:var(--teal);background:var(--teal-bg);letter-spacing:.02em;line-height:1.45}
+.bsektor{display:inline-block;font-size:.57rem;font-weight:600;padding:.04rem .28rem;border-radius:3px;color:var(--blue);background:var(--blue-bg);letter-spacing:.02em;line-height:1.45}
 
 /* ── SCORE CELL ────────────────────────────── */
 .score-badge{
@@ -470,7 +462,7 @@ tbody td:first-child{padding-left:.9rem;text-align:left}
   .page{padding:.5rem .5rem 2rem}
   .frow{flex-direction:column;gap:.3rem;padding:.5rem .65rem}
   .flabel{min-width:unset;padding-top:0}
-  html{font-size:14px}
+  html{font-size:16.5px}
 }
 @media(max-width:480px){
   .brand-sub{display:none}
@@ -491,7 +483,7 @@ thead th { padding: 0.42rem 0.5rem; }
 .ma-dot { width: 8px; height: 8px; }
 .ctk { font-size: 0.82rem; }
 .cco { font-size: 0.68rem; max-width: 135px; }
-.bpapan, .bidx { font-size: 0.56rem; padding: 0.04rem 0.24rem; }
+.bpapan, .bidx, .bsektor { font-size: 0.56rem; padding: 0.04rem 0.24rem; }
 
 /* Remove vertical borders between columns */
 .bd-score, .bd-price, .bd-trend, .bd-osc,
@@ -514,7 +506,6 @@ thead th { padding: 0.42rem 0.5rem; }
 <!-- TOPBAR -->
 <header class="topbar">
   <div class="brand">
-    <div class="brand-logo">SCR</div>
     <div>
       <div class="brand-text">Screener Saham</div>
       <div class="brand-sub">Indonesia</div>
@@ -522,7 +513,7 @@ thead th { padding: 0.42rem 0.5rem; }
   </div>
   <div class="topbar-meta">
     <div class="meta-pill"><span class="dot" id="sDot"></span><span id="sText">Memuat…</span></div>
-    <div class="meta-pill" id="tsPill" style="display:none">🕐 <span id="tsText"></span></div>
+    <div class="meta-pill" id="tsPill" style="display:none"><span id="tsText"></span></div>
   </div>
   <div class="topbar-r">
     <button class="tbtn" id="dbBtn" onclick="toggleDebug()">
@@ -540,10 +531,8 @@ thead th { padding: 0.42rem 0.5rem; }
 <div class="page">
   <!-- DISCLAIMER BANNER -->
   <div class="disclaimer">
-    <div class="disclaimer-icon">⚠️</div>
     <div class="disclaimer-text">
-      <strong>Sumber data:</strong> Yahoo Finance via GitHub Actions (otomatis update 3x/hari: 09:00, 12:00, 17:30 WIB).
-      <strong>Disclaimer:</strong> Bukan rekomendasi investasi. Analisis teknikal hanya alat bantu — risiko trading sepenuhnya tanggung jawab Anda.
+      Data dari Yahoo Finance, update 3x/hari: 09:10 WIB, 12:10 WIB, 17:30 WIB. Situs ini bukan rekomendasi investasi. Analisis teknikal ini adalah alat bantu pribadi. Risiko trading sepenuhnya tanggung jawab pengguna.
     </div>
   </div>
 
@@ -552,13 +541,10 @@ thead th { padding: 0.42rem 0.5rem; }
   <!-- SEARCH -->
   <div class="card"><div class="card-pad">
     <div class="search-wrap">
-      <svg class="s-ico" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-      </svg>
       <input class="s-inp" id="sInp" placeholder="Cari ticker atau nama perusahaan…" autocomplete="off" spellcheck="false">
       <button class="s-clr" id="sClr" onclick="clearSearch()" title="Hapus">✕</button>
-    
-    <div class="s-hint">💡 Tip: Bisa cari multiple ticker sekaligus — pisah dengan spasi (contoh: BBCA BBRI GOTO)</div>
+    </div>
+    <div class="s-hint">Tip: Bisa cari multiple ticker — pisah dengan spasi (contoh: BBCA BBRI GOTO)</div>
   </div></div>
 
   <!-- FILTERS -->
@@ -952,7 +938,7 @@ window.addEventListener('load',async()=>{
       if(j?.data?.length>0){
         const enriched=_enrich(j.data);
         try{localStorage.setItem(SK,JSON.stringify(enriched));localStorage.setItem(SKT,j.fetchedAt||Date.now())}catch(_){}
-        _load(enriched,new Date(j.fetchedAt||Date.now()).getTime(),'gh',j.fetchedAtWIB||'—');
+        _load(enriched,new Date(j.fetchedAt||Date.now()).getTime(),'gh',j.fetchedTimeWIB||j.fetchedAtWIB||'—');
         dLog(`GitHub OK: ${enriched.length} saham`,'ok');
         return;
       }
@@ -977,39 +963,31 @@ window.addEventListener('load',async()=>{
 });
 
 
-// Visual feedback when data loads
-function showDataLoadedIndicator() {
-  const indicator = document.createElement('div');
-  indicator.style.cssText = 'position:fixed;top:80px;right:20px;background:#22c55e;color:#fff;padding:12px 20px;border-radius:8px;font-weight:600;z-index:9999;animation:slideIn 0.3s ease';
-  indicator.textContent = '✓ Data loaded: ' + AD.length + ' stocks';
-  document.body.appendChild(indicator);
-  setTimeout(() => indicator.remove(), 3000);
-}
+/* Visual feedback handled by topbar dot */
 
 function _load(data,ts,src,ghLabel){
   AD=data;
-  const srcMap={gh:'📦 GitHub',cache:'💾 Cache'};
-  document.getElementById('sText').textContent=`${AD.length} saham`;
+  document.getElementById('sText').textContent='Online';
   document.getElementById('tsPill').style.display='flex';
-  document.getElementById('tsText').textContent=src==='gh'?ghLabel:`Cache · ${_ago(ts)}`;
+  if(src==='gh' && ghLabel){
+    // ghLabel is now clean like "17.30 WIB" from fetchedTimeWIB, or fallback locale string
+    const isClean=/^\d{2}\.\d{2}\s*WIB$/i.test(ghLabel);
+    document.getElementById('tsText').textContent=isClean?'Update Data Jam '+ghLabel:'Update Data Jam '+ghLabel;
+  }else{
+    document.getElementById('tsText').textContent='Cache \u00B7 '+_ago(ts);
+  }
   document.getElementById('statsBar').style.display='flex';
-  document.getElementById('srcPill').style.display='inline-flex';
-  document.getElementById('srcPill').className=`src-pill ${src}`;
-  document.getElementById('srcPill').textContent=srcMap[src]||src;
+  document.getElementById('srcPill').style.display='none';
   setDot('ok');
   _updateStats();
   applyF();
   renderT();
   
-  // Failsafe: force render after short delay
   setTimeout(function() {
     if(!document.getElementById('tBody').innerHTML.includes('ctk')) {
-      console.warn('Table empty after load, forcing re-render...');
       renderT();
     }
   }, 100);
-  toast(`${AD.length} saham dimuat`,'in');
-  showDataLoadedIndicator();
 }
 
 /* ══════════════════════════════════════════════
@@ -1282,8 +1260,9 @@ function renderT(){
 
     // Badges
     const bPapan=d.papan?`<span class="bpapan">${d.papan}</span>`:'';
+    const bSektor=d.sektor?`<span class="bsektor">${d.sektor}</span>`:'';
     const bIdx=(d.indeks||[]).filter(x=>x!=='ISSI').map(x=>`<span class="bidx">${x}</span>`).join('');
-    const metaRow=(bPapan||bIdx)?`<div class="cmeta">${bPapan}${bIdx}</div>`:'';
+    const metaRow=(bPapan||bSektor||bIdx)?`<div class="cmeta">${bPapan}${bSektor}${bIdx}</div>`:'';
 
     // MA dots (7)
     const maDotCount=MA_KEYS.filter(k=>ms[k]).length;
