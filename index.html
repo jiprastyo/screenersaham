@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Screener Saham Indonesia</title>
+<title>Skriner</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -17,12 +17,12 @@
   --surface:   #111520;
   --surface2:  #161b28;
   --surface3:  #1c2133;
-  --border:#1e2436;
-  --border2:#252d42;
+  --border:#252d42;
+  --border2:#303a54;
   --text:      #edf0f7;
-  --text2:#9aa7c0;
-  --text3:#4a5670;
-  --text4:     #252d42;
+  --text2:#b0bcd4;
+  --text3:#6b7a96;
+  --text4:     #303a54;
 
   --gold:      #f5a623;
   --gold-bg:   rgba(245,166,35,.1);
@@ -54,7 +54,7 @@
   --purple-dim:rgba(167,139,250,.18);
 
   --font: 'Instrument Sans', system-ui, sans-serif;
-  --mono:'Instrument Sans', 'Instrument Sans', 'Courier New', monospace;
+  --mono:'Instrument Sans', 'Courier New', monospace;
   --r: 10px; --rs: 6px; --rx: 20px;
 
   --shadow-sm: 0 1px 3px rgba(0,0,0,.4);
@@ -73,8 +73,8 @@
 }
 [data-theme="light"]{
   --bg:#f1f3f8; --bg2:#e8ebf2; --surface:#fff; --surface2:#f5f7fb; --surface3:#edf0f6;
-  --border:#e0e4ee; --border2:#cdd2df;
-  --text:#0f1423; --text2:#4a5570; --text3:#9aa3b8; --text4:#d5dae8;
+  --border:#d0d5e2; --border2:#b8bfd2;
+  --text:#0f1423; --text2:#3d4860; --text3:#7a869e; --text4:#d5dae8;
   --gold:#d4861a; --gold-bg:rgba(212,134,26,.08); --gold-dim:rgba(212,134,26,.15); --gold-h:#b8720d;
   --green:#16a34a; --green-bg:rgba(22,163,74,.06); --green-dim:rgba(22,163,74,.15);
   --red:#dc2626; --red-bg:rgba(220,38,38,.06); --red-dim:rgba(220,38,38,.15);
@@ -93,7 +93,7 @@
    BASE
 ═══════════════════════════════════════════════ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{font-size:14px;-webkit-text-size-adjust:100%}
+html{font-size:14.5px;-webkit-text-size-adjust:100%}
 body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5;transition:background .2s,color .2s}
 a{color:inherit;text-decoration:none}
 
@@ -206,6 +206,7 @@ a{color:inherit;text-decoration:none}
 .flabel.preset::before{background:var(--gold)}
 .flabel.idx::before{background:var(--teal)}
 .flabel.papan::before{background:var(--amber)}
+.flabel.sektor::before{background:var(--blue)}
 .flabel.ma::before{background:var(--green)}
 .flabel.vol::before{background:var(--blue)}
 .flabel.osc::before{background:var(--purple)}
@@ -231,6 +232,7 @@ a{color:inherit;text-decoration:none}
 .chip.ma:hover,.chip.ma.on{border-color:var(--green);color:var(--green);background:var(--green-bg)}
 .chip.vol:hover,.chip.vol.on{border-color:var(--blue);color:var(--blue);background:var(--blue-bg)}
 .chip.osc:hover,.chip.osc.on{border-color:var(--purple);color:var(--purple);background:var(--purple-bg)}
+.chip.sektor:hover,.chip.sektor.on{border-color:var(--blue);color:var(--blue);background:var(--blue-bg)}
 
 /* PRESET chips — larger, bolder, most important */
 .preset-chips{display:flex;flex-wrap:wrap;gap:.35rem;flex:1}
@@ -391,13 +393,16 @@ tbody td:first-child{padding-left:.9rem;text-align:left}
 .vol-bar-fill{height:100%;border-radius:2px;transition:width .3s}
 .vol-lbl{font-family:var(--mono);font-size:.65rem;min-width:2rem;text-align:right}
 
-/* ── RSI CELL ──────────────────────────────── */
-.rsi-wrap{display:flex;align-items:center;gap:.3rem;justify-content:flex-end}
-.rsi-track{width:32px;height:3px;background:var(--surface3);border-radius:2px;overflow:hidden;flex-shrink:0}
-.rsi-fill{height:100%;border-radius:2px}
-.rsi-val{font-family:var(--mono);font-size:.69rem;font-weight:500;min-width:2.4rem;text-align:right}
-/* RSI zones shading */
-.rsi-zone-label{font-size:.57rem;color:var(--text3);min-width:3.5rem;text-align:right;letter-spacing:.02em}
+/* ── RSI / STOCHRSI CELL — proper column alignment ── */
+.osc-cell{
+  display:flex;flex-direction:column;align-items:flex-end;gap:3px;
+  min-width:58px;
+}
+.osc-track{width:36px;height:3px;background:var(--surface3);border-radius:2px;overflow:hidden;flex-shrink:0}
+.osc-fill{height:100%;border-radius:2px}
+.osc-row{display:flex;align-items:center;justify-content:flex-end;gap:.25rem}
+.osc-val{font-family:var(--mono);font-size:.72rem;font-weight:600;min-width:1.8rem;text-align:right}
+.osc-zone{font-size:.56rem;font-weight:600;min-width:1.2rem;text-align:left;letter-spacing:.02em}
 
 /* ── MACD CELL ─────────────────────────────── */
 .macd-b{
@@ -425,11 +430,6 @@ tbody td:first-child{padding-left:.9rem;text-align:left}
 .dbpanel.show{display:block}
 .dl{padding:1px 0}.dl.ok{color:var(--green)}.dl.err{color:var(--red)}.dl.warn{color:var(--amber)}
 
-/* ─── FOOTER */
-.footer{font-size:.68rem;color:var(--text3);text-align:center;padding-bottom:1.6rem;line-height:1.8}
-.footer-btn{display:inline-flex;align-items:center;gap:.25rem;color:var(--gold);cursor:pointer;text-decoration:none;transition:color .12s;font-weight:600;margin-top:.4rem;background:transparent;border:none;font-family:var(--font);font-size:.68rem}
-.footer-btn:hover{color:var(--gold-h)}
-
 /* ─── TOASTS ──────────────────────────────── */
 .toasts{position:fixed;bottom:1rem;right:1rem;display:flex;flex-direction:column;gap:.3rem;z-index:999;pointer-events:none}
 .toast{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:.45rem .8rem;font-size:.73rem;color:var(--text);box-shadow:var(--shadow);transform:translateX(140%);transition:transform .22s;max-width:240px;pointer-events:auto}
@@ -439,7 +439,7 @@ tbody td:first-child{padding-left:.9rem;text-align:left}
 .toast.in{border-left:3px solid var(--gold)}
 
 /* ─── FOOTER ──────────────────────────────── */
-.footer{font-size:.62rem;color:var(--text3);text-align:center;padding-bottom:1.5rem;line-height:1.7}
+.footer{font-size:.65rem;color:var(--text3);text-align:center;padding-bottom:1.5rem;line-height:1.7}
 
 /* ─── HELP POPUP */
 .help-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9998;display:none;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(3px)}
@@ -462,12 +462,15 @@ tbody td:first-child{padding-left:.9rem;text-align:left}
 .help-formula{background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);padding:.6rem .8rem;font-family:var(--font);font-size:.76rem;color:var(--text);margin:.5rem 0;line-height:1.6}
 
 /* ─── RESPONSIVE ──────────────────────────── */
+@media(max-width:768px){
+  .hide-mobile{display:none !important}
+}
 @media(max-width:720px){
   .topbar-meta .meta-pill:not(:first-child){display:none}
   .page{padding:.5rem .5rem 2rem}
   .frow{flex-direction:column;gap:.3rem;padding:.5rem .65rem}
   .flabel{min-width:unset;padding-top:0}
-  html{font-size:13px}
+  html{font-size:14px}
 }
 @media(max-width:480px){
   .brand-sub{display:none}
@@ -476,26 +479,19 @@ tbody td:first-child{padding-left:.9rem;text-align:left}
 
 @keyframes slideIn{from{transform:translateX(150%)}to{transform:translateX(0)}}
 
-/* VMA volume filter chips */
-.flabel.vol::before{background:var(--purple)}
-.chip.vol:hover,.chip.vol.on{border-color:var(--purple);color:var(--purple);background:var(--purple-bg);box-shadow:0 0 0 1px var(--purple-bg)}
+/* VMA volume filter chips use .chip.vol styles defined above */
 
-/* Hide non-critical columns on mobile */
-@media (max-width: 768px) {
-  .hide-mobile {
-    display: none !important;
-  }
-}
+/* Hide non-critical columns on mobile — handled by responsive rules above */
 
 /* Compact table design */
-table { font-size: 0.72rem; }
-tbody td { padding: 0.38rem 0.45rem; }
-thead th { padding: 0.38rem 0.45rem; }
-.score-badge { width: 2.4rem; height: 1.55rem; font-size: 0.72rem; }
+table { font-size: 0.76rem; }
+tbody td { padding: 0.42rem 0.5rem; }
+thead th { padding: 0.42rem 0.5rem; }
+.score-badge { width: 2.5rem; height: 1.55rem; font-size: 0.72rem; }
 .ma-dot { width: 8px; height: 8px; }
-.ctk { font-size: 0.78rem; }
-.cco { font-size: 0.66rem; max-width: 135px; }
-.bpapan, .bidx { font-size: 0.54rem; padding: 0.03rem 0.24rem; }
+.ctk { font-size: 0.82rem; }
+.cco { font-size: 0.68rem; max-width: 135px; }
+.bpapan, .bidx { font-size: 0.56rem; padding: 0.04rem 0.24rem; }
 
 /* Remove vertical borders between columns */
 .bd-score, .bd-price, .bd-trend, .bd-osc,
@@ -508,10 +504,7 @@ thead th { padding: 0.38rem 0.45rem; }
   border-color:var(--gold);color:var(--gold);background:var(--gold-bg);box-shadow:0 0 0 1px var(--gold-bg);
 }
 
-.ctk a{
-  color:#000 !important;
-  font-weight:700 !important;
-}
+/* Ticker links use theme-aware gold color defined in .ctk a above */
 
 </style>
   <script src="stocks_database.js"></script>
@@ -622,21 +615,21 @@ thead th { padding: 0.38rem 0.45rem; }
     <!-- ROW 4: MA FILTER (power user) -->
     
     <!-- FRAKSI PRICE FILTER -->
-    <!-- SEKTOR FILTER -->
+    <!-- SEKTOR FILTER — uses data-sektor for reliable matching -->
     <div class="frow">
-      <span class="flabel trend">Sektor</span>
-      <div class="chips">
-        <span class="chip trend" id="sf-BahanBaku" onclick="toggleSF('Bahan Baku')">Bahan Baku</span>
-        <span class="chip trend" id="sf-Consumer" onclick="toggleSF('Consumer')">Consumer</span>
-        <span class="chip trend" id="sf-Energi" onclick="toggleSF('Energi')">Energi</span>
-        <span class="chip trend" id="sf-Industri" onclick="toggleSF('Industri')">Industri</span>
-        <span class="chip trend" id="sf-Infrastruktur" onclick="toggleSF('Infrastruktur')">Infrastruktur</span>
-        <span class="chip trend" id="sf-Kesehatan" onclick="toggleSF('Kesehatan')">Kesehatan</span>
-        <span class="chip trend" id="sf-Keuangan" onclick="toggleSF('Keuangan')">Keuangan</span>
-        <span class="chip trend" id="sf-Properti" onclick="toggleSF('Properti')">Properti</span>
-        <span class="chip trend" id="sf-Siklikal" onclick="toggleSF('Siklikal')">Siklikal</span>
-        <span class="chip trend" id="sf-Teknologi" onclick="toggleSF('Teknologi')">Teknologi</span>
-        <span class="chip trend" id="sf-Transportasi" onclick="toggleSF('Transportasi')">Transportasi</span>
+      <span class="flabel sektor">Sektor</span>
+      <div class="chips" id="sektorChips">
+        <span class="chip sektor" data-sektor="Bahan Baku" onclick="toggleSF(this)">Bahan Baku</span>
+        <span class="chip sektor" data-sektor="Consumer" onclick="toggleSF(this)">Consumer</span>
+        <span class="chip sektor" data-sektor="Energi" onclick="toggleSF(this)">Energi</span>
+        <span class="chip sektor" data-sektor="Industri" onclick="toggleSF(this)">Industri</span>
+        <span class="chip sektor" data-sektor="Infrastruktur" onclick="toggleSF(this)">Infrastruktur</span>
+        <span class="chip sektor" data-sektor="Kesehatan" onclick="toggleSF(this)">Kesehatan</span>
+        <span class="chip sektor" data-sektor="Keuangan" onclick="toggleSF(this)">Keuangan</span>
+        <span class="chip sektor" data-sektor="Properti" onclick="toggleSF(this)">Properti</span>
+        <span class="chip sektor" data-sektor="Siklikal" onclick="toggleSF(this)">Siklikal</span>
+        <span class="chip sektor" data-sektor="Teknologi" onclick="toggleSF(this)">Teknologi</span>
+        <span class="chip sektor" data-sektor="Transportasi" onclick="toggleSF(this)">Transportasi</span>
         <button class="creset" onclick="resetSF()">↺</button>
       </div>
     </div>
@@ -1132,25 +1125,23 @@ function resetVF() {
 
 
 // ═══════════════════════════════════════════════
-// SEKTOR FILTER
+// SEKTOR FILTER — uses data-sektor attribute for reliable matching
 // ═══════════════════════════════════════════════
 let sektorF = new Set();
 
-function toggleSF(sektor) {
-  const id = 'sf-' + sektor.replace(/ /g, '');
+function toggleSF(el) {
+  const sektor = el.dataset.sektor;
+  if(!sektor) return;
   sektorF.has(sektor) ? sektorF.delete(sektor) : sektorF.add(sektor);
-  const el = document.getElementById(id);
-  if(el) el.classList.toggle('on', sektorF.has(sektor));
+  el.classList.toggle('on', sektorF.has(sektor));
   applyF();
   renderT();
 }
 
 function resetSF() {
   sektorF.clear();
-  ['BahanBaku','Consumer','Energi','Industri','Infrastruktur','Kesehatan',
-   'Keuangan','Properti','Siklikal','Teknologi','Transportasi'].forEach(k => {
-    const el = document.getElementById('sf-' + k);
-    if(el) el.classList.remove('on');
+  document.querySelectorAll('#sektorChips .chip.sektor').forEach(function(el){
+    el.classList.remove('on');
   });
   applyF();
   renderT();
@@ -1377,20 +1368,20 @@ function renderT(){
   </div>
 </td>
 <td class="bd-osc">
-  <div class="rsi-wrap" style="flex-direction:column;gap:2px">
-    <div class="rsi-track"><div class="rsi-fill" style="width:${rP}%;background:${rCv}"></div></div>
-    <div style="display:flex;justify-content:center;align-items:center;gap:0.3rem">
-      <span class="rsi-val" style="color:${rCv};font-weight:600">${_dec(d.rsi)}</span>
-      <span class="rsi-zone-label" style="color:${rCv};font-size:0.58rem">${rZone}</span>
+  <div class="osc-cell">
+    <div class="osc-track"><div class="osc-fill" style="width:${rP}%;background:${rCv}"></div></div>
+    <div class="osc-row">
+      <span class="osc-val" style="color:${rCv}">${_dec(d.rsi)}</span>
+      <span class="osc-zone" style="color:${rCv}">${rZone}</span>
     </div>
   </div>
 </td>
 <td class="bd-osc hide-mobile">
-  <div class="rsi-wrap" style="flex-direction:column;gap:2px">
-    <div class="rsi-track"><div class="rsi-fill" style="width:${srsiP}%;background:${srsiColor}"></div></div>
-    <div style="display:flex;justify-content:center;align-items:center;gap:0.3rem">
-      <span class="rsi-val" style="color:${srsiColor};font-weight:600">${_dec(d.stochRsi)}</span>
-      <span class="rsi-zone-label" style="color:${srsiColor};font-size:0.58rem">${srsiZone}</span>
+  <div class="osc-cell">
+    <div class="osc-track"><div class="osc-fill" style="width:${srsiP}%;background:${srsiColor}"></div></div>
+    <div class="osc-row">
+      <span class="osc-val" style="color:${srsiColor}">${_dec(d.stochRsi)}</span>
+      <span class="osc-zone" style="color:${srsiColor}">${srsiZone}</span>
     </div>
   </div>
 </td>
