@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Screener Saham Indonesia</title>
+<title>Skriner</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -180,6 +180,13 @@ a{color:inherit;text-decoration:none}
 .s-clr:hover{background:var(--border2);color:var(--text)}
 .s-clr.show{display:flex}
 .s-hint{font-size:.68rem;color:var(--text3);margin-top:.3rem;line-height:1.5}
+
+/* Preset info panel above search */
+.preset-info{margin-bottom:.6rem;padding:.5rem .6rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs)}
+.preset-info-title{font-size:.65rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.35rem}
+.preset-info-grid{display:flex;flex-direction:column;gap:.2rem}
+.pi-item{font-size:.68rem;color:var(--text3);line-height:1.55}
+.pi-item b{color:var(--text2);font-weight:600}
 
 
 /* ═══════════════════════════════════════════════
@@ -379,22 +386,25 @@ tbody td:first-child{padding-left:.9rem;text-align:left}
 .ma-dot.na{background:var(--border);opacity:.4}
 .trend-score{font-family:var(--mono);font-size:.62rem;color:var(--text3);margin-right:.25rem;flex-shrink:0}
 
-/* ── VOLUME CELL ───────────────────────────── */
-.vol-bar-wrap{display:flex;align-items:center;gap:.3rem;justify-content:flex-end}
-.vol-bar-track{width:36px;height:4px;background:var(--surface3);border-radius:2px;overflow:hidden;flex-shrink:0}
-.vol-bar-fill{height:100%;border-radius:2px;transition:width .3s}
-.vol-lbl{font-family:var(--mono);font-size:.65rem;min-width:2rem;text-align:right}
+/* ── VOLUME CELL (7 dots) ──────────────────── */
+.vol-dots{display:flex;gap:2px;justify-content:flex-end;align-items:center}
+.vol-dot{
+  width:8px;height:8px;border-radius:50%;flex-shrink:0;
+  transition:background .15s;
+}
+.vol-dot.on{background:var(--blue)}
+.vol-dot.off{background:var(--border2)}
 
 /* ── RSI / STOCHRSI CELL — proper column alignment ── */
 .osc-cell{
-  display:flex;flex-direction:column;align-items:flex-end;gap:3px;
+  display:flex;flex-direction:column;align-items:center;gap:3px;
   min-width:58px;
 }
 .osc-track{width:36px;height:3px;background:var(--surface3);border-radius:2px;overflow:hidden;flex-shrink:0}
 .osc-fill{height:100%;border-radius:2px}
-.osc-row{display:flex;align-items:center;justify-content:flex-end;gap:.25rem}
-.osc-val{font-family:var(--mono);font-size:.72rem;font-weight:600;min-width:1.8rem;text-align:right}
-.osc-zone{font-size:.56rem;font-weight:600;min-width:1.2rem;text-align:left;letter-spacing:.02em}
+.osc-row{display:flex;align-items:center;justify-content:center;gap:.25rem}
+.osc-val{font-family:var(--mono);font-size:.72rem;font-weight:600;text-align:center}
+.osc-zone{font-size:.56rem;font-weight:600;letter-spacing:.02em}
 
 /* ── MACD CELL ─────────────────────────────── */
 .macd-b{
@@ -507,13 +517,11 @@ thead th { padding: 0.42rem 0.5rem; }
 <header class="topbar">
   <div class="brand">
     <div>
-      <div class="brand-text">Screener Saham</div>
-      <div class="brand-sub">Indonesia</div>
+      <div class="brand-text">Skriner</div>
     </div>
   </div>
   <div class="topbar-meta">
-    <div class="meta-pill"><span class="dot" id="sDot"></span><span id="sText">Memuat…</span></div>
-    <div class="meta-pill" id="tsPill" style="display:none"><span id="tsText"></span></div>
+    <div class="meta-pill" id="tsPill"><span id="tsText">Memuat…</span></div>
   </div>
   <div class="topbar-r">
     <button class="tbtn" id="dbBtn" onclick="toggleDebug()">
@@ -540,6 +548,16 @@ thead th { padding: 0.42rem 0.5rem; }
 
   <!-- SEARCH -->
   <div class="card"><div class="card-pad">
+    <div class="preset-info">
+      <div class="preset-info-title">Keterangan Preset Strategi</div>
+      <div class="preset-info-grid">
+        <span class="pi-item"><b>Siap Breakout:</b> EMA5 + EMA20 di atas harga, RSI 50–70, MACD Bullish, Volume > VMA20</span>
+        <span class="pi-item"><b>Uptrend Kuat:</b> Minimal 5/7 MA di atas harga, MACD Bullish, EMA20 di atas harga</span>
+        <span class="pi-item"><b>Momentum Naik:</b> RSI 55–75, MACD Bullish, EMA20 di atas harga</span>
+        <span class="pi-item"><b>Volume Spike:</b> Volume > VMA3 + VMA5 + VMA20, EMA20 di atas harga</span>
+        <span class="pi-item"><b>Jenuh Jual:</b> RSI di bawah 35 — kandidat rebound</span>
+      </div>
+    </div>
     <div class="search-wrap">
       <input class="s-inp" id="sInp" placeholder="Cari ticker atau nama perusahaan…" autocomplete="off" spellcheck="false">
       <button class="s-clr" id="sClr" onclick="clearSearch()" title="Hapus">✕</button>
@@ -552,7 +570,7 @@ thead th { padding: 0.42rem 0.5rem; }
 
     <!-- ROW 1: PRESET SETUPS — most important, top of filter -->
     <div class="frow">
-      <span class="flabel preset">Setup</span>
+      <span class="flabel preset">Preset Strategi</span>
       <div class="preset-chips">
         <button class="pchip p0" id="ps-breakout" onclick="togglePreset('breakout')">
           <span class="pico">🚀</span> Siap Breakout
@@ -686,7 +704,7 @@ thead th { padding: 0.42rem 0.5rem; }
             <th onclick="sortBy('rsi')" title="RSI(14): <35 jenuh jual, 50-70 sweet spot, >80 jenuh beli">RSI</th>
             <th onclick="sortBy('stochRsi')" class="hide-mobile" title="Stochastic RSI: momentum sensitif">StochRSI</th>
             <th onclick="sortBy('macdHist')" title="MACD histogram">MACD</th>
-            <th onclick="sortBy('atrV')" class="hide-mobile" title="Average True Range untuk stop loss">ATR</th>
+            <th onclick="sortBy('atrV')" title="Average True Range untuk stop loss">ATR</th>
             <th onclick="sortBy('adrPct')" title="Average Daily Range: gerak harian rata-rata">ADR</th>
           </tr>
         </thead>
@@ -770,12 +788,7 @@ thead th { padding: 0.42rem 0.5rem; }
   </div>
 </div>
 
-<div class="footer">
-    Data dari Yahoo Finance via GitHub Actions · <strong>Bukan rekomendasi investasi</strong><br>
-    Preset: 🚀 Siap Breakout = EMA20✓ + RSI 50–70 + MACD Bull + Vol aktif &nbsp;·&nbsp;
-    📈 Uptrend Kuat = 5/7 MA✓ + MACD Bull &nbsp;·&nbsp;
-    🔍 Jenuh Jual = RSI &lt;35
-  </div>
+<div class="footer"></div>
 </div>
 <div class="toasts" id="toasts"></div>
 
@@ -938,7 +951,7 @@ window.addEventListener('load',async()=>{
       if(j?.data?.length>0){
         const enriched=_enrich(j.data);
         try{localStorage.setItem(SK,JSON.stringify(enriched));localStorage.setItem(SKT,j.fetchedAt||Date.now())}catch(_){}
-        _load(enriched,new Date(j.fetchedAt||Date.now()).getTime(),'gh',j.fetchedTimeWIB||j.fetchedAtWIB||'—');
+        _load(enriched,new Date(j.fetchedAt||Date.now()).getTime(),'gh',j.fetchedTimeWIB||'',j.fetchedAt||'');
         dLog(`GitHub OK: ${enriched.length} saham`,'ok');
         return;
       }
@@ -951,34 +964,41 @@ window.addEventListener('load',async()=>{
       const data=JSON.parse(raw);
       if(data?.length>0){
         const enriched=_enrich(data);
-        _load(enriched,ts?parseInt(ts):Date.now(),'cache');
+        _load(enriched,ts?parseInt(ts):Date.now(),'cache','','');
         dLog(`Cache: ${enriched.length} saham`,'ok');
         return;
       }
     }
   }catch(e){dLog('Cache error: '+e.message,'err')}
   setDot('');
-  document.getElementById('sText').textContent='Data belum tersedia — jalankan GitHub Action terlebih dahulu';
+  document.getElementById('tsText').textContent='Data belum tersedia';
   toast('Data tidak tersedia. Jalankan workflow GitHub Actions.','er');
 });
 
 
 /* Visual feedback handled by topbar dot */
 
-function _load(data,ts,src,ghLabel){
+function _load(data,ts,src,ghTimeWIB,ghIso){
   AD=data;
-  document.getElementById('sText').textContent='Online';
-  document.getElementById('tsPill').style.display='flex';
-  if(src==='gh' && ghLabel){
-    // ghLabel is now clean like "17.30 WIB" from fetchedTimeWIB, or fallback locale string
-    const isClean=/^\d{2}\.\d{2}\s*WIB$/i.test(ghLabel);
-    document.getElementById('tsText').textContent=isClean?'Update Data Jam '+ghLabel:'Update Data Jam '+ghLabel;
-  }else{
-    document.getElementById('tsText').textContent='Cache \u00B7 '+_ago(ts);
+  // Format: "12 Feb 2025, 21.30 WIB"
+  const BULAN=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+  let tsLabel='Memuat…';
+  if(src==='gh' && ghIso){
+    const dt=new Date(ghIso);
+    // Convert to WIB (+7)
+    const wib=new Date(dt.getTime()+7*3600000);
+    const dd=wib.getUTCDate();
+    const mm=BULAN[wib.getUTCMonth()];
+    const yy=wib.getUTCFullYear();
+    const hh=String(wib.getUTCHours()).padStart(2,'0');
+    const mi=String(wib.getUTCMinutes()).padStart(2,'0');
+    tsLabel=dd+' '+mm+' '+yy+', '+hh+'.'+mi+' WIB';
+  }else if(src==='cache'){
+    tsLabel='Cache \u00B7 '+_ago(ts);
   }
+  document.getElementById('tsText').textContent=tsLabel;
   document.getElementById('statsBar').style.display='flex';
   document.getElementById('srcPill').style.display='none';
-  setDot('ok');
   _updateStats();
   applyF();
   renderT();
@@ -1232,7 +1252,8 @@ function _rsiZoneLabel(v){if(v==null)return'';if(v>80)return'JB';if(v>70)return'
 
 const MA_KEYS=['ema3','ema5','ema10','ema20','sma50','sma100','sma200'];
 const MA_TIPS=['EMA 3','EMA 5','EMA 10','EMA 20','SMA 50','SMA 100','SMA 200'];
-const VOL_KEYS=['vma3','vma5','vma20','vma50'];
+const VOL_KEYS=['vma3','vma5','vma10','vma20','vma50','vma100','vma200'];
+const VOL_TIPS=['VMA 3','VMA 5','VMA 10','VMA 20','VMA 50','VMA 100','VMA 200'];
 
 /* ══════════════════════════════════════════════
    RENDER TABLE
@@ -1271,14 +1292,11 @@ function renderT(){
       return`<span class="ma-dot ${v===true?'on':'off'}" title="${MA_TIPS[i]}"></span>`;
     }).join('');
 
-    // Volume bar (out of 4 VMAs beaten)
-    const volCount=VOL_KEYS.filter(k=>ms[k]).length;
-    const volPct=volCount/4*100;
-    let volColor='var(--border2)';
-    if(volCount>=3)volColor='var(--blue)';
-    else if(volCount>=2)volColor='var(--teal)';
-    else if(volCount>=1)volColor='var(--text3)';
-    const volLbl=['Rendah','Rendah','Cukup','Tinggi','Sangat Tinggi'][volCount];
+    // Volume dots (7) — same visual as MA dots
+    const volDotCount=VOL_KEYS.filter(k=>ms[k]).length;
+    const volDots=VOL_KEYS.map((k,i)=>{
+      return`<span class="vol-dot ${ms[k]===true?'on':'off'}" title="${VOL_TIPS[i]}"></span>`;
+    }).join('');
 
     // RSI
     const rCv=_rsiColor(d.rsi);
@@ -1341,9 +1359,9 @@ function renderT(){
   </div>
 </td>
 <td class="bd-trend">
-  <div class="vol-bar-wrap">
-    <div class="vol-bar-track"><div class="vol-bar-fill" style="width:${volPct}%;background:${volColor}"></div></div>
-    <span class="vol-lbl" style="color:${volColor}">${volLbl}</span>
+  <div class="vol-dots">
+    <span class="trend-score">${volDotCount}/7</span>
+    ${volDots}
   </div>
 </td>
 <td class="bd-osc">
@@ -1365,7 +1383,7 @@ function renderT(){
   </div>
 </td>
 <td class="bd-osc">${macdHtml}</td>
-<td class="bd-osc hide-mobile">
+<td class="bd-osc">
   <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
     <span style="font-size:0.7rem;font-weight:600">${_dec(d.atrV)}</span>
     <span style="font-size:0.56rem;color:var(--text3)" title="Stop Loss">SL:${_dec(d.price-(d.atrV||0)*2)}</span>
@@ -1384,7 +1402,7 @@ function renderT(){
 /* ══════════════════════════════════════════════
    UTILS
 ══════════════════════════════════════════════ */
-function setDot(s){const d=document.getElementById('sDot');d.className='dot';if(s==='ok')d.classList.add('ok');if(s==='spin')d.classList.add('spin')}
+function setDot(s){const d=document.getElementById('sDot');if(!d)return;d.className='dot';if(s==='ok')d.classList.add('ok');if(s==='spin')d.classList.add('spin')}
 function _ago(ts){const d=Date.now()-ts,h=Math.floor(d/3600000),m=Math.floor((d%3600000)/60000);if(h>=24)return Math.floor(h/24)+'h lalu';if(h>0)return h+'j '+m+'m lalu';return m+'m lalu'}
 function toast(m,t='in'){
   const el=document.createElement('div');el.className=`toast ${t}`;el.textContent=m;
