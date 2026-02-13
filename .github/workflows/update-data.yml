@@ -3,11 +3,11 @@ name: Update Data Saham
 on:
   schedule:
     # Senin–Kamis: 10:10, 12:10, 17:30 WIB | Jumat: 10:10, 11:40, 17:30 WIB
-    - cron: "10 3 * * 1-5" # 10:10 WIB (Sen–Jum)
-    - cron: "10 5 * * 1-4" # 12:10 WIB (Sen–Kam)
-    - cron: "40 4 * * 5" # 11:40 WIB (Jumat)
-    - cron: "30 10 * * 1-5" # 17:30 WIB (Sen–Jum)
-  workflow_dispatch: # Allow manual trigger
+    - cron: '10 3 * * 1-5'   # 10:10 WIB (Sen–Jum)
+    - cron: '10 5 * * 1-4'   # 12:10 WIB (Sen–Kam)
+    - cron: '40 4 * * 5'     # 11:40 WIB (Jumat)
+    - cron: '30 10 * * 1-5'  # 17:30 WIB (Sen–Jum)
+  workflow_dispatch:          # Allow manual trigger
 
 # Prevent duplicate runs
 concurrency:
@@ -32,8 +32,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          cache: "npm"
+          node-version: '20'
 
       - name: Install dependencies
         run: npm ci || npm install
