@@ -343,6 +343,7 @@ tr.crow th{
 }
 tr.crow th:first-child{text-align:left;padding-left:.9rem}
 tr.crow th.nc{cursor:default}
+tr.crow th.thc{text-align:center}
 tr.crow th:hover:not(.nc){color:var(--text)}
 tr.crow th.sa::after{content:' ↑';color:var(--gold);font-size:.57rem}
 tr.crow th.sd::after{content:' ↓';color:var(--gold);font-size:.57rem}
@@ -400,6 +401,7 @@ tbody td:first-child{padding-left:.9rem;text-align:left}
 
 /* ── STACKED CELLS (two indicators in one column) ── */
 .stacked-cell{display:flex;flex-direction:column;gap:4px}
+.lot-info{font-size:.58rem;color:var(--text3);font-weight:500}
 
 /* ── TREND CELL (MA squares with labels) ──── */
 .ma-squares{display:flex;gap:2px;justify-content:flex-end;align-items:center;flex-wrap:nowrap}
@@ -572,7 +574,9 @@ thead th { padding: 0.42rem 0.5rem; }
   <!-- DISCLAIMER BANNER -->
   <div class="disclaimer">
     <div class="disclaimer-text">
-      Data dari Yahoo Finance, update 3x/hari: 09:10 WIB, 12:10 WIB, 17:30 WIB. Situs ini bukan rekomendasi investasi. Analisis teknikal ini adalah alat bantu pribadi. Risiko trading sepenuhnya tanggung jawab pengguna.
+      Situs ini adalah alat bantu pribadi, dan bukan rekomendasi investasi/trading saham bagi pengguna.<br>
+      Risiko investasi/trading dari penggunaan tools ini adalah sepenuhnya tanggung jawab pengguna.<br>
+      Data berasal dari Yahoo Finance, dan di-update setiap hari pada 10:10 WIB, 12:10 WIB, 17:30 WIB.
     </div>
   </div>
 
@@ -701,15 +705,64 @@ thead th { padding: 0.42rem 0.5rem; }
     </div>
 
     <!-- ROW 5: OSCILLATOR FILTER (power user) -->
-    <div class="frow" style="border-bottom:none">
+    <div class="frow">
       <span class="flabel osc">Osilator</span>
       <div class="chips">
         <span class="chip osc" id="of-rsi-sweet"  onclick="toggleOF('rsi-sweet')"  title="RSI 50–70: zona sweet spot untuk entry long">RSI Sweet Spot (50–70)</span>
-        <span class="chip osc" id="of-rsi-os"     onclick="toggleOF('rsi-os')"     title="RSI di bawah 35: potensi rebound dari jenuh jual">RSI Jenuh Jual (&lt;35)</span>
+        <span class="chip osc" id="of-rsi-os"     onclick="toggleOF('rsi-os')"     title="RSI di bawah 35: potensi rebound dari jenuh jual">RSI Oversold (&lt;35)</span>
         <span class="chip osc" id="of-rsi-bull"   onclick="toggleOF('rsi-bull')"   title="RSI di atas 50: momentum bullish aktif">RSI Bullish (&gt;50)</span>
         <span class="chip osc" id="of-macd-bull"  onclick="toggleOF('macd-bull')"  title="Histogram MACD positif: momentum naik">MACD Bullish</span>
         <span class="chip osc" id="of-macd-cross" onclick="toggleOF('macd-cross')" title="MACD baru saja crossing ke atas sinyal">MACD Baru Bullish</span>
         <button class="creset" onclick="resetOF()">↺</button>
+      </div>
+    </div>
+
+    <!-- ROW 6: VMA VOLUME FILTER -->
+    <div class="frow">
+      <span class="flabel vol">VMA</span>
+      <div class="chips">
+        <span class="chip vol" id="vf-vma3"   onclick="toggleVF('vma3')">VMA 3</span>
+        <span class="chip vol" id="vf-vma5"   onclick="toggleVF('vma5')">VMA 5</span>
+        <span class="chip vol" id="vf-vma10"  onclick="toggleVF('vma10')">VMA 10</span>
+        <span class="chip vol" id="vf-vma20"  onclick="toggleVF('vma20')">VMA 20</span>
+        <span class="chip vol" id="vf-vma50"  onclick="toggleVF('vma50')">VMA 50</span>
+        <span class="chip vol" id="vf-vma200" onclick="toggleVF('vma200')">VMA 200</span>
+        <button class="creset" onclick="resetVF()">↺</button>
+      </div>
+    </div>
+
+    <!-- ROW 7: RSI RANGE FILTER -->
+    <div class="frow">
+      <span class="flabel osc">RSI</span>
+      <div class="chips">
+        <span class="chip osc" id="rf-os"    onclick="toggleRSIF('os')"    title="RSI < 30: oversold extreme">OS (&lt;30)</span>
+        <span class="chip osc" id="rf-weak"  onclick="toggleRSIF('weak')"  title="RSI 30–50: lemah">Lemah (30–50)</span>
+        <span class="chip osc" id="rf-sweet" onclick="toggleRSIF('sweet')" title="RSI 50–70: sweet spot">Sweet (50–70)</span>
+        <span class="chip osc" id="rf-strong" onclick="toggleRSIF('strong')" title="RSI 70–80: kuat">Kuat (70–80)</span>
+        <span class="chip osc" id="rf-ob"    onclick="toggleRSIF('ob')"    title="RSI > 80: overbought">OB (&gt;80)</span>
+        <button class="creset" onclick="resetRSIF()">↺</button>
+      </div>
+    </div>
+
+    <!-- ROW 8: STOCH RSI RANGE FILTER -->
+    <div class="frow">
+      <span class="flabel osc">Stoch RSI</span>
+      <div class="chips">
+        <span class="chip osc" id="srf-os"   onclick="toggleSRSIF('os')"   title="StochRSI < 20: oversold">OS (&lt;20)</span>
+        <span class="chip osc" id="srf-mid"  onclick="toggleSRSIF('mid')"  title="StochRSI 20–80: netral">Netral (20–80)</span>
+        <span class="chip osc" id="srf-ob"   onclick="toggleSRSIF('ob')"   title="StochRSI > 80: overbought">OB (&gt;80)</span>
+        <button class="creset" onclick="resetSRSIF()">↺</button>
+      </div>
+    </div>
+
+    <!-- ROW 9: ATR/ADR FILTER -->
+    <div class="frow" style="border-bottom:none">
+      <span class="flabel ma">ADR</span>
+      <div class="chips">
+        <span class="chip ma" id="adrf-lesu"   onclick="toggleADRF('lesu')"   title="ADR < 1.5%: kurang gerak">Lesu (&lt;1.5%)</span>
+        <span class="chip ma" id="adrf-normal" onclick="toggleADRF('normal')" title="ADR 1.5–5%: normal">Normal (1.5–5%)</span>
+        <span class="chip ma" id="adrf-aktif"  onclick="toggleADRF('aktif')"  title="ADR ≥ 5%: aktif">Aktif (≥5%)</span>
+        <button class="creset" onclick="resetADRF()">↺</button>
       </div>
     </div>
 
@@ -736,17 +789,16 @@ thead th { padding: 0.42rem 0.5rem; }
           <tr class="crow">
             <th class="nc csticky" title="Kode saham (klik untuk buka chart di TradingView)">Ticker</th>
             <th onclick="sortBy('score')" title="Skor setup 0–10: MA×7 + RSI×1.5 + MACD×1 + Vol×0.5">Skor</th>
-            <th onclick="sortBy('price')" title="Harga penutupan terakhir">Harga</th>
-            <th onclick="sortBy('pct')" title="Perubahan harga hari ini (%)">% Chg</th>
-            <th onclick="sortBy('pct1today')" title="1% dari nilai transaksi hari ini">1% Transaksi</th>
+            <th onclick="sortBy('price')" title="Harga penutupan dan perubahan harian">Harga / Chg</th>
+            <th onclick="sortBy('pct1today')" title="1% dari nilai transaksi hari ini (Rupiah & Lot)">1% Transaksi</th>
             <th class="nc" title="MA(7): Harga vs EMA/SMA — Vol(7): Volume vs VMA">MA / Vol</th>
-            <th onclick="sortBy('rsi')" title="RSI(14) dan Stochastic RSI">RSI / StochRSI</th>
-            <th onclick="sortBy('macdHist')" title="MACD histogram">MACD</th>
-            <th onclick="sortBy('atrV')" title="ATR (stop loss) dan ADR (range harian)">ATR / ADR</th>
+            <th onclick="sortBy('macdHist')" class="thc" title="MACD histogram">MACD</th>
+            <th onclick="sortBy('rsi')" class="thc" title="RSI(14) dan Stochastic RSI">RSI / StochRSI</th>
+            <th onclick="sortBy('atrV')" class="thc" title="ATR (stop loss) dan ADR (range harian)">ATR / ADR</th>
           </tr>
         </thead>
         <tbody id="tBody">
-          <tr><td colspan="9"><div class="tempty"><div class="tempty-ico">📊</div><div class="tempty-txt">Memuat data…</div></div></td></tr>
+          <tr><td colspan="8"><div class="tempty"><div class="tempty-ico">📊</div><div class="tempty-txt">Memuat data…</div></div></td></tr>
         </tbody>
       </table>
     </div>
@@ -817,7 +869,7 @@ thead th { padding: 0.42rem 0.5rem; }
 
       <div class="help-section">
         <div class="help-h">⚠️ Catatan Penting</div>
-        <div class="help-p"><strong>Data update 3x/hari:</strong> 09:10, 12:10, 17:30 WIB via GitHub Actions. Data diambil dari Yahoo Finance.</div>
+        <div class="help-p"><strong>Data update 3x/hari:</strong> 10:10, 12:10, 17:30 WIB via GitHub Actions. Data diambil dari Yahoo Finance.</div>
         <div class="help-p"><strong>Bukan rekomendasi investasi.</strong> Screener ini hanya alat bantu analisis teknikal. Keputusan trading sepenuhnya tanggung jawab Anda. Selalu lakukan riset fundamental, perhatikan manajemen risiko, dan jangan trade dengan uang yang tidak bisa Anda rugikan.</div>
       </div>
 
@@ -1125,7 +1177,7 @@ function resetPrice(){document.getElementById('priceMin').value='';document.getE
 
 function resetAll(){
   if(activePreset){document.getElementById('ps-'+activePreset).classList.remove('on');activePreset=null;}
-  resetIF();resetPF();resetSF();resetMF();resetOF();resetPrice();resetFrak();resetVF();
+  resetIF();resetPF();resetSF();resetMF();resetOF();resetPrice();resetFrak();resetVF();resetRSIF();resetSRSIF();resetADRF();
   clearSearch();
 }
 
@@ -1175,6 +1227,66 @@ function resetVF() {
   });
   applyF();
   renderT();
+}
+
+// ═══════════════════════════════════════════════
+// RSI RANGE FILTER
+// ═══════════════════════════════════════════════
+let rsiRangeF = new Set();
+
+function toggleRSIF(k) {
+  rsiRangeF.has(k) ? rsiRangeF.delete(k) : rsiRangeF.add(k);
+  document.getElementById('rf-' + k).classList.toggle('on', rsiRangeF.has(k));
+  applyF(); renderT();
+}
+
+function resetRSIF() {
+  rsiRangeF.clear();
+  ['os','weak','sweet','strong','ob'].forEach(k => {
+    const el = document.getElementById('rf-' + k);
+    if(el) el.classList.remove('on');
+  });
+  applyF(); renderT();
+}
+
+// ═══════════════════════════════════════════════
+// STOCH RSI RANGE FILTER
+// ═══════════════════════════════════════════════
+let srsiRangeF = new Set();
+
+function toggleSRSIF(k) {
+  srsiRangeF.has(k) ? srsiRangeF.delete(k) : srsiRangeF.add(k);
+  document.getElementById('srf-' + k).classList.toggle('on', srsiRangeF.has(k));
+  applyF(); renderT();
+}
+
+function resetSRSIF() {
+  srsiRangeF.clear();
+  ['os','mid','ob'].forEach(k => {
+    const el = document.getElementById('srf-' + k);
+    if(el) el.classList.remove('on');
+  });
+  applyF(); renderT();
+}
+
+// ═══════════════════════════════════════════════
+// ADR RANGE FILTER
+// ═══════════════════════════════════════════════
+let adrRangeF = new Set();
+
+function toggleADRF(k) {
+  adrRangeF.has(k) ? adrRangeF.delete(k) : adrRangeF.add(k);
+  document.getElementById('adrf-' + k).classList.toggle('on', adrRangeF.has(k));
+  applyF(); renderT();
+}
+
+function resetADRF() {
+  adrRangeF.clear();
+  ['lesu','normal','aktif'].forEach(k => {
+    const el = document.getElementById('adrf-' + k);
+    if(el) el.classList.remove('on');
+  });
+  applyF(); renderT();
 }
 
 
@@ -1268,6 +1380,47 @@ function applyF(){
   if(oscF.has('macd-bull')) d=d.filter(x=>x.macdBull===true);
   if(oscF.has('macd-cross'))d=d.filter(x=>x.macdCross===true);
 
+  // RSI range filter (OR within group)
+  if(rsiRangeF.size>0){
+    d=d.filter(x=>{
+      if(x.rsi==null)return false;
+      return[...rsiRangeF].some(k=>{
+        if(k==='os')return x.rsi<30;
+        if(k==='weak')return x.rsi>=30&&x.rsi<50;
+        if(k==='sweet')return x.rsi>=50&&x.rsi<=70;
+        if(k==='strong')return x.rsi>70&&x.rsi<=80;
+        if(k==='ob')return x.rsi>80;
+        return false;
+      });
+    });
+  }
+
+  // StochRSI range filter (OR within group)
+  if(srsiRangeF.size>0){
+    d=d.filter(x=>{
+      if(x.stochRsi==null)return false;
+      return[...srsiRangeF].some(k=>{
+        if(k==='os')return x.stochRsi<20;
+        if(k==='mid')return x.stochRsi>=20&&x.stochRsi<=80;
+        if(k==='ob')return x.stochRsi>80;
+        return false;
+      });
+    });
+  }
+
+  // ADR range filter (OR within group)
+  if(adrRangeF.size>0){
+    d=d.filter(x=>{
+      if(x.adrPct==null)return false;
+      return[...adrRangeF].some(k=>{
+        if(k==='lesu')return x.adrPct<1.5;
+        if(k==='normal')return x.adrPct>=1.5&&x.adrPct<5;
+        if(k==='aktif')return x.adrPct>=5;
+        return false;
+      });
+    });
+  }
+
   // Sort
   d.sort((a,b)=>{
     let va=a[sCol]??-Infinity, vb=b[sCol]??-Infinity;
@@ -1313,12 +1466,21 @@ function _updateActiveFilters(){
   const oscNames={'rsi-sweet':'RSI 50–70','rsi-os':'RSI <35','rsi-bull':'RSI >50','macd-bull':'MACD Bull','macd-cross':'MACD Cross'};
   oscF.forEach(k=>tags.push({label:oscNames[k]||k,cls:'osc'}));
   // Fraksi
-  const frakNames={'1':'Fraksi Rp 1','2':'Fraksi Rp 2','5':'Fraksi Rp 5','10':'Fraksi Rp 10','25':'Fraksi Rp 25'};
+  const frakNames={'1':'< Rp 200','2':'Rp 200–500','5':'Rp 500–2.000','10':'Rp 2.000–5.000','25':'> Rp 5.000'};
   frakF.forEach(k=>tags.push({label:frakNames[k]||k,cls:'price'}));
   // Price range
   const minP=document.getElementById('priceMin')?.value||'';
   const maxP=document.getElementById('priceMax')?.value||'';
   if(minP||maxP) tags.push({label:'Harga: '+(minP||'0')+' – '+(maxP||'~'),cls:'price'});
+  // RSI range
+  const rsiRangeNames={'os':'RSI <30','weak':'RSI 30–50','sweet':'RSI 50–70','strong':'RSI 70–80','ob':'RSI >80'};
+  rsiRangeF.forEach(k=>tags.push({label:rsiRangeNames[k]||k,cls:'osc'}));
+  // StochRSI range
+  const srsiRangeNames={'os':'Stoch <20','mid':'Stoch 20–80','ob':'Stoch >80'};
+  srsiRangeF.forEach(k=>tags.push({label:srsiRangeNames[k]||k,cls:'osc'}));
+  // ADR range
+  const adrRangeNames={'lesu':'ADR <1.5%','normal':'ADR 1.5–5%','aktif':'ADR ≥5%'};
+  adrRangeF.forEach(k=>tags.push({label:adrRangeNames[k]||k,cls:'ma'}));
 
   const el=document.getElementById('activeFilters');
   const tagsEl=document.getElementById('afTags');
@@ -1356,7 +1518,15 @@ function _fmt(n){if(n==null||isNaN(n)||n===0)return'—';const a=Math.abs(n);if(
 function _pct(n){if(n==null||isNaN(n))return'—';return(n>=0?'+':'')+n.toFixed(2)+'%'}
 function _dec(n,d=1){if(n==null||isNaN(n))return'—';return n.toFixed(d)}
 
-// Round price DOWN to nearest IHSG tick (fraksi harga)
+// Format lot (1 lot = 100 lembar)
+function _fmtLot(val,price){
+  if(val==null||isNaN(val)||val===0||!price||price<=0)return'—';
+  const shares=val/price;
+  const lots=Math.floor(shares/100);
+  if(lots>=1000)return(lots/1000).toFixed(1)+' Rb lot';
+  if(lots>0)return lots.toLocaleString('id-ID')+' lot';
+  return'<1 lot';
+}
 function _fraksiFloor(p){
   if(p==null||isNaN(p)||p<=0)return'—';
   let tick;
@@ -1386,7 +1556,7 @@ function renderT(){
   if(!tb){console.error('ERROR: tBody element not found!');return;}
   if(!DD){console.error('ERROR: DD is undefined!');DD=[];return;}
   if(!DD.length){
-    tb.innerHTML=`<tr><td colspan="9"><div class="tempty">
+    tb.innerHTML=`<tr><td colspan="8"><div class="tempty">
       <div class="tempty-ico">🔍</div>
       <div class="tempty-txt">Tidak ada saham yang cocok</div>
       <div class="tempty-sub">Coba longgarkan filter atau ganti preset</div>
@@ -1466,15 +1636,16 @@ function renderT(){
   </div>
 </td>
 <td class="bd-price">
-  <div class="price-cell">
+  <div class="stacked-cell">
     <div class="cnum lg">${_price(d.price)}</div>
+    <span class="pct-badge ${pU?'up':d.pct===0?'nu':'dn'}">${_pct(d.pct)}</span>
   </div>
 </td>
 <td class="bd-price">
-  <span class="pct-badge ${pU?'up':d.pct===0?'nu':'dn'}">${_pct(d.pct)}</span>
-</td>
-<td class="bd-price">
-  <div class="cnum">${_fmt(d.pct1today)}</div>
+  <div class="stacked-cell">
+    <div class="cnum">${_fmt(d.pct1today)}</div>
+    <div class="cnum lot-info">${_fmtLot(d.pct1today,d.price)}</div>
+  </div>
 </td>
 <td class="bd-trend">
   <div class="stacked-cell">
@@ -1488,6 +1659,7 @@ function renderT(){
     </div>
   </div>
 </td>
+<td class="bd-osc">${macdHtml}</td>
 <td class="bd-osc">
   <div class="stacked-cell">
     <div class="osc-cell">
@@ -1508,7 +1680,6 @@ function renderT(){
     </div>
   </div>
 </td>
-<td class="bd-osc">${macdHtml}</td>
 <td class="bd-osc">
   <div class="stacked-cell">
     <div class="atr-row">
