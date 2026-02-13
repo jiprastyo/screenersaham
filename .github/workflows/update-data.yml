@@ -2,9 +2,9 @@ name: Update Data Saham
 
 on:
   schedule:
-    # 3x per hari: 09:00, 12:00, 17:30 WIB
-    - cron: '0 2 * * 1-5'   # 09:00 WIB (UTC+7) — weekdays only
-    - cron: '0 5 * * 1-5'   # 12:00 WIB
+    # 3x per hari: 09:10, 12:10, 17:30 WIB (UTC+7)
+    - cron: '10 2 * * 1-5'   # 09:10 WIB — weekdays only
+    - cron: '10 5 * * 1-5'   # 12:10 WIB
     - cron: '30 10 * * 1-5'  # 17:30 WIB
   workflow_dispatch:          # Allow manual trigger
 
