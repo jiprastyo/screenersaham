@@ -99,6 +99,13 @@ Formula:
 - `1D`: data harian.
 - `1W`: data mingguan (dibentuk dari agregasi data harian).
 
+### 2.4 Referensi Resmi IDX untuk Tag di Screener
+
+- **Tag Papan** pada screener merujuk kategori papan pencatatan di BEI: [Papan Pencatatan](https://www.idx.id/id/produk/saham/papan-pencatatan/)
+- **Tag Sektor** pada screener merujuk klasifikasi sektor IDX-IC: [Pengenalan Klasifikasi IDX-IC](https://www.idx.id/id/berita/artikel/pengenalan-klasifikasi-industri-idx-ic-indonesia-stock-exchange-industrial-classification/)
+- **Tag Indeks** pada screener merujuk kelompok produk indeks BEI (misalnya keluarga LQ45, KOMPAS100, ISSI, dan indeks bertema BUMN): [Produk Indeks](https://www.idx.id/id/produk/indeks/)
+- **Tag Fraksi Harga** pada screener merujuk ketentuan satuan perdagangan dan fraksi harga BEI: [SK Perubahan Peraturan II-A (Fraksi Harga)](https://www.idx.id/media/15715/sk-kep-00071-bei_112023-perubahan-peraturan-nomor-ii-a-tentang-perdagangan-efek-bersifat-ekuitas.pdf)
+
 ---
 
 ## Bab 3 - Penjelasan Kolom dan Filter
@@ -454,6 +461,10 @@ Saya memakainya sebagai deteksi dini potensi transisi bullish, sambil sadar bahw
 
 ## Lampiran Referensi
 
+- Referensi resmi BEI untuk tag Papan: [Papan Pencatatan](https://www.idx.id/id/produk/saham/papan-pencatatan/)
+- Referensi resmi BEI untuk tag Sektor (IDX-IC): [Pengenalan Klasifikasi IDX-IC](https://www.idx.id/id/berita/artikel/pengenalan-klasifikasi-industri-idx-ic-indonesia-stock-exchange-industrial-classification/)
+- Referensi resmi BEI untuk tag Indeks: [Produk Indeks](https://www.idx.id/id/produk/indeks/)
+- Referensi resmi BEI untuk fraksi harga: [SK Perubahan Peraturan II-A](https://www.idx.id/media/15715/sk-kep-00071-bei_112023-perubahan-peraturan-nomor-ii-a-tentang-perdagangan-efek-bersifat-ekuitas.pdf)
 - Minervini trend template: [ChartMill](https://www.chartmill.com/documentation/stock-screener/technical-analysis-trading-strategies/496-Mark-Minervini-Trend-Template-A-Step-by-Step-Guide-for-Beginners)
 - CAN SLIM (ringkasan): [Investopedia](https://www.investopedia.com/terms/c/canslim.asp)
 - Buy zone dan disiplin risiko (IBD): [Investor's Business Daily](https://www.investors.com/how-to-invest/investors-corner/buy-zone-nvidia-stock/)
