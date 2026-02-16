@@ -3,12 +3,23 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
-        <title>Skriner</title>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-            href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Sans:wght@400;500;600&display=swap"
-            rel="stylesheet"
+        <meta
+            name="robots"
+            content="noindex, nofollow, noarchive, nosnippet, noimageindex, noai, noimageai"
         />
+        <meta
+            name="googlebot"
+            content="noindex, nofollow, noarchive, nosnippet, noimageindex"
+        />
+        <meta
+            name="bingbot"
+            content="noindex, nofollow, noarchive, nosnippet, noimageindex"
+        />
+        <meta
+            name="slurp"
+            content="noindex, nofollow, noarchive, nosnippet, noimageindex"
+        />
+        <title>Skriner</title>
         <style>
             /* ═══════════════════════════════════════════════
    DESIGN TOKENS
@@ -56,8 +67,12 @@
                 --purple-bg: rgba(141, 124, 214, 0.1);
                 --purple-dim: rgba(141, 124, 214, 0.2);
 
-                --font: "Instrument Sans", system-ui, sans-serif;
-                --mono: "Instrument Sans", "Courier New", monospace;
+                --font:
+                    system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu,
+                    "Noto Sans", sans-serif;
+                --mono:
+                    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+                    "Liberation Mono", "Courier New", monospace;
                 --r: 4px;
                 --rs: 3px;
                 --rx: 6px;
@@ -1793,6 +1808,9 @@
                     justify-content: flex-start;
                     gap: 0.18rem;
                 }
+                .osc-track {
+                    display: none;
+                }
                 .score-cell {
                     flex-direction: row;
                     align-items: center;
@@ -1904,7 +1922,7 @@
                 tbody td:nth-child(5) .stacked-cell {
                     flex-direction: row;
                     align-items: center;
-                    gap: 0.2rem;
+                    gap: 0.8ch;
                 }
                 .lot-info {
                     font-size: 0.52rem;
@@ -1912,6 +1930,14 @@
                 tbody td:nth-child(4) .lot-info,
                 tbody td:nth-child(5) .lot-info {
                     margin-top: 0;
+                    margin-left: 0.8ch;
+                }
+                .osc-zone {
+                    margin-left: 0.8ch;
+                }
+                .atr-ket,
+                .adr-label {
+                    margin-left: 0.8ch;
                 }
                 .ma-sq,
                 .vol-sq {
