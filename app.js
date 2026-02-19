@@ -642,7 +642,7 @@
 
     function updateMobileCompactState(fromScroll) {
         const scrollY = window.scrollY || 0;
-        const collapseDistance = isMobileViewport() ? 140 : 180;
+        const collapseDistance = isMobileViewport() ? 300 : 420;
         let collapseProgress = Math.max(0, Math.min(1, scrollY / collapseDistance));
 
         if (!state.mobileFiltersOpen) {

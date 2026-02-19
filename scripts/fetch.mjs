@@ -10,9 +10,23 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, "..");
 const localDataPath = path.join(rootDir, "data", "issi_data.json");
-const localFetcherPath = path.join(rootDir, "scripts", "fetch-data.mjs");
 const updaterPath = path.join(rootDir, "scripts", "update-data.mjs");
 const configPath = path.join(rootDir, "fetch.config.json");
+const localFetcherCandidates = [
+    path.join(rootDir, "scripts", "fetch-data.mjs"),
+    path.join(rootDir, "scripts", "fetch_data.mjs"),
+    path.join(rootDir, "scripts", "fetch-data.js"),
+    path.join(rootDir, "scripts", "fetch_data.js"),
+];
+
+function resolveLocalFetcherPath() {
+    for (const candidate of localFetcherCandidates) {
+        if (fs.existsSync(candidate)) {
+            return candidate;
+        }
+    }
+    return null;
+}
 
 function usage() {
     console.log(`Usage:
@@ -23,7 +37,7 @@ function usage() {
   npm run fetch -- --touch
 
 Behavior:
-  - default (no args): run local fetcher scripts/fetch-data.mjs.
+  - default (no args): run local fetcher (auto-detect scripts/fetch-data.* or scripts/fetch_data.*).
   - --url: download JSON, validate, then write to data/issi_data.json.
   - --file/--input: validate local JSON then write to data/issi_data.json.
   - --touch: only update fetchedAt metadata in data/issi_data.json.
@@ -158,7 +172,8 @@ async function main() {
         return;
     }
 
-    if (fs.existsSync(localFetcherPath)) {
+    const localFetcherPath = resolveLocalFetcherPath();
+    if (localFetcherPath) {
         console.log(`Running local fetcher: ${localFetcherPath}`);
         runNodeScript(localFetcherPath, [], rootDir);
         validateDataFile(localDataPath);
@@ -174,7 +189,9 @@ async function main() {
     }
 
     throw new Error(
-        "No local fetcher found at scripts/fetch-data.mjs and no fetch.config.json URL configured.",
+        `No local fetcher found. Checked: ${localFetcherCandidates
+            .map((p) => path.relative(rootDir, p))
+            .join(", ")}. Also no fetch.config.json URL configured.`,
     );
 }
 
