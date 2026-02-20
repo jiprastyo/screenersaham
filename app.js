@@ -227,6 +227,13 @@
         { value: "aktif", label: "Aktif" },
     ];
 
+    const MFI_OPTIONS = [
+        { value: "all", label: "MFI" },
+        { value: "os", label: "<=20 (Oversold)" },
+        { value: "mid", label: "20-80" },
+        { value: "ob", label: ">=80 (Overbought)" },
+    ];
+
     function isShortEmaBullNear2(d) {
         const ms = d.maStatus || {};
         return (
@@ -388,6 +395,7 @@
         sektor: "all",
         maF: new Set(),
         vmaF: new Set(),
+        mfi: "all",
         rsi: "all",
         srsi: "all",
         atr: "all",
@@ -413,6 +421,7 @@
         sektorSelect: document.getElementById("sektorSelect"),
         maSelect: document.getElementById("maSelect"),
         vmaSelect: document.getElementById("vmaSelect"),
+        mfiSelect: document.getElementById("mfiSelect"),
         rsiSelect: document.getElementById("rsiSelect"),
         srsiSelect: document.getElementById("srsiSelect"),
         atrSelect: document.getElementById("atrSelect"),
@@ -470,6 +479,7 @@
 
         populateToggleSelect(els.maSelect, MA_OPTIONS, state.maF, "PxMA");
         populateToggleSelect(els.vmaSelect, VMA_OPTIONS, state.vmaF, "VxMA");
+        populateSelect(els.mfiSelect, MFI_OPTIONS, state.mfi);
         populateSelect(els.rsiSelect, RSI_OPTIONS, state.rsi);
         populateSelect(els.srsiSelect, SRSI_OPTIONS, state.srsi);
         populateSelect(els.atrSelect, ATR_OPTIONS, state.atr);
@@ -487,6 +497,7 @@
             els.idxSelect,
             els.maSelect,
             els.vmaSelect,
+            els.mfiSelect,
             els.rsiSelect,
             els.srsiSelect,
             els.atrSelect,
@@ -567,6 +578,7 @@
         bindSelect(els.sektorSelect, "sektor");
         bindToggleMultiSelect(els.maSelect, MA_OPTIONS, state.maF, "PxMA");
         bindToggleMultiSelect(els.vmaSelect, VMA_OPTIONS, state.vmaF, "VxMA");
+        bindSelect(els.mfiSelect, "mfi");
         bindSelect(els.rsiSelect, "rsi");
         bindSelect(els.srsiSelect, "srsi");
         bindSelect(els.atrSelect, "atr");
@@ -984,6 +996,7 @@
         setFilterActive(els.sektorSelect, state.sektor !== "all");
         setFilterActive(els.maSelect, state.maF.size > 0);
         setFilterActive(els.vmaSelect, state.vmaF.size > 0);
+        setFilterActive(els.mfiSelect, state.mfi !== "all");
         setFilterActive(els.rsiSelect, state.rsi !== "all");
         setFilterActive(els.srsiSelect, state.srsi !== "all");
         setFilterActive(els.atrSelect, state.atr !== "all");
@@ -1045,6 +1058,24 @@
                 return activeVma.every(function (key) {
                     return item.maStatus && item.maStatus[key] === true;
                 });
+            });
+        }
+
+        if (state.mfi !== "all") {
+            data = data.filter(function (item) {
+                if (item.mfi == null) {
+                    return false;
+                }
+                if (state.mfi === "os") {
+                    return item.mfi <= 20;
+                }
+                if (state.mfi === "mid") {
+                    return item.mfi > 20 && item.mfi < 80;
+                }
+                if (state.mfi === "ob") {
+                    return item.mfi >= 80;
+                }
+                return true;
             });
         }
 
@@ -1170,6 +1201,7 @@
         pushSelectTag(tags, "Sektor", els.sektorSelect, state.sektor);
         pushMultiSetTag(tags, "PxMA", MA_OPTIONS, state.maF);
         pushMultiSetTag(tags, "VxMA", VMA_OPTIONS, state.vmaF);
+        pushSelectTag(tags, "MFI", els.mfiSelect, state.mfi);
         pushSelectTag(tags, "RSI", els.rsiSelect, state.rsi);
         pushSelectTag(tags, "StochRSI", els.srsiSelect, state.srsi);
         pushSelectTag(tags, "ATR", els.atrSelect, state.atr);
@@ -1280,7 +1312,7 @@
                 formatDec(item.atrPct, 2) +
                 "% (" +
                 atrZone +
-                ") · SL 1.5x: " +
+                ") · SL " +
                 formatPrice(slAtrPrice),
             toneByRange(item.atrPct),
             true,
@@ -1516,6 +1548,7 @@
         state.sektor = "all";
         state.maF.clear();
         state.vmaF.clear();
+        state.mfi = "all";
         state.rsi = "all";
         state.srsi = "all";
         state.atr = "all";
@@ -1530,6 +1563,7 @@
         els.sektorSelect.value = state.sektor;
         populateToggleSelect(els.maSelect, MA_OPTIONS, state.maF, "PxMA");
         populateToggleSelect(els.vmaSelect, VMA_OPTIONS, state.vmaF, "VxMA");
+        els.mfiSelect.value = state.mfi;
         els.rsiSelect.value = state.rsi;
         els.srsiSelect.value = state.srsi;
         els.atrSelect.value = state.atr;
@@ -1605,13 +1639,13 @@
             return "Rp " + (value / 1e12).toFixed(1) + " T";
         }
         if (abs >= 1e9) {
-            return "Rp " + (value / 1e9).toFixed(1) + " Mil";
+            return "Rp " + (value / 1e9).toFixed(1) + " Miliar";
         }
         if (abs >= 1e6) {
-            return "Rp " + (value / 1e6).toFixed(1) + " Jt";
+            return "Rp " + (value / 1e6).toFixed(1) + " Juta";
         }
         if (abs >= 1e3) {
-            return "Rp " + (value / 1e3).toFixed(1) + " Rb";
+            return "Rp " + (value / 1e3).toFixed(1) + " Ribu";
         }
         return "Rp " + value.toFixed(0);
     }

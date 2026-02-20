@@ -178,7 +178,7 @@ body {
     overflow-x: hidden;
     overflow-y: auto;
     padding: 8px;
-    border: 1px solid color-mix(in srgb, var(--border) 85%, transparent);
+    border: none;
     border-radius: 12px;
     background: color-mix(in srgb, var(--bg-card) 88%, var(--bg-chip));
 }
@@ -271,6 +271,7 @@ select {
     max-width: 100%;
     min-height: 27px;
     font-size: 9.8px;
+    border: none;
 }
 
 .controls .filter-select,
@@ -281,9 +282,7 @@ select {
 
 .filter-select.is-active,
 .text-input.is-active {
-    border-color: color-mix(in srgb, var(--accent) 72%, var(--border));
-    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 44%, transparent);
-    background: color-mix(in srgb, var(--bg-input) 86%, var(--accent) 14%);
+    background: color-mix(in srgb, var(--bg-input) 78%, var(--accent) 22%);
 }
 
 .fit-select {
@@ -310,6 +309,7 @@ select {
     border: none;
     background: #f6c9ce;
     color: #8f1f2b;
+    border-radius: 999px;
 }
 
 .btn.reset-soft:hover {
@@ -327,6 +327,7 @@ select {
     border: none;
     background: #cfe7ff;
     color: #114d8b;
+    border-radius: 999px;
 }
 
 .btn.filter-toggle-soft:hover {
@@ -470,8 +471,8 @@ select {
 .stock-card {
     position: relative;
     overflow: visible;
-    border: 1px solid color-mix(in srgb, var(--border) 74%, transparent);
-    background: var(--bg-card);
+    border: none;
+    background: color-mix(in srgb, var(--bg-card) 94%, var(--bg-chip));
     border-radius: var(--radius);
     padding: 7px;
     display: grid;
@@ -581,7 +582,7 @@ select {
     display: grid;
     grid-template-columns: 45% minmax(0, 1fr);
     align-items: center;
-    gap: 4px;
+    gap: 2px;
     min-height: 20px;
 }
 
@@ -748,6 +749,7 @@ select {
     margin-top: 0;
     font-family: var(--font-main);
     font-size: 10.8px;
+    font-weight: 400;
     display: flex;
     align-items: center;
     justify-content: flex-start;
@@ -764,7 +766,7 @@ select {
     align-items: center;
     max-width: 100%;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-    font-weight: 600;
+    font-weight: 400;
     border-radius: 1px;
     padding: 0 4px;
     border: 1px solid transparent;
@@ -915,6 +917,10 @@ select {
         z-index: 1;
         background: transparent;
         border-bottom: 0;
+    }
+
+    .stock-card {
+        overflow: hidden;
     }
 
     .preset-note {
