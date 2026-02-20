@@ -13,6 +13,8 @@
 
     const MA_KEYS = ["ema3", "ema5", "ema10", "ema20", "sma50", "sma100", "sma200"];
     const VOL_KEYS = ["vma3", "vma5", "vma10", "vma20", "vma50", "vma100", "vma200"];
+    const CARD_CHUNK_MOBILE = 24;
+    const CARD_CHUNK_DESKTOP = 42;
 
     const PRESET_OPTIONS = [
         { value: "all", label: "Preset" },
@@ -395,13 +397,9 @@
         sortDir: "desc",
         forceView: "grid",
         mobileFiltersOpen: true,
-        filterOpenRatio: 1,
-        filterTargetRatio: 1,
-        filterAnimRaf: 0,
+        renderLimit: 0,
+        cardObserver: null,
         searchTimer: null,
-        pullStartY: null,
-        pullArmed: false,
-        scrollRaf: 0,
         helpAnchorEl: null,
     };
 
@@ -424,7 +422,6 @@
         resetBtnSticky: document.getElementById("resetBtnSticky"),
         searchInput: document.getElementById("searchInput"),
         sortSelect: document.getElementById("sortSelect"),
-        resetBtn: document.getElementById("resetBtn"),
         activeFilters: document.getElementById("activeFilters"),
         cardList: document.getElementById("cardList"),
         themeToggle: document.getElementById("themeToggle"),
@@ -588,17 +585,24 @@
             applyFiltersAndRender();
         });
 
-        els.resetBtn.addEventListener("click", function () {
-            resetAllFilters();
-        });
-        els.resetBtnSticky.addEventListener("click", function () {
-            resetAllFilters();
-        });
-        els.filterToggleBtn.addEventListener("click", function () {
-            toggleMobileFilters();
-        });
+        if (els.resetBtnSticky) {
+            els.resetBtnSticky.addEventListener("click", function () {
+                resetAllFilters();
+            });
+        }
+        if (els.filterToggleBtn) {
+            els.filterToggleBtn.addEventListener("click", function () {
+                toggleMobileFilters();
+            });
+        }
 
         els.cardList.addEventListener("click", function (event) {
+            const loadMoreBtn = event.target.closest(".load-more-btn");
+            if (loadMoreBtn) {
+                event.preventDefault();
+                loadMoreCards();
+                return;
+            }
             const hintBtn = event.target.closest(".hint-btn");
             if (!hintBtn) {
                 return;
@@ -619,62 +623,9 @@
         });
 
         window.addEventListener("resize", function () {
-            syncMobileFilterState(false);
+            syncMobileFilterState();
             placeIndicatorHelp();
         });
-        window.addEventListener(
-            "scroll",
-            function () {
-                if (state.scrollRaf) {
-                    return;
-                }
-                state.scrollRaf = window.requestAnimationFrame(function () {
-                    state.scrollRaf = 0;
-                    updateMobileCompactState(true);
-                    placeIndicatorHelp();
-                });
-            },
-            { passive: true },
-        );
-        window.addEventListener(
-            "wheel",
-            function (event) {
-                revealFiltersByPull(event.deltaY < -36);
-            },
-            { passive: true },
-        );
-        window.addEventListener(
-            "touchstart",
-            function (event) {
-                if (!event.touches || !event.touches.length) {
-                    return;
-                }
-                state.pullStartY = event.touches[0].clientY;
-                state.pullArmed = window.scrollY <= 0;
-            },
-            { passive: true },
-        );
-        window.addEventListener(
-            "touchmove",
-            function (event) {
-                if (!state.pullArmed || !event.touches || !event.touches.length) {
-                    return;
-                }
-                const delta = event.touches[0].clientY - (state.pullStartY || 0);
-                if (delta > 42) {
-                    revealFiltersByPull(true);
-                }
-            },
-            { passive: true },
-        );
-        window.addEventListener(
-            "touchend",
-            function () {
-                state.pullStartY = null;
-                state.pullArmed = false;
-            },
-            { passive: true },
-        );
 
         if (els.helpClose) {
             els.helpClose.addEventListener("click", closeIndicatorHelp);
@@ -695,7 +646,7 @@
             }
         });
 
-        syncMobileFilterState(false);
+        syncMobileFilterState();
     }
 
     function bindSelect(selectEl, stateKey) {
@@ -758,108 +709,18 @@
         return window.matchMedia("(max-width: 820px)").matches;
     }
 
-    function syncMobileFilterState(animateFilters) {
+    function syncMobileFilterState() {
         if (!els.controlsPanel || !els.filterToggleBtn) {
             return;
         }
-        els.controlsPanel.classList.toggle("mobile-open", state.mobileFiltersOpen);
         els.controlsPanel.classList.toggle("filter-collapsed", !state.mobileFiltersOpen);
         els.filterToggleBtn.textContent = state.mobileFiltersOpen ? "Tutup Filter ▴" : "Buka Filter ▾";
-        updateMobileCompactState(false, animateFilters === true);
         updatePresetInfo();
     }
 
     function toggleMobileFilters() {
         state.mobileFiltersOpen = !state.mobileFiltersOpen;
-        syncMobileFilterState(true);
-    }
-
-    function updateMobileCompactState(fromScroll, forceAnimated) {
-        const scrollY = window.scrollY || 0;
-        const collapseDistance = isMobileViewport() ? 360 : 520;
-        let collapseProgress = clamp01(scrollY / collapseDistance);
-        collapseProgress = easeInOut(collapseProgress);
-
-        if (!state.mobileFiltersOpen) {
-            collapseProgress = 1;
-        } else if (!fromScroll && scrollY <= 0) {
-            collapseProgress = 0;
-        }
-
-        const openRatio = 1 - collapseProgress;
-        setFilterOpenRatio(openRatio, !fromScroll && !forceAnimated);
-
-        if (!isMobileViewport()) {
-            document.body.classList.remove("mobile-compact");
-            return;
-        }
-        document.body.classList.toggle("mobile-compact", scrollY > 36);
-    }
-
-    function revealFiltersByPull(shouldReveal) {
-        if (!shouldReveal) {
-            return;
-        }
-        if ((window.scrollY || 0) > 0) {
-            return;
-        }
-        if (state.mobileFiltersOpen && state.filterOpenRatio > 0.98) {
-            return;
-        }
-        state.mobileFiltersOpen = true;
-        syncMobileFilterState(true);
-    }
-
-    function clamp01(value) {
-        return Math.max(0, Math.min(1, value));
-    }
-
-    function easeInOut(value) {
-        const v = clamp01(value);
-        return v < 0.5 ? 2 * v * v : 1 - Math.pow(-2 * v + 2, 2) / 2;
-    }
-
-    function setFilterOpenRatio(nextRatio, immediate) {
-        state.filterTargetRatio = clamp01(nextRatio);
-        if (immediate) {
-            if (state.filterAnimRaf) {
-                window.cancelAnimationFrame(state.filterAnimRaf);
-                state.filterAnimRaf = 0;
-            }
-            applyFilterOpenRatio(state.filterTargetRatio);
-            return;
-        }
-        ensureFilterRatioAnimation();
-    }
-
-    function ensureFilterRatioAnimation() {
-        if (state.filterAnimRaf) {
-            return;
-        }
-        const step = function () {
-            const current = state.filterOpenRatio;
-            const target = state.filterTargetRatio;
-            const delta = target - current;
-
-            if (Math.abs(delta) < 0.004) {
-                applyFilterOpenRatio(target);
-                state.filterAnimRaf = 0;
-                return;
-            }
-
-            applyFilterOpenRatio(current + delta * 0.24);
-            state.filterAnimRaf = window.requestAnimationFrame(step);
-        };
-
-        state.filterAnimRaf = window.requestAnimationFrame(step);
-    }
-
-    function applyFilterOpenRatio(nextRatio) {
-        const openRatio = clamp01(nextRatio);
-        state.filterOpenRatio = openRatio;
-        if (els.controlsPanel) {
-            els.controlsPanel.style.setProperty("--filter-open-ratio", openRatio.toFixed(3));
-        }
+        syncMobileFilterState();
     }
 
     function ensureHelpModal() {
@@ -1110,6 +971,8 @@
 
     function applyFiltersAndRender() {
         state.filtered = applyFilters(state.data);
+        state.renderLimit = getInitialRenderLimit(state.filtered.length);
+        disconnectCardObserver();
         updateFilterHighlights();
         renderAll();
     }
@@ -1359,115 +1222,190 @@
     }
 
     function renderCards() {
+        disconnectCardObserver();
+
         if (!state.filtered.length) {
             els.cardList.innerHTML = '<div class="stock-card"><div class="card-company">Tidak ada saham yang cocok dengan filter.</div></div>';
             return;
         }
 
+        const capped = Math.min(
+            state.filtered.length,
+            Math.max(state.renderLimit || 0, getInitialRenderLimit(state.filtered.length)),
+        );
+        state.renderLimit = capped;
         els.cardList.innerHTML = state.filtered
+            .slice(0, capped)
             .map(function (item) {
-                const pctClass = item.pct > 0 ? "pos" : item.pct < 0 ? "neg" : "neu";
-                const score = scoreInfo(item.score);
-                const macdText = item.macdBull ? (item.macdCross ? "Bull + Cross" : "Bull") : item.macdCross ? "Cross" : "Bear/Netral";
-                const rsiZone = rsiLabel(item.rsi);
-                const srsiZone = srsiLabel(item.stochRsi);
-                const atrZone = rangeLabel(item.atrPct);
-                const adrZone = rangeLabel(item.adrPct);
-                const pctBadge = item.pct > 0 ? "up" : item.pct < 0 ? "dn" : "nu";
-                const maSquares = signalSquares(item.maStatus, MA_KEYS, ["P3", "P5", "P10", "P20", "P50", "P1", "P2"], "ma");
-                const vmaSquares = signalSquares(item.maStatus, VOL_KEYS, ["V3", "V5", "V10", "V20", "V50", "V1", "V2"], "vol");
-                const slAtrPrice =
-                    item.price != null && item.atrV != null ? Math.max(0, item.price - item.atrV * 1.5) : null;
-                const mfiText = metricChip(
-                    formatDec(item.mfi, 1) + " (" + mfiLabel(item.mfi) + ")",
-                    toneByMfi(item.mfi),
-                    true,
-                );
-                const rsiText = metricChip(
-                    formatDec(item.rsi, 1) + " (" + rsiZone + ")",
-                    toneByRsi(item.rsi),
-                    true,
-                );
-                const srsiText = metricChip(
-                    formatDec(item.stochRsi, 1) + " (" + srsiZone + ")",
-                    toneByStochRsi(item.stochRsi),
-                    true,
-                );
-                const atrText = metricChip(
-                    formatDec(item.atrV, 1) +
-                        " · " +
-                        formatDec(item.atrPct, 2) +
-                        "% (" +
-                        atrZone +
-                        ") · SL 1.5x: " +
-                        formatPrice(slAtrPrice),
-                    toneByRange(item.atrPct),
-                    true,
-                );
-                const adrText = metricChip(
-                    formatDec(item.adrPct, 2) + "% (" + adrZone + ")",
-                    toneByRange(item.adrPct),
-                    true,
-                );
-                const macdChip = metricChip(
-                    macdText,
-                    item.macdBull ? "good" : item.macdCross ? "warn" : "bad",
-                    true,
-                );
-                const symbolUrl = stockbitSymbolUrl(item.ticker);
-                const indexBadges = (item.indeks || [])
-                    .map(function (idx) {
-                        return badge(idx, idx === "ISSI" ? "issi" : "");
-                    })
-                    .join("");
-
-                return (
-                    '<article class="stock-card">' +
-                    '<div class="card-top-sticky">' +
-                    '<div class="card-head">' +
-                    '<div><a class="card-title card-title-link" href="' +
-                    symbolUrl +
-                    '" target="_blank" rel="noopener noreferrer">' +
-                    escapeHtml(item.ticker) +
-                    '</a><div class="card-company">' +
-                    escapeHtml(companyDisplayName(item.company)) +
-                    "</div></div>" +
-                    '<div class="price-cell">' +
-                    '<div class="price-main">' +
-                    formatPrice(item.price) +
-                    "</div>" +
-                    '<span class="pct-badge ' +
-                    pctBadge +
-                    " " +
-                    pctClass +
-                    '">' +
-                    formatPct(item.pct) +
-                    "</span>" +
-                    "</div>" +
-                    "</div>" +
-                    '<div class="badges">' +
-                    indexBadges +
-                    badge(item.sektor) +
-                    badge(item.papan) +
-                    "</div>" +
-                    "</div>" +
-                    '<div class="card-grid">' +
-                    cardItem("PxMA", maSquares) +
-                    cardItem("VxMA", vmaSquares) +
-                    cardItem("1% Trx Hari Ini", formatRupiah(item.pct1today)) +
-                    cardItem("1% Trx 20 Hari", formatRupiah(item.pct120d)) +
-                    cardItem("MFI", mfiText) +
-                    cardItem("RSI", rsiText) +
-                    cardItem("StochRSI", srsiText) +
-                    cardItem("ATR", atrText) +
-                    cardItem("ADR", adrText) +
-                    cardItem("MACD", macdChip) +
-                    cardItem("Skor", '<span class="score ' + score.cls + '">' + formatDec(item.score, 1) + "</span>") +
-                    "</div>" +
-                    "</article>"
-                );
+                return renderCardMarkup(item);
             })
             .join("");
+
+        if (capped < state.filtered.length) {
+            renderLoadMoreSentinel(capped);
+        }
+    }
+
+    function renderCardMarkup(item) {
+        const pctClass = item.pct > 0 ? "pos" : item.pct < 0 ? "neg" : "neu";
+        const score = scoreInfo(item.score);
+        const macdText = item.macdBull ? (item.macdCross ? "Bull + Cross" : "Bull") : item.macdCross ? "Cross" : "Bear/Netral";
+        const rsiZone = rsiLabel(item.rsi);
+        const srsiZone = srsiLabel(item.stochRsi);
+        const atrZone = rangeLabel(item.atrPct);
+        const adrZone = rangeLabel(item.adrPct);
+        const pctBadge = item.pct > 0 ? "up" : item.pct < 0 ? "dn" : "nu";
+        const maSquares = signalSquares(item.maStatus, MA_KEYS, ["P3", "P5", "P10", "P20", "P50", "P1", "P2"], "ma");
+        const vmaSquares = signalSquares(item.maStatus, VOL_KEYS, ["V3", "V5", "V10", "V20", "V50", "V1", "V2"], "vol");
+        const slAtrPrice =
+            item.price != null && item.atrV != null ? Math.max(0, item.price - item.atrV * 1.5) : null;
+        const mfiText = metricChip(
+            formatDec(item.mfi, 1) + " (" + mfiLabel(item.mfi) + ")",
+            toneByMfi(item.mfi),
+            true,
+        );
+        const rsiText = metricChip(
+            formatDec(item.rsi, 1) + " (" + rsiZone + ")",
+            toneByRsi(item.rsi),
+            true,
+        );
+        const srsiText = metricChip(
+            formatDec(item.stochRsi, 1) + " (" + srsiZone + ")",
+            toneByStochRsi(item.stochRsi),
+            true,
+        );
+        const atrText = metricChip(
+            formatDec(item.atrV, 1) +
+                " · " +
+                formatDec(item.atrPct, 2) +
+                "% (" +
+                atrZone +
+                ") · SL 1.5x: " +
+                formatPrice(slAtrPrice),
+            toneByRange(item.atrPct),
+            true,
+        );
+        const adrText = metricChip(
+            formatDec(item.adrPct, 2) + "% (" + adrZone + ")",
+            toneByRange(item.adrPct),
+            true,
+        );
+        const macdChip = metricChip(
+            macdText,
+            item.macdBull ? "good" : item.macdCross ? "warn" : "bad",
+            true,
+        );
+        const symbolUrl = stockbitSymbolUrl(item.ticker);
+        const indexBadges = (item.indeks || [])
+            .map(function (idx) {
+                return badge(idx, idx === "ISSI" ? "issi" : "");
+            })
+            .join("");
+
+        return (
+            '<article class="stock-card">' +
+            '<div class="card-top-sticky">' +
+            '<div class="card-head">' +
+            '<div><a class="card-title card-title-link" href="' +
+            symbolUrl +
+            '" target="_blank" rel="noopener noreferrer">' +
+            escapeHtml(item.ticker) +
+            '</a><div class="card-company">' +
+            escapeHtml(companyDisplayName(item.company)) +
+            "</div></div>" +
+            '<div class="price-cell">' +
+            '<div class="price-main">' +
+            formatPrice(item.price) +
+            "</div>" +
+            '<span class="pct-badge ' +
+            pctBadge +
+            " " +
+            pctClass +
+            '">' +
+            formatPct(item.pct) +
+            "</span>" +
+            "</div>" +
+            "</div>" +
+            '<div class="badges">' +
+            indexBadges +
+            badge(item.sektor) +
+            badge(item.papan) +
+            "</div>" +
+            "</div>" +
+            '<div class="card-grid">' +
+            cardItem("PxMA", maSquares) +
+            cardItem("VxMA", vmaSquares) +
+            cardItem("1% Trx Hari Ini", formatRupiah(item.pct1today)) +
+            cardItem("1% Trx 20 Hari", formatRupiah(item.pct120d)) +
+            cardItem("MFI", mfiText) +
+            cardItem("RSI", rsiText) +
+            cardItem("StochRSI", srsiText) +
+            cardItem("ATR", atrText) +
+            cardItem("ADR", adrText) +
+            cardItem("MACD", macdChip) +
+            cardItem("Skor", '<span class="score ' + score.cls + '">' + formatDec(item.score, 1) + "</span>") +
+            "</div>" +
+            "</article>"
+        );
+    }
+
+    function renderLoadMoreSentinel(currentCount) {
+        const remaining = state.filtered.length - currentCount;
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "btn load-more-btn";
+        button.textContent = "Muat Lagi (" + remaining.toLocaleString("id-ID") + " sisa)";
+        els.cardList.appendChild(button);
+
+        if (!("IntersectionObserver" in window)) {
+            return;
+        }
+
+        state.cardObserver = new IntersectionObserver(
+            function (entries) {
+                const shouldLoad = entries.some(function (entry) {
+                    return entry.isIntersecting;
+                });
+                if (shouldLoad) {
+                    loadMoreCards();
+                }
+            },
+            {
+                root: null,
+                rootMargin: "260px 0px",
+                threshold: 0.01,
+            },
+        );
+        state.cardObserver.observe(button);
+    }
+
+    function loadMoreCards() {
+        if (state.renderLimit >= state.filtered.length) {
+            disconnectCardObserver();
+            return;
+        }
+        state.renderLimit = Math.min(state.filtered.length, state.renderLimit + getCardChunkSize());
+        renderCards();
+    }
+
+    function disconnectCardObserver() {
+        if (!state.cardObserver) {
+            return;
+        }
+        state.cardObserver.disconnect();
+        state.cardObserver = null;
+    }
+
+    function getCardChunkSize() {
+        return isMobileViewport() ? CARD_CHUNK_MOBILE : CARD_CHUNK_DESKTOP;
+    }
+
+    function getInitialRenderLimit(totalRows) {
+        const total = Number(totalRows) || 0;
+        if (total <= 0) {
+            return 0;
+        }
+        return Math.min(total, getCardChunkSize());
     }
 
     function cardItem(key, valueHtml, className) {
@@ -1561,6 +1499,7 @@
     }
 
     function showLoading(message) {
+        disconnectCardObserver();
         els.cardList.innerHTML = '<div class="stock-card"><div class="card-company">' + escapeHtml(message) + "</div></div>";
     }
 
@@ -1610,7 +1549,7 @@
         }
         state.searchTimer = setTimeout(function () {
             applyFiltersAndRender();
-        }, 130);
+        }, 200);
     }
 
     function getSectorList() {
