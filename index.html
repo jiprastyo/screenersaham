@@ -41,32 +41,12 @@
                         <button type="button" class="btn icon" id="themeToggle" title="Tema">◐</button>
                     </div>
                 </div>
+            </div>
+        </header>
 
+        <main class="container app-shell" id="results" tabindex="-1">
+            <aside class="sidebar-panel" aria-label="Filter">
                 <section class="controls" id="controlsPanel" aria-label="Kontrol screener">
-                    <div class="filter-matrix">
-                        <div class="filter-pair">
-                            <select id="sektorSelect" class="filter-select fit-select"></select>
-                            <select id="idxSelect" class="filter-select fit-select"></select>
-                        </div>
-                        <div class="filter-pair">
-                            <select id="presetSelect" class="filter-select fit-select"></select>
-                        </div>
-                        <div class="preset-note" id="presetInfo" aria-live="polite"></div>
-                        <div class="filter-pair">
-                            <select id="maSelect" class="filter-select fit-select"></select>
-                            <select id="vmaSelect" class="filter-select fit-select"></select>
-                        </div>
-                        <div class="filter-pair">
-                            <select id="mfiSelect" class="filter-select fit-select"></select>
-                            <select id="rsiSelect" class="filter-select fit-select"></select>
-                            <select id="srsiSelect" class="filter-select fit-select"></select>
-                        </div>
-                        <div class="filter-pair">
-                            <select id="atrSelect" class="filter-select fit-select"></select>
-                            <select id="adrSelect" class="filter-select fit-select"></select>
-                        </div>
-                    </div>
-
                     <div class="filter-row input-row">
                         <input
                             id="searchInput"
@@ -76,10 +56,11 @@
                             spellcheck="false"
                         />
                     </div>
-
                     <div class="filter-bar">
                         <select id="timeframeSelect" class="filter-select fit-select"></select>
                         <select id="sortSelect" class="filter-select fit-select">
+                            <option value="macdBull:desc">Urut: MACD Bull</option>
+                            <option value="rsi:desc">Urut: RSI tertinggi</option>
                             <option value="score:desc">Urut: Skor tertinggi</option>
                             <option value="ticker:asc">Urut: Ticker A-Z</option>
                             <option value="price:desc">Urut: Harga tertinggi</option>
@@ -87,25 +68,48 @@
                             <option value="pct1today:desc">Urut: 1%Trx1D tertinggi</option>
                             <option value="pct120d:desc">Urut: 1%Trx20D tertinggi</option>
                             <option value="atrPct:desc">Urut: ATR tertinggi</option>
-                            <option value="rsi:desc">Urut: RSI tertinggi</option>
                             <option value="macdHist:desc">Urut: MACD tertinggi</option>
                             <option value="adrPct:desc">Urut: ADR tertinggi</option>
                         </select>
+                        <button type="button" class="btn reset-soft" id="resetBtnSticky">Reset Filter</button>
+                    </div>
+                    <div class="filter-matrix">
+                        <div class="filter-pair">
+                            <select id="sektorSelect" class="filter-select fit-select"></select>
+                            <select id="idxSelect" class="filter-select fit-select"></select>
+                        </div>
+                        <div class="filter-pair">
+                            <select id="maSelect" class="filter-select fit-select"></select>
+                            <select id="vmaSelect" class="filter-select fit-select"></select>
+                        </div>
+                        <div class="filter-pair">
+                            <select id="rsiSelect" class="filter-select fit-select"></select>
+                            <select id="srsiSelect" class="filter-select fit-select"></select>
+                        </div>
+                        <div class="filter-pair">
+                            <select id="mfiSelect" class="filter-select fit-select"></select>
+                            <select id="atrSelect" class="filter-select fit-select"></select>
+                        </div>
+                        <div class="filter-pair">
+                            <select id="adrSelect" class="filter-select fit-select"></select>
+                            <select id="presetSelect" class="filter-select fit-select"></select>
+                        </div>
+                        <div class="filter-checklists" id="filterChecklists"></div>
+                        <div class="preset-note" id="presetInfo" aria-live="polite"></div>
                     </div>
                 </section>
-
+            </aside>
+            <section class="result-panel">
                 <div class="mobile-toolbar">
                     <button type="button" class="btn filter-toggle-soft" id="filterToggleBtn">Buka Filter ▾</button>
-                    <button type="button" class="btn reset-soft" id="resetBtnSticky">Reset Filter</button>
+                    <button type="button" class="btn reset-soft" id="resetBtnMobile">Reset Filter</button>
                     <div class="active-filters" id="activeFilters"></div>
                 </div>
-            </div>
-        </header>
-
-        <main class="container" id="results" tabindex="-1">
-            <div class="result-wrap" id="resultWrap">
-                <div class="cards" id="cardList" aria-live="polite"></div>
-            </div>
+                <div class="mobile-quickbar" id="mobileQuickbar"></div>
+                <div class="result-wrap" id="resultWrap">
+                    <div class="cards" id="cardList" aria-live="polite"></div>
+                </div>
+            </section>
         </main>
 
         <script src="stocks_database.js" defer></script>

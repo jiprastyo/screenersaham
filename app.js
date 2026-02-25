@@ -27,20 +27,16 @@
             label: "EMA<=2 + StochOS + MFIOS",
         },
         {
-            value: "ema_short_near2_rsi_mfi_oversold_m2tick",
-            label: "EMA<=2 + RSI + MFIOS",
-        },
-        {
             value: "ema_short_near2_stoch_oversold_rsi_m2tick",
             label: "EMA<=2 + StochOS + RSI",
         },
         {
-            value: "ema_short_near2_stoch_oversold_m2tick",
-            label: "EMA<=2 + StochOS",
+            value: "legend_minervini_vcp",
+            label: "Minervini VCP (Proxy)",
         },
         {
-            value: "ema_short_near2_rsi_close_m2tick",
-            label: "EMA<=2 + RSI50-70",
+            value: "ema1020_pullback_2pct_rsi_m2tick",
+            label: "EMA10/20<=2% + RSI50-70",
         },
     ];
 
@@ -67,32 +63,44 @@
         { value: "mfi_ma_macd_limit2tick", label: "SMA50 + MACD Up + MFI Cross50" },
     ];
 
-    const PRESET_NOTES = {
-        all: "",
-        ema_short_near2_stoch_oversold_rsi_mfi_oversold_m2tick:
-            "Entry: close-2 tick, syarat EMA short bullish, Stoch RSI oversold, RSI 50-70, MFI oversold.",
-        ema_short_near2_stoch_oversold_mfi_oversold_m2tick:
-            "Entry: close-2 tick, syarat EMA short bullish, Stoch RSI oversold, MFI oversold.",
-        ema_short_near2_rsi_mfi_oversold_m2tick:
-            "Entry: close-2 tick, syarat EMA short bullish, RSI 50-70, MFI oversold.",
-        ema_short_near2_stoch_oversold_rsi_m2tick:
-            "Entry: close-2 tick, syarat EMA short bullish, Stoch RSI oversold, RSI 50-70.",
-        ema_short_near2_stoch_oversold_m2tick:
-            "Entry: close-2 tick, syarat EMA short bullish, Stoch RSI oversold.",
-        ema_short_near2_rsi_close_m2tick:
-            "Entry: close-2 tick, syarat EMA short bullish, RSI 50-70.",
+    const PRESET_EXPLAINERS = {
+        ema_short_near2_stoch_oversold_rsi_mfi_oversold_m2tick: {
+            summary:
+                "Entry: close-2 tick. Kombinasi pullback kuat pada trend EMA pendek dengan konfirmasi momentum & flow.",
+            filters: ["Price x MA: EMA10, EMA20", "StochRSI: Oversold (<=20)", "RSI: Sweet Spot (50-70)", "MFI: Oversold (<=20)"],
+        },
+        ema_short_near2_stoch_oversold_mfi_oversold_m2tick: {
+            summary:
+                "Entry: close-2 tick. Pullback EMA pendek dengan konfirmasi oversold pada StochRSI dan MFI.",
+            filters: ["Price x MA: EMA10, EMA20", "StochRSI: Oversold (<=20)", "MFI: Oversold (<=20)"],
+        },
+        ema_short_near2_stoch_oversold_rsi_m2tick: {
+            summary:
+                "Entry: close-2 tick. Pullback EMA pendek dengan kombinasi StochRSI oversold + RSI sehat.",
+            filters: ["Price x MA: EMA10, EMA20", "StochRSI: Oversold (<=20)", "RSI: Sweet Spot (50-70)"],
+        },
+        legend_minervini_vcp: {
+            summary:
+                "Entry: close-2 tick. Proxy Minervini VCP untuk trend kuat + volatilitas mengecil + pullback terukur.",
+            filters: ["Price x MA: SMA50, SMA100, SMA200 (harga di atas)", "ADR: <= 3.5", "StochRSI: <=30"],
+        },
+        ema1020_pullback_2pct_rsi_m2tick: {
+            summary:
+                "Entry: close-2 tick. Harga tetap di atas EMA10/EMA20, pullback tipis (<=2%), RSI di zona 50-70.",
+            filters: ["Price x MA: EMA10, EMA20", "RSI: Sweet Spot (50-70)", "Jarak EMA pendek: <=2%"],
+        },
     };
 
     const INDICATOR_HELP = {
-        PxMA: {
-            title: "PxMA",
+        "Price x MA": {
+            title: "Price x MA",
             meaning:
                 "Status harga terhadap moving average harga (EMA/SMA). Kotak hijau = harga di atas MA terkait, merah = di bawah.",
             pros: "Mudah baca arah tren jangka pendek-menengah dan cepat menyaring saham yang masih bullish structure.",
             cons: "Lagging saat market berbalik cepat dan rentan false signal saat harga sideways sempit.",
         },
-        VxMA: {
-            title: "VxMA",
+        "Volume x MA": {
+            title: "Volume x MA",
             meaning:
                 "Status volume terhadap moving average volume (VMA). Kotak hijau = volume di atas VMA terkait, merah = di bawah.",
             pros: "Memberi konteks validasi minat pasar, terutama saat breakout atau pullback penting.",
@@ -198,19 +206,29 @@
     ];
 
     const RSI_OPTIONS = [
-        { value: "all", label: "RSI" },
-        { value: "os", label: "<30 (Oversold)" },
+        { value: "all", label: "Semua" },
+        { value: "os", label: "<30" },
         { value: "weak", label: "30-50" },
         { value: "sweet", label: "50-70" },
         { value: "strong", label: "70-80" },
-        { value: "ob", label: ">80 (Overbought)" },
+        { value: "ob", label: ">80" },
     ];
 
     const SRSI_OPTIONS = [
-        { value: "all", label: "StochRSI" },
-        { value: "os", label: "<20 (Oversold)" },
-        { value: "mid", label: "20-80" },
-        { value: "ob", label: ">80 (Overbought)" },
+        { value: "all", label: "Semua" },
+        { value: "os", label: "<=20" },
+        { value: "vcp", label: "<=30" },
+        { value: "mid", label: "31-80" },
+        { value: "ob", label: ">80" },
+    ];
+
+    const MFI_OPTIONS = [
+        { value: "all", label: "Semua" },
+        { value: "os", label: "<=20" },
+        { value: "weak", label: "21-49" },
+        { value: "sweet", label: "50-70" },
+        { value: "strong", label: "71-80" },
+        { value: "ob", label: ">80" },
     ];
 
     const ATR_OPTIONS = [
@@ -222,16 +240,10 @@
 
     const ADR_OPTIONS = [
         { value: "all", label: "ADR" },
+        { value: "vcp", label: "<=3.5" },
         { value: "lesu", label: "Lesu" },
         { value: "normal", label: "Normal" },
         { value: "aktif", label: "Aktif" },
-    ];
-
-    const MFI_OPTIONS = [
-        { value: "all", label: "MFI" },
-        { value: "os", label: "<=20 (Oversold)" },
-        { value: "mid", label: "20-80" },
-        { value: "ob", label: ">=80 (Overbought)" },
     ];
 
     function isShortEmaBullNear2(d) {
@@ -256,6 +268,29 @@
 
     function isMfiOversold(d) {
         return d.mfi != null && d.mfi <= 20;
+    }
+
+    function isEma10Ema20PullbackNear2(d) {
+        const ms = d.maStatus || {};
+        return (
+            ms.ema10 &&
+            ms.ema20 &&
+            d.shortEmaNearestDistPct != null &&
+            d.shortEmaNearestDistPct <= 2
+        );
+    }
+
+    function isMinerviniVcpProxy(d) {
+        const ms = d.maStatus || {};
+        return (
+            ms.sma50 &&
+            ms.sma100 &&
+            ms.sma200 &&
+            d.adrPct != null &&
+            d.adrPct <= 3.5 &&
+            d.stochRsi != null &&
+            d.stochRsi <= 30
+        );
     }
 
     const PRESETS = {
@@ -383,6 +418,40 @@
         ema_short_near2_rsi_mfi_oversold_m2tick: function (d) {
             return isShortEmaBullNear2(d) && isRsi50to70(d) && isMfiOversold(d);
         },
+        legend_minervini_vcp: function (d) {
+            return isMinerviniVcpProxy(d);
+        },
+        ema1020_pullback_2pct_rsi_m2tick: function (d) {
+            return isEma10Ema20PullbackNear2(d) && isRsi50to70(d);
+        },
+    };
+
+    const PRESET_FILTER_LINKS = {
+        ema_short_near2_stoch_oversold_rsi_mfi_oversold_m2tick: {
+            maF: ["ema10", "ema20"],
+            rsi: ["sweet"],
+            srsi: ["os"],
+            mfi: ["os"],
+        },
+        ema_short_near2_stoch_oversold_mfi_oversold_m2tick: {
+            maF: ["ema10", "ema20"],
+            srsi: ["os"],
+            mfi: ["os"],
+        },
+        ema_short_near2_stoch_oversold_rsi_m2tick: {
+            maF: ["ema10", "ema20"],
+            rsi: ["sweet"],
+            srsi: ["os"],
+        },
+        legend_minervini_vcp: {
+            maF: ["sma50", "sma100", "sma200"],
+            srsi: ["vcp"],
+            adr: ["vcp"],
+        },
+        ema1020_pullback_2pct_rsi_m2tick: {
+            maF: ["ema10", "ema20"],
+            rsi: ["sweet"],
+        },
     };
 
     const state = {
@@ -391,20 +460,28 @@
         filtered: [],
         activeTF: "1d",
         preset: "all",
+        presetF: new Set(),
         idx: "all",
+        idxF: new Set(),
         sektor: "all",
+        sektorF: new Set(),
         maF: new Set(),
         vmaF: new Set(),
-        mfi: "all",
         rsi: "all",
+        rsiF: new Set(),
+        mfi: "all",
+        mfiF: new Set(),
         srsi: "all",
+        srsiF: new Set(),
         atr: "all",
+        atrF: new Set(),
         adr: "all",
+        adrF: new Set(),
         search: "",
-        sortCol: "score",
+        sortCol: "macdBull",
         sortDir: "desc",
         forceView: "grid",
-        mobileFiltersOpen: true,
+        mobileFiltersOpen: false,
         renderLimit: 0,
         cardObserver: null,
         searchTimer: null,
@@ -421,16 +498,19 @@
         sektorSelect: document.getElementById("sektorSelect"),
         maSelect: document.getElementById("maSelect"),
         vmaSelect: document.getElementById("vmaSelect"),
-        mfiSelect: document.getElementById("mfiSelect"),
         rsiSelect: document.getElementById("rsiSelect"),
+        mfiSelect: document.getElementById("mfiSelect"),
         srsiSelect: document.getElementById("srsiSelect"),
         atrSelect: document.getElementById("atrSelect"),
         adrSelect: document.getElementById("adrSelect"),
         controlsPanel: document.getElementById("controlsPanel"),
         filterToggleBtn: document.getElementById("filterToggleBtn"),
         resetBtnSticky: document.getElementById("resetBtnSticky"),
+        resetBtnMobile: document.getElementById("resetBtnMobile"),
+        filterChecklists: document.getElementById("filterChecklists"),
         searchInput: document.getElementById("searchInput"),
         sortSelect: document.getElementById("sortSelect"),
+        mobileQuickbar: document.getElementById("mobileQuickbar"),
         activeFilters: document.getElementById("activeFilters"),
         cardList: document.getElementById("cardList"),
         themeToggle: document.getElementById("themeToggle"),
@@ -441,6 +521,11 @@
         helpPros: null,
         helpCons: null,
         helpClose: null,
+    };
+
+    const controlDockState = {
+        initialized: false,
+        original: {},
     };
 
     if (!els.cardList) {
@@ -459,6 +544,9 @@
         ensureHelpModal();
         hydrateTheme();
         updateViewMode();
+        if (els.sortSelect) {
+            els.sortSelect.value = state.sortCol + ":" + state.sortDir;
+        }
         setupSelectOptions();
         bindEvents();
         loadData();
@@ -477,13 +565,14 @@
         );
         populateSelect(els.sektorSelect, sektorOptions, state.sektor);
 
-        populateToggleSelect(els.maSelect, MA_OPTIONS, state.maF, "PxMA");
-        populateToggleSelect(els.vmaSelect, VMA_OPTIONS, state.vmaF, "VxMA");
-        populateSelect(els.mfiSelect, MFI_OPTIONS, state.mfi);
+        populateToggleSelect(els.maSelect, MA_OPTIONS, state.maF, "Price x MA");
+        populateToggleSelect(els.vmaSelect, VMA_OPTIONS, state.vmaF, "Volume x MA");
         populateSelect(els.rsiSelect, RSI_OPTIONS, state.rsi);
+        populateSelect(els.mfiSelect, MFI_OPTIONS, state.mfi);
         populateSelect(els.srsiSelect, SRSI_OPTIONS, state.srsi);
         populateSelect(els.atrSelect, ATR_OPTIONS, state.atr);
         populateSelect(els.adrSelect, ADR_OPTIONS, state.adr);
+        renderFilterChecklists();
         updatePresetInfo();
         updateFilterHighlights();
         fitAllSelectWidths();
@@ -497,8 +586,8 @@
             els.idxSelect,
             els.maSelect,
             els.vmaSelect,
-            els.mfiSelect,
             els.rsiSelect,
+            els.mfiSelect,
             els.srsiSelect,
             els.atrSelect,
             els.adrSelect,
@@ -576,13 +665,14 @@
 
         bindSelect(els.idxSelect, "idx");
         bindSelect(els.sektorSelect, "sektor");
-        bindToggleMultiSelect(els.maSelect, MA_OPTIONS, state.maF, "PxMA");
-        bindToggleMultiSelect(els.vmaSelect, VMA_OPTIONS, state.vmaF, "VxMA");
-        bindSelect(els.mfiSelect, "mfi");
+        bindToggleMultiSelect(els.maSelect, MA_OPTIONS, state.maF, "Price x MA");
+        bindToggleMultiSelect(els.vmaSelect, VMA_OPTIONS, state.vmaF, "Volume x MA");
         bindSelect(els.rsiSelect, "rsi");
+        bindSelect(els.mfiSelect, "mfi");
         bindSelect(els.srsiSelect, "srsi");
         bindSelect(els.atrSelect, "atr");
         bindSelect(els.adrSelect, "adr");
+        bindChecklistFilters();
 
         els.searchInput.addEventListener("input", function () {
             state.search = els.searchInput.value || "";
@@ -590,18 +680,21 @@
         });
 
         els.sortSelect.addEventListener("change", function () {
-            const raw = String(els.sortSelect.value || "score:desc");
+            const raw = String(els.sortSelect.value || "macdBull:desc");
             const parts = raw.split(":");
-            state.sortCol = parts[0] || "score";
+            state.sortCol = parts[0] || "macdBull";
             state.sortDir = parts[1] === "asc" ? "asc" : "desc";
             applyFiltersAndRender();
         });
 
-        if (els.resetBtnSticky) {
-            els.resetBtnSticky.addEventListener("click", function () {
+        [els.resetBtnSticky, els.resetBtnMobile].forEach(function (button) {
+            if (!button) {
+                return;
+            }
+            button.addEventListener("click", function () {
                 resetAllFilters();
             });
-        }
+        });
         if (els.filterToggleBtn) {
             els.filterToggleBtn.addEventListener("click", function () {
                 toggleMobileFilters();
@@ -636,6 +729,7 @@
 
         window.addEventListener("resize", function () {
             syncMobileFilterState();
+            syncMobileControlDock();
             placeIndicatorHelp();
         });
 
@@ -659,6 +753,7 @@
         });
 
         syncMobileFilterState();
+        syncMobileControlDock();
     }
 
     function bindSelect(selectEl, stateKey) {
@@ -666,12 +761,36 @@
             return;
         }
         selectEl.addEventListener("change", function () {
+            clearChecklistSetForStateKey(stateKey);
             state[stateKey] = selectEl.value || "all";
             if (stateKey === "preset") {
+                applyPresetLinkedFilters();
                 updatePresetInfo();
             }
+            renderFilterChecklists();
             applyFiltersAndRender();
         });
+    }
+
+    function clearChecklistSetForStateKey(stateKey) {
+        const checklistSet = checklistSetByStateKey(stateKey);
+        if (checklistSet) {
+            checklistSet.clear();
+        }
+    }
+
+    function checklistSetByStateKey(stateKey) {
+        const map = {
+            preset: state.presetF,
+            idx: state.idxF,
+            sektor: state.sektorF,
+            rsi: state.rsiF,
+            mfi: state.mfiF,
+            srsi: state.srsiF,
+            atr: state.atrF,
+            adr: state.adrF,
+        };
+        return map[stateKey] || null;
     }
 
     function bindToggleMultiSelect(selectEl, options, selectedSet, label) {
@@ -688,8 +807,326 @@
                 selectedSet.add(value);
             }
             populateToggleSelect(selectEl, options, selectedSet, label);
+            renderFilterChecklists();
             applyFiltersAndRender();
         });
+    }
+
+    function bindChecklistFilters() {
+        if (!els.filterChecklists) {
+            return;
+        }
+        els.filterChecklists.addEventListener("change", function (event) {
+            const input = event.target.closest("input[data-filter-group]");
+            if (!input) {
+                return;
+            }
+            const group = input.getAttribute("data-filter-group") || "";
+            const mode = input.getAttribute("data-filter-mode") || "single";
+            const value = input.value || "all";
+
+            if (mode === "multi") {
+                const selectedSet = checklistSetByGroupKey(group);
+                if (!selectedSet) {
+                    return;
+                }
+                if (value === "all") {
+                    selectedSet.clear();
+                    if (input.checked) {
+                        selectedSet.add("all");
+                    }
+                } else {
+                    selectedSet.delete("all");
+                    if (input.checked) {
+                        selectedSet.add(value);
+                    } else {
+                        selectedSet.delete(value);
+                    }
+                }
+
+                if (group === "maF") {
+                    populateToggleSelect(els.maSelect, MA_OPTIONS, state.maF, "Price x MA");
+                } else if (group === "vmaF") {
+                    populateToggleSelect(els.vmaSelect, VMA_OPTIONS, state.vmaF, "Volume x MA");
+                } else {
+                    syncSingleFilterFromChecklist(group, selectedSet);
+                }
+            } else {
+                return;
+            }
+            renderFilterChecklists();
+            applyFiltersAndRender();
+        });
+    }
+
+    function checklistSetByGroupKey(groupKey) {
+        const map = {
+            preset: state.presetF,
+            idx: state.idxF,
+            sektor: state.sektorF,
+            maF: state.maF,
+            vmaF: state.vmaF,
+            rsi: state.rsiF,
+            srsi: state.srsiF,
+            mfi: state.mfiF,
+            atr: state.atrF,
+            adr: state.adrF,
+        };
+        return map[groupKey] || null;
+    }
+
+    function syncSingleFilterFromChecklist(groupKey, selectedSet) {
+        if (!(groupKey in state)) {
+            return;
+        }
+        const selected = selectedValuesWithoutAll(selectedSet);
+        state[groupKey] = selected.length === 1 ? selected[0] : "all";
+        const selectEl = selectFromStateKey(groupKey);
+        if (selectEl) {
+            selectEl.value = state[groupKey];
+        }
+        if (groupKey === "preset") {
+            applyPresetLinkedFilters();
+            updatePresetInfo();
+        }
+    }
+
+    function currentSinglePreset() {
+        const selectedPresets = selectedValuesWithoutAll(state.presetF);
+        if (selectedPresets.length === 1) {
+            return selectedPresets[0];
+        }
+        if (state.preset && state.preset !== "all") {
+            return state.preset;
+        }
+        return null;
+    }
+
+    function setSetValues(targetSet, values) {
+        if (!targetSet) {
+            return;
+        }
+        targetSet.clear();
+        (values || []).forEach(function (value) {
+            if (value && value !== "all") {
+                targetSet.add(value);
+            }
+        });
+    }
+
+    function applyPresetSingleValues(stateKey, values) {
+        const selectedSet = checklistSetByStateKey(stateKey);
+        if (!selectedSet) {
+            return;
+        }
+        setSetValues(selectedSet, values);
+        const singleValues = selectedValuesWithoutAll(selectedSet);
+        state[stateKey] = singleValues.length === 1 ? singleValues[0] : "all";
+        const selectEl = selectFromStateKey(stateKey);
+        if (selectEl) {
+            selectEl.value = state[stateKey];
+        }
+    }
+
+    function applyPresetLinkedFilters() {
+        const presetKey = currentSinglePreset();
+        if (!presetKey) {
+            return;
+        }
+        const linked = PRESET_FILTER_LINKS[presetKey];
+        if (!linked) {
+            return;
+        }
+
+        setSetValues(state.maF, linked.maF);
+        setSetValues(state.vmaF, linked.vmaF);
+        populateToggleSelect(els.maSelect, MA_OPTIONS, state.maF, "Price x MA");
+        populateToggleSelect(els.vmaSelect, VMA_OPTIONS, state.vmaF, "Volume x MA");
+
+        applyPresetSingleValues("rsi", linked.rsi);
+        applyPresetSingleValues("mfi", linked.mfi);
+        applyPresetSingleValues("srsi", linked.srsi);
+        applyPresetSingleValues("atr", linked.atr);
+        applyPresetSingleValues("adr", linked.adr);
+    }
+
+    function selectedValuesWithoutAll(selectedSet) {
+        if (!selectedSet || !selectedSet.size) {
+            return [];
+        }
+        return Array.from(selectedSet).filter(function (value) {
+            return value && value !== "all";
+        });
+    }
+
+    function effectiveChecklistSet(selectedSet, singleValue) {
+        if (selectedSet && selectedSet.size) {
+            return selectedSet;
+        }
+        if (singleValue && singleValue !== "all") {
+            return new Set([singleValue]);
+        }
+        return new Set();
+    }
+
+    function selectFromStateKey(stateKey) {
+        const map = {
+            preset: els.presetSelect,
+            idx: els.idxSelect,
+            sektor: els.sektorSelect,
+            rsi: els.rsiSelect,
+            mfi: els.mfiSelect,
+            srsi: els.srsiSelect,
+            atr: els.atrSelect,
+            adr: els.adrSelect,
+        };
+        return map[stateKey] || null;
+    }
+
+    function checklistOptionsForSingle(options, allLabel) {
+        return (options || [])
+            .filter(function (opt) {
+                return opt && opt.value !== "reset" && opt.value !== "__reset__";
+            })
+            .map(function (opt) {
+                if (opt.value === "all") {
+                    return { value: "all", label: allLabel };
+                }
+                return { value: opt.value, label: opt.label };
+            });
+    }
+
+    function buildChecklistGroupMarkup(group) {
+        if (!group || !Array.isArray(group.options) || !group.options.length) {
+            return "";
+        }
+        const inputType = "checkbox";
+        const nameAttr = "check-" + group.key;
+        const items = group.options
+            .map(function (opt) {
+                const checked = group.mode === "multi" ? group.selectedSet.has(opt.value) : group.value === opt.value;
+                return (
+                    '<label class="check-item' +
+                    (opt.value === "all" ? " check-item-all" : "") +
+                    (checked ? " is-checked" : "") +
+                    '">' +
+                    '<input type="' +
+                    inputType +
+                    '" name="' +
+                    escapeHtml(nameAttr) +
+                    '" value="' +
+                    escapeHtml(opt.value) +
+                    '" data-filter-mode="' +
+                    escapeHtml(group.mode) +
+                    '" data-filter-group="' +
+                    escapeHtml(group.key) +
+                    '"' +
+                    (checked ? " checked" : "") +
+                    " />" +
+                    "<span>" +
+                    escapeHtml(opt.label) +
+                    "</span>" +
+                    "</label>"
+                );
+            })
+            .join("");
+        return (
+            '<section class="check-group">' +
+            '<h3 class="check-group-title">' +
+            escapeHtml(group.title) +
+            "</h3>" +
+            '<div class="check-group-list">' +
+            items +
+            "</div>" +
+            "</section>"
+        );
+    }
+
+    function renderFilterChecklists() {
+        if (!els.filterChecklists) {
+            return;
+        }
+        const sectors = getSectorList();
+        const sektorOptions = [{ value: "all", label: "Semua" }].concat(
+            sectors.map(function (name) {
+                return { value: name, label: name };
+            }),
+        );
+
+        const groups = [
+            {
+                key: "idx",
+                title: "Indeks",
+                mode: "multi",
+                selectedSet: effectiveChecklistSet(state.idxF, state.idx),
+                options: checklistOptionsForSingle(IDX_OPTIONS, "Semua"),
+            },
+            {
+                key: "sektor",
+                title: "Sektor",
+                mode: "multi",
+                selectedSet: effectiveChecklistSet(state.sektorF, state.sektor),
+                options: sektorOptions,
+            },
+            {
+                key: "maF",
+                title: "Price x MA",
+                mode: "multi",
+                selectedSet: state.maF,
+                options: MA_OPTIONS,
+            },
+            {
+                key: "vmaF",
+                title: "Volume x MA",
+                mode: "multi",
+                selectedSet: state.vmaF,
+                options: VMA_OPTIONS,
+            },
+            {
+                key: "rsi",
+                title: "RSI",
+                mode: "multi",
+                selectedSet: effectiveChecklistSet(state.rsiF, state.rsi),
+                options: checklistOptionsForSingle(RSI_OPTIONS, "Semua"),
+            },
+            {
+                key: "mfi",
+                title: "MFI",
+                mode: "multi",
+                selectedSet: effectiveChecklistSet(state.mfiF, state.mfi),
+                options: checklistOptionsForSingle(MFI_OPTIONS, "Semua"),
+            },
+            {
+                key: "srsi",
+                title: "StochRSI",
+                mode: "multi",
+                selectedSet: effectiveChecklistSet(state.srsiF, state.srsi),
+                options: checklistOptionsForSingle(SRSI_OPTIONS, "Semua"),
+            },
+            {
+                key: "atr",
+                title: "ATR",
+                mode: "multi",
+                selectedSet: effectiveChecklistSet(state.atrF, state.atr),
+                options: checklistOptionsForSingle(ATR_OPTIONS, "Semua"),
+            },
+            {
+                key: "adr",
+                title: "ADR",
+                mode: "multi",
+                selectedSet: effectiveChecklistSet(state.adrF, state.adr),
+                options: checklistOptionsForSingle(ADR_OPTIONS, "Semua"),
+            },
+            {
+                key: "preset",
+                title: "Preset",
+                mode: "multi",
+                selectedSet: effectiveChecklistSet(state.presetF, state.preset),
+                options: checklistOptionsForSingle(PRESET_OPTIONS, "Semua"),
+            },
+        ];
+
+        els.filterChecklists.innerHTML = groups.map(buildChecklistGroupMarkup).join("");
     }
 
     function hydrateTheme() {
@@ -711,28 +1148,142 @@
         if (!els.presetInfo) {
             return;
         }
-        const key = state.preset || "all";
-        const note = PRESET_NOTES[key] || PRESET_NOTES.all || "";
-        els.presetInfo.textContent = note;
-        els.presetInfo.hidden = !note;
+        const selectedPresets = selectedValuesWithoutAll(state.presetF);
+        const singlePreset =
+            selectedPresets.length === 1
+                ? selectedPresets[0]
+                : state.preset && state.preset !== "all"
+                  ? state.preset
+                  : null;
+
+        if (selectedPresets.length > 1) {
+            els.presetInfo.innerHTML =
+                '<div class="preset-info-title">Preset dipilih</div>' +
+                '<div class="preset-info-summary">' +
+                selectedPresets.length +
+                " preset aktif. Pilih satu preset untuk lihat metric explainer.</div>";
+            els.presetInfo.hidden = false;
+            return;
+        }
+
+        if (!singlePreset) {
+            els.presetInfo.hidden = true;
+            els.presetInfo.innerHTML = "";
+            return;
+        }
+
+        const explainer = PRESET_EXPLAINERS[singlePreset] || null;
+        const presetLabel =
+            (PRESET_OPTIONS.find(function (opt) {
+                return opt.value === singlePreset;
+            }) || {}).label || singlePreset;
+
+        if (!explainer) {
+            els.presetInfo.innerHTML =
+                '<div class="preset-info-title">Preset aktif</div>' +
+                '<div class="preset-info-summary">' +
+                escapeHtml(presetLabel) +
+                "</div>";
+            els.presetInfo.hidden = false;
+            return;
+        }
+
+        const metricTags = (explainer.filters || [])
+            .map(function (text) {
+                return '<span class="preset-info-metric">' + escapeHtml(text) + "</span>";
+            })
+            .join("");
+
+        els.presetInfo.innerHTML =
+            '<div class="preset-info-title">' +
+            escapeHtml(presetLabel) +
+            "</div>" +
+            '<div class="preset-info-summary">' +
+            escapeHtml(explainer.summary || "") +
+            "</div>" +
+            (metricTags ? '<div class="preset-info-metrics">' + metricTags + "</div>" : "");
+        els.presetInfo.hidden = false;
     }
 
     function isMobileViewport() {
-        return window.matchMedia("(max-width: 820px)").matches;
+        return window.matchMedia("(max-width: 768px)").matches;
     }
 
     function syncMobileFilterState() {
         if (!els.controlsPanel || !els.filterToggleBtn) {
             return;
         }
-        els.controlsPanel.classList.toggle("filter-collapsed", !state.mobileFiltersOpen);
-        els.filterToggleBtn.textContent = state.mobileFiltersOpen ? "Tutup Filter ▴" : "Buka Filter ▾";
+        const isMobile = isMobileViewport();
+        const isCollapsed = isMobile ? !state.mobileFiltersOpen : false;
+        els.controlsPanel.classList.toggle("filter-collapsed", isCollapsed);
+        els.filterToggleBtn.textContent = isCollapsed ? "Buka Filter ▾" : "Tutup Filter ▴";
+        els.filterToggleBtn.setAttribute("aria-expanded", String(!isCollapsed));
         updatePresetInfo();
+        updateMobileQuickbarOffset();
     }
 
     function toggleMobileFilters() {
         state.mobileFiltersOpen = !state.mobileFiltersOpen;
         syncMobileFilterState();
+    }
+
+    function cacheDockOriginal(node, key) {
+        if (!node || !key || controlDockState.original[key]) {
+            return;
+        }
+        controlDockState.original[key] = {
+            parent: node.parentNode,
+            next: node.nextSibling,
+        };
+    }
+
+    function restoreDockedNode(node, key) {
+        const meta = controlDockState.original[key];
+        if (!node || !meta || !meta.parent) {
+            return;
+        }
+        if (meta.next && meta.next.parentNode === meta.parent) {
+            meta.parent.insertBefore(node, meta.next);
+            return;
+        }
+        meta.parent.appendChild(node);
+    }
+
+    function updateMobileQuickbarOffset() {
+        if (!isMobileViewport()) {
+            document.documentElement.style.removeProperty("--mobile-toolbar-height");
+            return;
+        }
+        const toolbar = document.querySelector(".mobile-toolbar");
+        const height = toolbar ? Math.ceil(toolbar.getBoundingClientRect().height) : 56;
+        document.documentElement.style.setProperty("--mobile-toolbar-height", height + "px");
+    }
+
+    function syncMobileControlDock() {
+        if (!els.mobileQuickbar || !els.searchInput || !els.timeframeSelect || !els.sortSelect) {
+            return;
+        }
+        if (!controlDockState.initialized) {
+            cacheDockOriginal(els.searchInput, "searchInput");
+            cacheDockOriginal(els.timeframeSelect, "timeframeSelect");
+            cacheDockOriginal(els.sortSelect, "sortSelect");
+            controlDockState.initialized = true;
+        }
+
+        if (isMobileViewport()) {
+            els.mobileQuickbar.appendChild(els.searchInput);
+            els.mobileQuickbar.appendChild(els.timeframeSelect);
+            els.mobileQuickbar.appendChild(els.sortSelect);
+            els.mobileQuickbar.hidden = false;
+            updateMobileQuickbarOffset();
+            return;
+        }
+
+        restoreDockedNode(els.searchInput, "searchInput");
+        restoreDockedNode(els.timeframeSelect, "timeframeSelect");
+        restoreDockedNode(els.sortSelect, "sortSelect");
+        els.mobileQuickbar.hidden = true;
+        document.documentElement.style.removeProperty("--mobile-toolbar-height");
     }
 
     function ensureHelpModal() {
@@ -990,17 +1541,26 @@
     }
 
     function updateFilterHighlights() {
-        setFilterActive(els.presetSelect, state.preset !== "all");
+        setFilterActive(
+            els.presetSelect,
+            selectedValuesWithoutAll(state.presetF).length > 0 || state.preset !== "all",
+        );
         setFilterActive(els.timeframeSelect, state.activeTF !== "1d");
-        setFilterActive(els.idxSelect, state.idx !== "all");
-        setFilterActive(els.sektorSelect, state.sektor !== "all");
+        setFilterActive(els.idxSelect, selectedValuesWithoutAll(state.idxF).length > 0 || state.idx !== "all");
+        setFilterActive(
+            els.sektorSelect,
+            selectedValuesWithoutAll(state.sektorF).length > 0 || state.sektor !== "all",
+        );
         setFilterActive(els.maSelect, state.maF.size > 0);
         setFilterActive(els.vmaSelect, state.vmaF.size > 0);
-        setFilterActive(els.mfiSelect, state.mfi !== "all");
-        setFilterActive(els.rsiSelect, state.rsi !== "all");
-        setFilterActive(els.srsiSelect, state.srsi !== "all");
-        setFilterActive(els.atrSelect, state.atr !== "all");
-        setFilterActive(els.adrSelect, state.adr !== "all");
+        setFilterActive(els.rsiSelect, selectedValuesWithoutAll(state.rsiF).length > 0 || state.rsi !== "all");
+        setFilterActive(els.mfiSelect, selectedValuesWithoutAll(state.mfiF).length > 0 || state.mfi !== "all");
+        setFilterActive(
+            els.srsiSelect,
+            selectedValuesWithoutAll(state.srsiF).length > 0 || state.srsi !== "all",
+        );
+        setFilterActive(els.atrSelect, selectedValuesWithoutAll(state.atrF).length > 0 || state.atr !== "all");
+        setFilterActive(els.adrSelect, selectedValuesWithoutAll(state.adrF).length > 0 || state.adr !== "all");
         setFilterActive(els.searchInput, Boolean((state.search || "").trim()));
     }
 
@@ -1009,6 +1569,104 @@
             return;
         }
         el.classList.toggle("is-active", Boolean(active));
+    }
+
+    function matchesRsiMode(value, mode) {
+        if (value == null) {
+            return false;
+        }
+        if (mode === "os") {
+            return value < 30;
+        }
+        if (mode === "weak") {
+            return value >= 30 && value < 50;
+        }
+        if (mode === "sweet") {
+            return value >= 50 && value <= 70;
+        }
+        if (mode === "strong") {
+            return value > 70 && value <= 80;
+        }
+        if (mode === "ob") {
+            return value > 80;
+        }
+        return true;
+    }
+
+    function matchesSrsiMode(value, mode) {
+        if (value == null) {
+            return false;
+        }
+        if (mode === "os") {
+            return value <= 20;
+        }
+        if (mode === "vcp") {
+            return value <= 30;
+        }
+        if (mode === "mid") {
+            return value > 30 && value <= 80;
+        }
+        if (mode === "ob") {
+            return value > 80;
+        }
+        return true;
+    }
+
+    function matchesMfiMode(value, mode) {
+        if (value == null) {
+            return false;
+        }
+        if (mode === "os") {
+            return value <= 20;
+        }
+        if (mode === "weak") {
+            return value > 20 && value < 50;
+        }
+        if (mode === "sweet") {
+            return value >= 50 && value <= 70;
+        }
+        if (mode === "strong") {
+            return value > 70 && value <= 80;
+        }
+        if (mode === "ob") {
+            return value > 80;
+        }
+        return true;
+    }
+
+    function matchesAtrMode(value, mode) {
+        if (value == null) {
+            return false;
+        }
+        if (mode === "lesu") {
+            return value < 1.5;
+        }
+        if (mode === "normal") {
+            return value >= 1.5 && value < 5;
+        }
+        if (mode === "aktif") {
+            return value >= 5;
+        }
+        return true;
+    }
+
+    function matchesAdrMode(value, mode) {
+        if (value == null) {
+            return false;
+        }
+        if (mode === "vcp") {
+            return value <= 3.5;
+        }
+        if (mode === "lesu") {
+            return value < 1.5;
+        }
+        if (mode === "normal") {
+            return value >= 1.5 && value < 5;
+        }
+        if (mode === "aktif") {
+            return value >= 5;
+        }
+        return true;
     }
 
     function applyFilters(rows) {
@@ -1026,18 +1684,38 @@
             });
         }
 
-        if (state.preset !== "all" && PRESETS[state.preset]) {
+        const activePresets = selectedValuesWithoutAll(state.presetF);
+        if (activePresets.length) {
+            data = data.filter(function (item) {
+                return activePresets.some(function (presetKey) {
+                    return PRESETS[presetKey] && PRESETS[presetKey](item);
+                });
+            });
+        } else if (state.preset !== "all" && PRESETS[state.preset]) {
             data = data.filter(PRESETS[state.preset]);
         }
 
-        if (state.idx !== "all") {
+        const activeIndices = selectedValuesWithoutAll(state.idxF);
+        if (activeIndices.length) {
+            data = data.filter(function (item) {
+                const indices = Array.isArray(item.indeks) ? item.indeks : [];
+                return activeIndices.some(function (idxKey) {
+                    return indices.includes(IDX_MAP[idxKey]);
+                });
+            });
+        } else if (state.idx !== "all") {
             data = data.filter(function (item) {
                 const indices = Array.isArray(item.indeks) ? item.indeks : [];
                 return indices.includes(IDX_MAP[state.idx]);
             });
         }
 
-        if (state.sektor !== "all") {
+        const activeSectors = selectedValuesWithoutAll(state.sektorF);
+        if (activeSectors.length) {
+            data = data.filter(function (item) {
+                return activeSectors.includes(item.sektor);
+            });
+        } else if (state.sektor !== "all") {
             data = data.filter(function (item) {
                 return item.sektor === state.sektor;
             });
@@ -1061,99 +1739,68 @@
             });
         }
 
-        if (state.mfi !== "all") {
+        const activeRsi = selectedValuesWithoutAll(state.rsiF);
+        if (activeRsi.length) {
             data = data.filter(function (item) {
-                if (item.mfi == null) {
-                    return false;
-                }
-                if (state.mfi === "os") {
-                    return item.mfi <= 20;
-                }
-                if (state.mfi === "mid") {
-                    return item.mfi > 20 && item.mfi < 80;
-                }
-                if (state.mfi === "ob") {
-                    return item.mfi >= 80;
-                }
-                return true;
+                return activeRsi.some(function (mode) {
+                    return matchesRsiMode(item.rsi, mode);
+                });
+            });
+        } else if (state.rsi !== "all") {
+            data = data.filter(function (item) {
+                return matchesRsiMode(item.rsi, state.rsi);
             });
         }
 
-        if (state.rsi !== "all") {
+        const activeMfi = selectedValuesWithoutAll(state.mfiF);
+        if (activeMfi.length) {
             data = data.filter(function (item) {
-                if (item.rsi == null) {
-                    return false;
-                }
-                if (state.rsi === "os") {
-                    return item.rsi < 30;
-                }
-                if (state.rsi === "weak") {
-                    return item.rsi >= 30 && item.rsi < 50;
-                }
-                if (state.rsi === "sweet") {
-                    return item.rsi >= 50 && item.rsi <= 70;
-                }
-                if (state.rsi === "strong") {
-                    return item.rsi > 70 && item.rsi <= 80;
-                }
-                if (state.rsi === "ob") {
-                    return item.rsi > 80;
-                }
-                return true;
+                return activeMfi.some(function (mode) {
+                    return matchesMfiMode(item.mfi, mode);
+                });
+            });
+        } else if (state.mfi !== "all") {
+            data = data.filter(function (item) {
+                return matchesMfiMode(item.mfi, state.mfi);
             });
         }
 
-        if (state.srsi !== "all") {
+        const activeSrsi = selectedValuesWithoutAll(state.srsiF);
+        if (activeSrsi.length) {
             data = data.filter(function (item) {
-                if (item.stochRsi == null) {
-                    return false;
-                }
-                if (state.srsi === "os") {
-                    return item.stochRsi < 20;
-                }
-                if (state.srsi === "mid") {
-                    return item.stochRsi >= 20 && item.stochRsi <= 80;
-                }
-                if (state.srsi === "ob") {
-                    return item.stochRsi > 80;
-                }
-                return true;
+                return activeSrsi.some(function (mode) {
+                    return matchesSrsiMode(item.stochRsi, mode);
+                });
+            });
+        } else if (state.srsi !== "all") {
+            data = data.filter(function (item) {
+                return matchesSrsiMode(item.stochRsi, state.srsi);
             });
         }
 
-        if (state.atr !== "all") {
+        const activeAtr = selectedValuesWithoutAll(state.atrF);
+        if (activeAtr.length) {
             data = data.filter(function (item) {
-                if (item.atrPct == null) {
-                    return false;
-                }
-                if (state.atr === "lesu") {
-                    return item.atrPct < 1.5;
-                }
-                if (state.atr === "normal") {
-                    return item.atrPct >= 1.5 && item.atrPct < 5;
-                }
-                if (state.atr === "aktif") {
-                    return item.atrPct >= 5;
-                }
-                return true;
+                return activeAtr.some(function (mode) {
+                    return matchesAtrMode(item.atrPct, mode);
+                });
+            });
+        } else if (state.atr !== "all") {
+            data = data.filter(function (item) {
+                return matchesAtrMode(item.atrPct, state.atr);
             });
         }
 
-        if (state.adr !== "all") {
+        const activeAdr = selectedValuesWithoutAll(state.adrF);
+        if (activeAdr.length) {
             data = data.filter(function (item) {
-                if (item.adrPct == null) {
-                    return false;
-                }
-                if (state.adr === "lesu") {
-                    return item.adrPct < 1.5;
-                }
-                if (state.adr === "normal") {
-                    return item.adrPct >= 1.5 && item.adrPct < 5;
-                }
-                if (state.adr === "aktif") {
-                    return item.adrPct >= 5;
-                }
-                return true;
+                return activeAdr.some(function (mode) {
+                    return matchesAdrMode(item.adrPct, mode);
+                });
+            });
+        } else if (state.adr !== "all") {
+            data = data.filter(function (item) {
+                return matchesAdrMode(item.adrPct, state.adr);
             });
         }
 
@@ -1168,6 +1815,26 @@
         rows.sort(function (a, b) {
             if (col === "ticker") {
                 return String(a.ticker || "").localeCompare(String(b.ticker || "")) * factor;
+            }
+            if (col === "macdBull") {
+                const vaBool = a.macdBull === true ? 1 : 0;
+                const vbBool = b.macdBull === true ? 1 : 0;
+                if (vaBool !== vbBool) {
+                    return (vaBool - vbBool) * factor;
+                }
+
+                const vaHist = toFiniteNumber(a.macdHist);
+                const vbHist = toFiniteNumber(b.macdHist);
+                if (vaHist == null && vbHist == null) {
+                    return 0;
+                }
+                if (vaHist == null) {
+                    return 1;
+                }
+                if (vbHist == null) {
+                    return -1;
+                }
+                return (vaHist - vbHist) * factor;
             }
 
             const va = toFiniteNumber(a[col]);
@@ -1190,32 +1857,35 @@
         els.statsCount.textContent = state.filtered.length.toLocaleString("id-ID") + " saham";
         renderActiveFilterTags();
         renderCards();
+        updateMobileQuickbarOffset();
     }
 
     function renderActiveFilterTags() {
         const tags = [];
 
-        pushSelectTag(tags, "Preset", els.presetSelect, state.preset);
+        pushSetOrSelectTag(tags, "Preset", els.presetSelect, state.presetF, state.preset);
         pushSelectTag(tags, "Timeframe", els.timeframeSelect, state.activeTF, "1d");
-        pushSelectTag(tags, "Indeks", els.idxSelect, state.idx);
-        pushSelectTag(tags, "Sektor", els.sektorSelect, state.sektor);
-        pushMultiSetTag(tags, "PxMA", MA_OPTIONS, state.maF);
-        pushMultiSetTag(tags, "VxMA", VMA_OPTIONS, state.vmaF);
-        pushSelectTag(tags, "MFI", els.mfiSelect, state.mfi);
-        pushSelectTag(tags, "RSI", els.rsiSelect, state.rsi);
-        pushSelectTag(tags, "StochRSI", els.srsiSelect, state.srsi);
-        pushSelectTag(tags, "ATR", els.atrSelect, state.atr);
-        pushSelectTag(tags, "ADR", els.adrSelect, state.adr);
+        pushSetOrSelectTag(tags, "Indeks", els.idxSelect, state.idxF, state.idx);
+        pushSetOrSelectTag(tags, "Sektor", els.sektorSelect, state.sektorF, state.sektor);
+        pushMultiSetTag(tags, "Price x MA", MA_OPTIONS, state.maF);
+        pushMultiSetTag(tags, "Volume x MA", VMA_OPTIONS, state.vmaF);
+        pushSetOrSelectTag(tags, "RSI", els.rsiSelect, state.rsiF, state.rsi);
+        pushSetOrSelectTag(tags, "MFI", els.mfiSelect, state.mfiF, state.mfi);
+        pushSetOrSelectTag(tags, "StochRSI", els.srsiSelect, state.srsiF, state.srsi);
+        pushSetOrSelectTag(tags, "ATR", els.atrSelect, state.atrF, state.atr);
+        pushSetOrSelectTag(tags, "ADR", els.adrSelect, state.adrF, state.adr);
 
         if (state.search.trim()) {
             tags.push("Cari: " + state.search.trim());
         }
 
         if (!tags.length) {
-            els.activeFilters.innerHTML = '<span class="af-empty">Tidak ada filter aktif</span>';
+            els.activeFilters.innerHTML = "";
+            els.activeFilters.classList.add("is-empty");
             return;
         }
 
+        els.activeFilters.classList.remove("is-empty");
         els.activeFilters.innerHTML = tags
             .map(function (tag) {
                 const withPrefix = tag.indexOf("Cari: ") === 0 ? tag : "Filter: " + tag;
@@ -1235,6 +1905,28 @@
         const option = selectEl.options[selectEl.selectedIndex];
         const text = option ? option.textContent : value;
         target.push(label + ": " + text);
+    }
+
+    function pushSetOrSelectTag(target, label, selectEl, selectedSet, fallbackValue) {
+        if (!selectEl) {
+            return;
+        }
+        const selected = selectedValuesWithoutAll(selectedSet);
+        if (selected.length) {
+            const labels = selected
+                .map(function (value) {
+                    const opt = Array.from(selectEl.options || []).find(function (option) {
+                        return option.value === value;
+                    });
+                    return opt ? String(opt.textContent || "").trim() : value;
+                })
+                .filter(Boolean);
+            if (labels.length) {
+                target.push(label + ": " + labels.join(", "));
+                return;
+            }
+        }
+        pushSelectTag(target, label, selectEl, fallbackValue);
     }
 
     function pushMultiSetTag(target, label, options, selectedSet) {
@@ -1286,7 +1978,6 @@
         const srsiZone = srsiLabel(item.stochRsi);
         const atrZone = rangeLabel(item.atrPct);
         const adrZone = rangeLabel(item.adrPct);
-        const pctBadge = item.pct > 0 ? "up" : item.pct < 0 ? "dn" : "nu";
         const maSquares = signalSquares(item.maStatus, MA_KEYS, ["P3", "P5", "P10", "P20", "P50", "P1", "P2"], "ma");
         const vmaSquares = signalSquares(item.maStatus, VOL_KEYS, ["V3", "V5", "V10", "V20", "V50", "V1", "V2"], "vol");
         const slAtrPrice =
@@ -1312,7 +2003,7 @@
                 formatDec(item.atrPct, 2) +
                 "% (" +
                 atrZone +
-                ") · SL " +
+                ") · SL: " +
                 formatPrice(slAtrPrice),
             toneByRange(item.atrPct),
             true,
@@ -1328,35 +2019,35 @@
             true,
         );
         const symbolUrl = stockbitSymbolUrl(item.ticker);
-        const indexBadges = (item.indeks || [])
+        const indeksList = Array.isArray(item.indeks) ? item.indeks : [];
+        const hasIssi = indeksList.some(function (idx) {
+            return String(idx || "").toUpperCase() === "ISSI";
+        });
+        const indexBadges = indeksList
             .map(function (idx) {
                 return badge(idx, idx === "ISSI" ? "issi" : "");
             })
-            .join("");
+            .join("") +
+            (hasIssi ? "" : badge("Non-ISSI", "non-issi"));
 
         return (
             '<article class="stock-card">' +
             '<div class="card-top-sticky">' +
             '<div class="card-head">' +
-            '<div><a class="card-title card-title-link" href="' +
+            '<div class="card-title-wrap">' +
+            '<div class="title-line"><a class="card-title card-title-link" href="' +
             symbolUrl +
             '" target="_blank" rel="noopener noreferrer">' +
             escapeHtml(item.ticker) +
-            '</a><div class="card-company">' +
-            escapeHtml(companyDisplayName(item.company)) +
-            "</div></div>" +
-            '<div class="price-cell">' +
-            '<div class="price-main">' +
+            '</a><span class="title-price">' +
             formatPrice(item.price) +
-            "</div>" +
-            '<span class="pct-badge ' +
-            pctBadge +
-            " " +
+            '</span><span class="title-pct ' +
             pctClass +
             '">' +
             formatPct(item.pct) +
-            "</span>" +
-            "</div>" +
+            '</span></div><div class="card-company">' +
+            escapeHtml(companyDisplayName(item.company)) +
+            "</div></div>" +
             "</div>" +
             '<div class="badges">' +
             indexBadges +
@@ -1365,8 +2056,8 @@
             "</div>" +
             "</div>" +
             '<div class="card-grid">' +
-            cardItem("PxMA", maSquares) +
-            cardItem("VxMA", vmaSquares) +
+            cardItem("Price x MA", maSquares) +
+            cardItem("Volume x MA", vmaSquares) +
             cardItem("1% Trx Hari Ini", formatRupiah(item.pct1today)) +
             cardItem("1% Trx 20 Hari", formatRupiah(item.pct120d)) +
             cardItem("MFI", mfiText) +
@@ -1543,35 +2234,44 @@
 
     function resetAllFilters() {
         state.preset = "all";
+        state.presetF.clear();
         state.activeTF = "1d";
         state.idx = "all";
+        state.idxF.clear();
         state.sektor = "all";
+        state.sektorF.clear();
         state.maF.clear();
         state.vmaF.clear();
-        state.mfi = "all";
         state.rsi = "all";
+        state.rsiF.clear();
+        state.mfi = "all";
+        state.mfiF.clear();
         state.srsi = "all";
+        state.srsiF.clear();
         state.atr = "all";
+        state.atrF.clear();
         state.adr = "all";
+        state.adrF.clear();
         state.search = "";
-        state.sortCol = "score";
+        state.sortCol = "macdBull";
         state.sortDir = "desc";
 
         els.presetSelect.value = state.preset;
         els.timeframeSelect.value = state.activeTF;
         els.idxSelect.value = state.idx;
         els.sektorSelect.value = state.sektor;
-        populateToggleSelect(els.maSelect, MA_OPTIONS, state.maF, "PxMA");
-        populateToggleSelect(els.vmaSelect, VMA_OPTIONS, state.vmaF, "VxMA");
-        els.mfiSelect.value = state.mfi;
+        populateToggleSelect(els.maSelect, MA_OPTIONS, state.maF, "Price x MA");
+        populateToggleSelect(els.vmaSelect, VMA_OPTIONS, state.vmaF, "Volume x MA");
         els.rsiSelect.value = state.rsi;
+        els.mfiSelect.value = state.mfi;
         els.srsiSelect.value = state.srsi;
         els.atrSelect.value = state.atr;
         els.adrSelect.value = state.adr;
+        renderFilterChecklists();
         updatePresetInfo();
 
         els.searchInput.value = "";
-        els.sortSelect.value = "score:desc";
+        els.sortSelect.value = "macdBull:desc";
 
         switchTimeframe("1d");
     }
@@ -1639,13 +2339,13 @@
             return "Rp " + (value / 1e12).toFixed(1) + " T";
         }
         if (abs >= 1e9) {
-            return "Rp " + (value / 1e9).toFixed(1) + " Miliar";
+            return "Rp " + (value / 1e9).toFixed(1) + " Mil";
         }
         if (abs >= 1e6) {
-            return "Rp " + (value / 1e6).toFixed(1) + " Juta";
+            return "Rp " + (value / 1e6).toFixed(1) + " Jt";
         }
         if (abs >= 1e3) {
-            return "Rp " + (value / 1e3).toFixed(1) + " Ribu";
+            return "Rp " + (value / 1e3).toFixed(1) + " Rb";
         }
         return "Rp " + value.toFixed(0);
     }
@@ -1732,7 +2432,7 @@
         if (value == null) {
             return "—";
         }
-        if (value < 20) {
+        if (value <= 20) {
             return "Oversold";
         }
         if (value <= 80) {

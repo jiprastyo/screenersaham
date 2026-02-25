@@ -2,10 +2,10 @@ name: Update Data
 
 on:
   schedule:
-    # 12:10 WIB (UTC+7) => 05:10 UTC
-    - cron: "10 5 * * *"
-    # 17:30 WIB (UTC+7) => 10:30 UTC
-    - cron: "30 10 * * *"
+    # 12:01 WIB (UTC+7) => 05:01 UTC
+    - cron: "1 5 * * *"
+    # 16:16 WIB (UTC+7) => 09:16 UTC
+    - cron: "16 9 * * *"
   workflow_dispatch:
 
 permissions:
