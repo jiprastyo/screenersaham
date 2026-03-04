@@ -1650,7 +1650,10 @@
             els.presetSelect,
             selectedValuesWithoutAll(state.presetF).length > 0 || state.preset !== "all",
         );
-        setFilterActive(els.timeframeSelect, state.activeTF !== "1d");
+        if (els.timeframeSelect) {
+            els.timeframeSelect.classList.remove("is-active");
+            els.timeframeSelect.classList.toggle("is-timeframe-active", state.activeTF !== "1d");
+        }
         setFilterActive(els.idxSelect, selectedValuesWithoutAll(state.idxF).length > 0 || state.idx !== "all");
         setFilterActive(
             els.sektorSelect,
@@ -2222,7 +2225,8 @@
             item.macdBull ? "good" : item.macdCross ? "warn" : "bad",
             true,
         );
-        const symbolUrl = stockbitSymbolUrl(item.ticker);
+        const stockbitUrl = stockbitSymbolUrl(item.ticker);
+        const tradingViewUrl = tradingViewSymbolUrl(item.ticker);
         const indeksList = Array.isArray(item.indeks) ? item.indeks : [];
         const hasIssi = indeksList.some(function (idx) {
             return String(idx || "").toUpperCase() === "ISSI";
@@ -2244,11 +2248,17 @@
             '<div class="card-top-sticky">' +
             '<div class="card-head">' +
             '<div class="card-title-wrap">' +
-            '<div class="title-line"><a class="card-title card-title-link" href="' +
-            symbolUrl +
-            '" target="_blank" rel="noopener noreferrer">' +
+            '<div class="title-line"><span class="card-title">' +
             escapeHtml(item.ticker) +
-            '</a></div><div class="card-company">' +
+            '</span><span class="card-link-actions"><a class="card-mini-link" href="' +
+            stockbitUrl +
+            '" target="_blank" rel="noopener noreferrer" aria-label="Buka ' +
+            escapeHtml(item.ticker) +
+            ' di Stockbit">SB</a><a class="card-mini-link" href="' +
+            tradingViewUrl +
+            '" target="_blank" rel="noopener noreferrer" aria-label="Buka ' +
+            escapeHtml(item.ticker) +
+            ' di TradingView">TV</a></span></div><div class="card-company">' +
             escapeHtml(companyDisplayName(item.company)) +
             "</div></div>" +
             "</div>" +
@@ -2568,6 +2578,14 @@
     function stockbitSymbolUrl(ticker) {
         const symbol = encodeURIComponent(String(ticker || "").trim().toUpperCase());
         return "https://stockbit.com/#/symbol/" + symbol;
+    }
+
+    function tradingViewSymbolUrl(ticker) {
+        const symbol = String(ticker || "").trim().toUpperCase();
+        if (!symbol) {
+            return "https://www.tradingview.com/";
+        }
+        return "https://www.tradingview.com/chart/?symbol=" + encodeURIComponent("IDX:" + symbol);
     }
 
     function signalSquares(source, keys, labels, mode) {

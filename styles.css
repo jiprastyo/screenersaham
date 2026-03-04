@@ -456,6 +456,19 @@ select {
         linear-gradient(135deg, #ffffff 50%, transparent 50%);
 }
 
+/* Keep native dropdown menu items readable when active select text is white. */
+.filter-select.is-active option,
+.filter-select.is-active optgroup {
+    color: #111;
+    background: #fff;
+}
+
+/* Timeframe uses a border-only active state to avoid WebKit select popup artifacts. */
+#timeframeSelect.filter-select.is-timeframe-active {
+    border-color: var(--accent);
+    box-shadow: none;
+}
+
 .text-input.is-active::placeholder {
     color: rgba(255, 255, 255, 0.8);
 }
@@ -753,7 +766,7 @@ select {
 
 .title-line {
     display: inline-flex;
-    align-items: baseline;
+    align-items: center;
     gap: 4px;
     flex-wrap: wrap;
 }
@@ -799,6 +812,7 @@ select {
     font-size: 16px;
     color: var(--accent);
     font-weight: 700;
+    line-height: 1;
 }
 
 .card-title-link {
@@ -812,6 +826,35 @@ select {
 
 .card-title-link:hover {
     color: var(--accent-soft);
+}
+
+.card-link-actions {
+    display: inline-flex;
+    align-items: center;
+    align-self: center;
+    gap: 4px;
+}
+
+.card-mini-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    min-height: 17px;
+    padding: 0 5px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: color-mix(in srgb, var(--bg-card) 86%, var(--bg-chip));
+    color: var(--text-main);
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 1;
+    text-decoration: none;
+}
+
+.card-mini-link:hover {
+    border-color: var(--accent);
+    color: var(--accent);
 }
 
 .card-company {
