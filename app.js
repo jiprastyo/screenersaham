@@ -2,6 +2,7 @@
     "use strict";
 
     const DATA_URL = "data/issi_data.json";
+    const OWNERSHIP_DATA_URL = "data/ownership_gt1.obf.json";
     const THEME_KEY = "screener_card_theme";
 
     const IDX_MAP = {
@@ -480,6 +481,12 @@
 
     const state = {
         rawTfData: {},
+        ownershipMap: {},
+        ownershipMeta: {
+            source: "-",
+            updatedAt: null,
+            asOfMonth: null,
+        },
         data: [],
         filtered: [],
         activeTF: "1d",
@@ -1513,13 +1520,31 @@
         showLoading("Memuat data saham...");
 
         try {
-            const response = await fetch(DATA_URL, { cache: "no-store" });
-            if (!response.ok) {
-                throw new Error("HTTP " + response.status);
-            }
+            const payloads = await Promise.all([
+                fetch(DATA_URL, { cache: "no-store" }).then(function (response) {
+                    if (!response.ok) {
+                        throw new Error("HTTP " + response.status);
+                    }
+                    return response.json();
+                }),
+                fetch(OWNERSHIP_DATA_URL, { cache: "no-store" })
+                    .then(function (response) {
+                        if (!response.ok) {
+                            return null;
+                        }
+                        return response.json();
+                    })
+                    .catch(function () {
+                        return null;
+                    }),
+            ]);
 
-            const payload = await response.json();
+            const payload = payloads[0];
+            const ownershipPayload = payloads[1];
             state.rawTfData = getRawTfData(payload) || { "1d": [] };
+            const ownershipDecoded = decodeOwnershipPayload(ownershipPayload);
+            state.ownershipMap = ownershipDecoded.byTicker;
+            state.ownershipMeta = ownershipDecoded.meta;
 
             const fetchedLabel = payload && payload.fetchedAt ? formatWib(payload.fetchedAt) : "-";
             els.tsText.textContent = "Data: " + fetchedLabel + " WIB";
@@ -1543,6 +1568,70 @@
         return null;
     }
 
+    function decodeOwnershipPayload(payload) {
+        const empty = {
+            byTicker: {},
+            meta: {
+                source: "IDX/KSEI",
+                updatedAt: null,
+                asOfMonth: null,
+            },
+        };
+        if (!payload || typeof payload !== "object") {
+            return empty;
+        }
+
+        const metaRaw = decodeBase64Json(payload.m);
+        if (metaRaw && typeof metaRaw === "object") {
+            empty.meta = {
+                source: String(metaRaw.source || metaRaw.s || "IDX/KSEI"),
+                updatedAt: metaRaw.updatedAt || metaRaw.u || null,
+                asOfMonth: metaRaw.asOfMonth || metaRaw.a || null,
+            };
+        }
+
+        const records = Array.isArray(payload.r) ? payload.r : [];
+        records.forEach(function (encoded) {
+            const raw = decodeBase64Json(encoded);
+            if (!raw || typeof raw !== "object") {
+                return;
+            }
+            const ticker = String(raw.t || raw.ticker || "").toUpperCase();
+            if (!ticker) {
+                return;
+            }
+            empty.byTicker[ticker] = {
+                holdersGt1Count: toFiniteNumber(raw.h) != null ? toFiniteNumber(raw.h) : null,
+                totalPctGt1: toFiniteNumber(raw.p),
+                topHolderName: raw.n || "",
+                topHolderPct: toFiniteNumber(raw.x),
+                netPctMom: toFiniteNumber(raw.m),
+                newHoldersCount: toFiniteNumber(raw.a),
+                exitedHoldersCount: toFiniteNumber(raw.e),
+                lastReportDate: raw.d || null,
+            };
+        });
+
+        return empty;
+    }
+
+    function decodeBase64Json(value) {
+        if (typeof value !== "string" || !value) {
+            return null;
+        }
+        try {
+            const normalized = value.replace(/-/g, "+").replace(/_/g, "/");
+            const binary = atob(normalized);
+            const bytes = Uint8Array.from(binary, function (ch) {
+                return ch.charCodeAt(0);
+            });
+            const text = new TextDecoder("utf-8").decode(bytes);
+            return JSON.parse(text);
+        } catch (_error) {
+            return null;
+        }
+    }
+
     function switchTimeframe(tf) {
         state.activeTF = tf === "1wk" ? "1wk" : "1d";
         if (els.timeframeSelect) {
@@ -1557,6 +1646,7 @@
     function enrichData(rows, tf) {
         return rows.map(function (row) {
             const meta = TM[row.ticker] || {};
+            const ticker = String(row.ticker || "").toUpperCase();
             const price = toFiniteNumber(row.price);
             const atrV = toFiniteNumber(row.atrV);
             const atrPct = price > 0 && atrV != null ? (atrV / price) * 100 : null;
@@ -1577,7 +1667,7 @@
                       : null;
 
             const entry = {
-                ticker: row.ticker || "",
+                ticker: ticker,
                 company: row.company || "",
                 price: price,
                 pct: toFiniteNumber(row.pct),
@@ -1599,6 +1689,7 @@
                 papan: meta.p || row.papan || "",
                 indeks: Array.isArray(meta.i) ? meta.i : Array.isArray(row.indeks) ? row.indeks : [],
                 sektor: meta.s || row.sektor || "",
+                ownership: state.ownershipMap[ticker] || null,
             };
 
             entry.score = calcScore(entry);
@@ -2242,6 +2333,7 @@
             .join("");
         const lineOneBadges = primaryIssiBadge + otherIndexBadges;
         const lineTwoBadges = badge(item.sektor) + badge(item.papan);
+        const ownershipBox = renderOwnershipBox(item);
 
         return (
             '<article class="stock-card">' +
@@ -2284,7 +2376,63 @@
             cardItem("MACD", macdChip) +
             cardItem("Skor", '<span class="score ' + score.cls + '">' + formatDec(item.score, 1) + "</span>") +
             "</div>" +
+            ownershipBox +
             "</article>"
+        );
+    }
+
+    function renderOwnershipBox(item) {
+        const own = item && item.ownership ? item.ownership : null;
+        const meta = state.ownershipMeta || {};
+        const sourceLabel = meta.source || "IDX/KSEI";
+        const dateLabel = formatDateId(meta.updatedAt || (own && own.lastReportDate) || null);
+
+        if (!own) {
+            return (
+                '<details class="card-collapsible ownership-box">' +
+                '<summary><span class="collapsible-title">Kepemilikan</span><span class="collapsible-chip">&gt;1%</span></summary>' +
+                '<div class="ownership-body">' +
+                '<div class="ownership-empty">Data kepemilikan &gt;1% belum tersedia untuk ticker ini.</div>' +
+                '<div class="ownership-meta"><span>Sumber: ' +
+                escapeHtml(sourceLabel) +
+                "</span><span>Update: " +
+                escapeHtml(dateLabel) +
+                "</span></div>" +
+                "</div>" +
+                "</details>"
+            );
+        }
+
+        const topHolder = own.topHolderName ? own.topHolderName + " (" + formatPctCompact(own.topHolderPct) + ")" : "—";
+        return (
+            '<details class="card-collapsible ownership-box">' +
+            '<summary><span class="collapsible-title">Kepemilikan</span><span class="collapsible-chip">&gt;1%</span></summary>' +
+            '<div class="ownership-body">' +
+            '<div class="ownership-grid">' +
+            ownershipCell("Holder >1%", formatInt(own.holdersGt1Count)) +
+            ownershipCell("Total >1%", formatPctCompact(own.totalPctGt1)) +
+            ownershipCell("Top Holder", topHolder) +
+            ownershipCell("Net MoM", formatSignedPctCompact(own.netPctMom)) +
+            ownershipCell("New Holder", formatInt(own.newHoldersCount)) +
+            ownershipCell("Exit Holder", formatInt(own.exitedHoldersCount)) +
+            "</div>" +
+            '<div class="ownership-meta"><span>Sumber: ' +
+            escapeHtml(sourceLabel) +
+            "</span><span>Update: " +
+            escapeHtml(dateLabel) +
+            "</span></div>" +
+            "</div>" +
+            "</details>"
+        );
+    }
+
+    function ownershipCell(label, value) {
+        return (
+            '<div class="ownership-kv"><div class="ownership-k">' +
+            escapeHtml(label) +
+            '</div><div class="ownership-v">' +
+            escapeHtml(value) +
+            "</div></div>"
         );
     }
 
@@ -2573,6 +2721,40 @@
         const hh = String(wib.getUTCHours()).padStart(2, "0");
         const mi = String(wib.getUTCMinutes()).padStart(2, "0");
         return dd + " " + mm + " " + yyyy + ", " + hh + "." + mi;
+    }
+
+    function formatDateId(value) {
+        if (!value) {
+            return "—";
+        }
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) {
+            return String(value);
+        }
+        const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+        return date.getUTCDate() + " " + months[date.getUTCMonth()] + " " + date.getUTCFullYear();
+    }
+
+    function formatPctCompact(value) {
+        if (value == null || !Number.isFinite(value)) {
+            return "—";
+        }
+        return Number(value).toFixed(2) + "%";
+    }
+
+    function formatSignedPctCompact(value) {
+        if (value == null || !Number.isFinite(value)) {
+            return "—";
+        }
+        const num = Number(value);
+        return (num >= 0 ? "+" : "") + num.toFixed(2) + "%";
+    }
+
+    function formatInt(value) {
+        if (value == null || !Number.isFinite(value)) {
+            return "—";
+        }
+        return Math.round(Number(value)).toLocaleString("id-ID");
     }
 
     function stockbitSymbolUrl(ticker) {
