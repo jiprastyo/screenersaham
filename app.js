@@ -20,15 +20,15 @@
         { value: "all", label: "Preset" },
         {
             value: "ema_short_near2_stoch_oversold_rsi_mfi_oversold_m2tick",
-            label: "EMA<=2 + StochOS + RSI + MFIOS",
+            label: "StochOS + RSI + MFIOS",
         },
         {
             value: "ema_short_near2_stoch_oversold_mfi_oversold_m2tick",
-            label: "EMA<=2 + StochOS + MFIOS",
+            label: "StochOS + MFIOS",
         },
         {
             value: "ema_short_near2_stoch_oversold_rsi_m2tick",
-            label: "EMA<=2 + StochOS + RSI",
+            label: "StochOS + RSI",
         },
         {
             value: "legend_minervini_vcp",
@@ -36,7 +36,7 @@
         },
         {
             value: "ema1020_pullback_2pct_rsi_m2tick",
-            label: "EMA10/20<=2% + RSI50-70",
+            label: "Pullback EMA10/20 + RSI50-70",
         },
     ];
 
@@ -66,28 +66,52 @@
     const PRESET_EXPLAINERS = {
         ema_short_near2_stoch_oversold_rsi_mfi_oversold_m2tick: {
             summary:
-                "Entry: close-2 tick. Kombinasi pullback kuat pada trend EMA pendek dengan konfirmasi momentum & flow.",
-            filters: ["Price x MA: EMA10, EMA20", "StochRSI: Oversold (<=20)", "RSI: Sweet Spot (50-70)", "MFI: Oversold (<=20)"],
+                "Kondisi lengkap: harga di atas EMA10 & EMA20, jarak EMA pendek <=2%, StochRSI oversold (<=20), RSI sweet spot (50-70), MFI oversold (<=20). Entry acuan: close-2 tick.",
+            filters: [
+                "Price x MA: EMA10, EMA20",
+                "Jarak EMA pendek: <=2%",
+                "StochRSI: Oversold (<=20)",
+                "RSI: Sweet Spot (50-70)",
+                "MFI: Oversold (<=20)",
+            ],
         },
         ema_short_near2_stoch_oversold_mfi_oversold_m2tick: {
             summary:
-                "Entry: close-2 tick. Pullback EMA pendek dengan konfirmasi oversold pada StochRSI dan MFI.",
-            filters: ["Price x MA: EMA10, EMA20", "StochRSI: Oversold (<=20)", "MFI: Oversold (<=20)"],
+                "Kondisi lengkap: harga di atas EMA10 & EMA20, jarak EMA pendek <=2%, StochRSI oversold (<=20), MFI oversold (<=20). Entry acuan: close-2 tick.",
+            filters: [
+                "Price x MA: EMA10, EMA20",
+                "Jarak EMA pendek: <=2%",
+                "StochRSI: Oversold (<=20)",
+                "MFI: Oversold (<=20)",
+            ],
         },
         ema_short_near2_stoch_oversold_rsi_m2tick: {
             summary:
-                "Entry: close-2 tick. Pullback EMA pendek dengan kombinasi StochRSI oversold + RSI sehat.",
-            filters: ["Price x MA: EMA10, EMA20", "StochRSI: Oversold (<=20)", "RSI: Sweet Spot (50-70)"],
+                "Kondisi lengkap: harga di atas EMA10 & EMA20, jarak EMA pendek <=2%, StochRSI oversold (<=20), RSI sweet spot (50-70). Entry acuan: close-2 tick.",
+            filters: [
+                "Price x MA: EMA10, EMA20",
+                "Jarak EMA pendek: <=2%",
+                "StochRSI: Oversold (<=20)",
+                "RSI: Sweet Spot (50-70)",
+            ],
         },
         legend_minervini_vcp: {
             summary:
-                "Entry: close-2 tick. Proxy Minervini VCP untuk trend kuat + volatilitas mengecil + pullback terukur.",
-            filters: ["Price x MA: SMA50, SMA100, SMA200 (harga di atas)", "ADR: <= 3.5", "StochRSI: <=30"],
+                "Kondisi lengkap: harga di atas SMA50, SMA100, SMA200; ADR <=3.5 (volatilitas mengecil); StochRSI <=30 (fase pullback). Entry acuan: close-2 tick.",
+            filters: [
+                "Price x MA: SMA50, SMA100, SMA200 (harga di atas)",
+                "ADR: <=3.5",
+                "StochRSI: <=30",
+            ],
         },
         ema1020_pullback_2pct_rsi_m2tick: {
             summary:
-                "Entry: close-2 tick. Harga tetap di atas EMA10/EMA20, pullback tipis (<=2%), RSI di zona 50-70.",
-            filters: ["Price x MA: EMA10, EMA20", "RSI: Sweet Spot (50-70)", "Jarak EMA pendek: <=2%"],
+                "Kondisi lengkap: harga di atas EMA10 & EMA20, jarak EMA pendek <=2% (pullback tipis), RSI sweet spot (50-70). Entry acuan: close-2 tick.",
+            filters: [
+                "Price x MA: EMA10, EMA20",
+                "Jarak EMA pendek: <=2%",
+                "RSI: Sweet Spot (50-70)",
+            ],
         },
     };
 
@@ -665,8 +689,8 @@
 
         bindSelect(els.idxSelect, "idx");
         bindSelect(els.sektorSelect, "sektor");
-        bindToggleMultiSelect(els.maSelect, MA_OPTIONS, state.maF, "Price x MA");
-        bindToggleMultiSelect(els.vmaSelect, VMA_OPTIONS, state.vmaF, "Volume x MA");
+        bindToggleMultiSelect(els.maSelect, MA_OPTIONS, state.maF, "Price x MA", "maF");
+        bindToggleMultiSelect(els.vmaSelect, VMA_OPTIONS, state.vmaF, "Volume x MA", "vmaF");
         bindSelect(els.rsiSelect, "rsi");
         bindSelect(els.mfiSelect, "mfi");
         bindSelect(els.srsiSelect, "srsi");
@@ -686,6 +710,18 @@
             state.sortDir = parts[1] === "asc" ? "asc" : "desc";
             applyFiltersAndRender();
         });
+
+        if (els.activeFilters) {
+            els.activeFilters.addEventListener("click", function (event) {
+                const tag = event.target.closest(".af-tag[data-remove-key]");
+                if (!tag) {
+                    return;
+                }
+                event.preventDefault();
+                const key = tag.getAttribute("data-remove-key") || "";
+                clearFilterByTagKey(key);
+            });
+        }
 
         [els.resetBtnSticky, els.resetBtnMobile].forEach(function (button) {
             if (!button) {
@@ -766,6 +802,8 @@
             if (stateKey === "preset") {
                 applyPresetLinkedFilters();
                 updatePresetInfo();
+            } else {
+                clearPresetIfLinkedFilterChanged(stateKey);
             }
             renderFilterChecklists();
             applyFiltersAndRender();
@@ -793,7 +831,7 @@
         return map[stateKey] || null;
     }
 
-    function bindToggleMultiSelect(selectEl, options, selectedSet, label) {
+    function bindToggleMultiSelect(selectEl, options, selectedSet, label, stateKey) {
         if (!selectEl) {
             return;
         }
@@ -807,6 +845,7 @@
                 selectedSet.add(value);
             }
             populateToggleSelect(selectEl, options, selectedSet, label);
+            clearPresetIfLinkedFilterChanged(stateKey || "");
             renderFilterChecklists();
             applyFiltersAndRender();
         });
@@ -823,25 +862,17 @@
             }
             const group = input.getAttribute("data-filter-group") || "";
             const mode = input.getAttribute("data-filter-mode") || "single";
-            const value = input.value || "all";
+            const value = input.value || "";
 
             if (mode === "multi") {
                 const selectedSet = checklistSetByGroupKey(group);
                 if (!selectedSet) {
                     return;
                 }
-                if (value === "all") {
-                    selectedSet.clear();
-                    if (input.checked) {
-                        selectedSet.add("all");
-                    }
+                if (input.checked) {
+                    selectedSet.add(value);
                 } else {
-                    selectedSet.delete("all");
-                    if (input.checked) {
-                        selectedSet.add(value);
-                    } else {
-                        selectedSet.delete(value);
-                    }
+                    selectedSet.delete(value);
                 }
 
                 if (group === "maF") {
@@ -851,6 +882,7 @@
                 } else {
                     syncSingleFilterFromChecklist(group, selectedSet);
                 }
+                clearPresetIfLinkedFilterChanged(group);
             } else {
                 return;
             }
@@ -950,6 +982,81 @@
         applyPresetSingleValues("adr", linked.adr);
     }
 
+    function clearPresetSelection() {
+        state.preset = "all";
+        state.presetF.clear();
+        if (els.presetSelect) {
+            els.presetSelect.value = "all";
+        }
+        updatePresetInfo();
+    }
+
+    function currentValuesForFilterKey(filterKey) {
+        if (filterKey === "maF" || filterKey === "vmaF") {
+            return Array.from(state[filterKey] || [])
+                .filter(function (value) {
+                    return value && value !== "all";
+                })
+                .sort();
+        }
+
+        const checklistSet = checklistSetByStateKey(filterKey);
+        const selected = selectedValuesWithoutAll(checklistSet);
+        if (selected.length) {
+            return selected.slice().sort();
+        }
+        const fallback = state[filterKey];
+        if (fallback && fallback !== "all") {
+            return [fallback];
+        }
+        return [];
+    }
+
+    function sameStringArray(a, b) {
+        if (a.length !== b.length) {
+            return false;
+        }
+        for (let i = 0; i < a.length; i += 1) {
+            if (a[i] !== b[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    function presetFiltersStillMatch(presetKey) {
+        const linked = PRESET_FILTER_LINKS[presetKey];
+        if (!linked) {
+            return true;
+        }
+        return Object.keys(linked).every(function (filterKey) {
+            const expected = (linked[filterKey] || [])
+                .filter(function (value) {
+                    return value && value !== "all";
+                })
+                .slice()
+                .sort();
+            const actual = currentValuesForFilterKey(filterKey);
+            return sameStringArray(expected, actual);
+        });
+    }
+
+    function clearPresetIfLinkedFilterChanged(filterKey) {
+        if (!filterKey) {
+            return;
+        }
+        if (["maF", "vmaF", "rsi", "mfi", "srsi", "atr", "adr"].indexOf(filterKey) === -1) {
+            return;
+        }
+        const presetKey = currentSinglePreset();
+        if (!presetKey || !PRESET_FILTER_LINKS[presetKey]) {
+            return;
+        }
+        if (!presetFiltersStillMatch(presetKey)) {
+            clearPresetSelection();
+        }
+    }
+
     function selectedValuesWithoutAll(selectedSet) {
         if (!selectedSet || !selectedSet.size) {
             return [];
@@ -983,15 +1090,12 @@
         return map[stateKey] || null;
     }
 
-    function checklistOptionsForSingle(options, allLabel) {
+    function checklistOptionsForSingle(options) {
         return (options || [])
             .filter(function (opt) {
-                return opt && opt.value !== "reset" && opt.value !== "__reset__";
+                return opt && opt.value !== "reset" && opt.value !== "__reset__" && opt.value !== "all";
             })
             .map(function (opt) {
-                if (opt.value === "all") {
-                    return { value: "all", label: allLabel };
-                }
                 return { value: opt.value, label: opt.label };
             });
     }
@@ -1006,10 +1110,7 @@
             .map(function (opt) {
                 const checked = group.mode === "multi" ? group.selectedSet.has(opt.value) : group.value === opt.value;
                 return (
-                    '<label class="check-item' +
-                    (opt.value === "all" ? " check-item-all" : "") +
-                    (checked ? " is-checked" : "") +
-                    '">' +
+                    '<label class="check-item' + (checked ? " is-checked" : "") + '">' +
                     '<input type="' +
                     inputType +
                     '" name="' +
@@ -1031,7 +1132,9 @@
             })
             .join("");
         return (
-            '<section class="check-group">' +
+            '<section class="check-group" data-check-key="' +
+            escapeHtml(group.key || "") +
+            '">' +
             '<h3 class="check-group-title">' +
             escapeHtml(group.title) +
             "</h3>" +
@@ -1047,11 +1150,9 @@
             return;
         }
         const sectors = getSectorList();
-        const sektorOptions = [{ value: "all", label: "Semua" }].concat(
-            sectors.map(function (name) {
-                return { value: name, label: name };
-            }),
-        );
+        const sektorOptions = sectors.map(function (name) {
+            return { value: name, label: name };
+        });
 
         const groups = [
             {
@@ -1059,7 +1160,7 @@
                 title: "Indeks",
                 mode: "multi",
                 selectedSet: effectiveChecklistSet(state.idxF, state.idx),
-                options: checklistOptionsForSingle(IDX_OPTIONS, "Semua"),
+                options: checklistOptionsForSingle(IDX_OPTIONS),
             },
             {
                 key: "sektor",
@@ -1087,42 +1188,42 @@
                 title: "RSI",
                 mode: "multi",
                 selectedSet: effectiveChecklistSet(state.rsiF, state.rsi),
-                options: checklistOptionsForSingle(RSI_OPTIONS, "Semua"),
+                options: checklistOptionsForSingle(RSI_OPTIONS),
             },
             {
                 key: "mfi",
                 title: "MFI",
                 mode: "multi",
                 selectedSet: effectiveChecklistSet(state.mfiF, state.mfi),
-                options: checklistOptionsForSingle(MFI_OPTIONS, "Semua"),
+                options: checklistOptionsForSingle(MFI_OPTIONS),
             },
             {
                 key: "srsi",
                 title: "StochRSI",
                 mode: "multi",
                 selectedSet: effectiveChecklistSet(state.srsiF, state.srsi),
-                options: checklistOptionsForSingle(SRSI_OPTIONS, "Semua"),
+                options: checklistOptionsForSingle(SRSI_OPTIONS),
             },
             {
                 key: "atr",
                 title: "ATR",
                 mode: "multi",
                 selectedSet: effectiveChecklistSet(state.atrF, state.atr),
-                options: checklistOptionsForSingle(ATR_OPTIONS, "Semua"),
+                options: checklistOptionsForSingle(ATR_OPTIONS),
             },
             {
                 key: "adr",
                 title: "ADR",
                 mode: "multi",
                 selectedSet: effectiveChecklistSet(state.adrF, state.adr),
-                options: checklistOptionsForSingle(ADR_OPTIONS, "Semua"),
+                options: checklistOptionsForSingle(ADR_OPTIONS),
             },
             {
                 key: "preset",
                 title: "Preset",
                 mode: "multi",
                 selectedSet: effectiveChecklistSet(state.presetF, state.preset),
-                options: checklistOptionsForSingle(PRESET_OPTIONS, "Semua"),
+                options: checklistOptionsForSingle(PRESET_OPTIONS),
             },
         ];
 
@@ -1250,6 +1351,10 @@
     }
 
     function updateMobileQuickbarOffset() {
+        const headerEl = document.querySelector(".header");
+        const headerHeight = headerEl ? Math.ceil(headerEl.getBoundingClientRect().height) : 42;
+        document.documentElement.style.setProperty("--header-sticky-height", headerHeight + "px");
+
         if (!isMobileViewport()) {
             document.documentElement.style.removeProperty("--mobile-toolbar-height");
             return;
@@ -1863,24 +1968,24 @@
     function renderActiveFilterTags() {
         const tags = [];
 
-        pushSetOrSelectTag(tags, "Preset", els.presetSelect, state.presetF, state.preset);
-        pushSelectTag(tags, "Timeframe", els.timeframeSelect, state.activeTF, "1d");
-        pushSetOrSelectTag(tags, "Indeks", els.idxSelect, state.idxF, state.idx);
-        pushSetOrSelectTag(tags, "Sektor", els.sektorSelect, state.sektorF, state.sektor);
-        pushMultiSetTag(tags, "Price x MA", MA_OPTIONS, state.maF);
-        pushMultiSetTag(tags, "Volume x MA", VMA_OPTIONS, state.vmaF);
-        pushSetOrSelectTag(tags, "RSI", els.rsiSelect, state.rsiF, state.rsi);
-        pushSetOrSelectTag(tags, "MFI", els.mfiSelect, state.mfiF, state.mfi);
-        pushSetOrSelectTag(tags, "StochRSI", els.srsiSelect, state.srsiF, state.srsi);
-        pushSetOrSelectTag(tags, "ATR", els.atrSelect, state.atrF, state.atr);
-        pushSetOrSelectTag(tags, "ADR", els.adrSelect, state.adrF, state.adr);
+        pushSetOrSelectTag(tags, "preset", "Preset", els.presetSelect, state.presetF, state.preset);
+        pushSelectTag(tags, "timeframe", "Timeframe", els.timeframeSelect, state.activeTF, "1d");
+        pushSetOrSelectTag(tags, "idx", "Indeks", els.idxSelect, state.idxF, state.idx);
+        pushSetOrSelectTag(tags, "sektor", "Sektor", els.sektorSelect, state.sektorF, state.sektor);
+        pushMultiSetTag(tags, "maF", "Price x MA", MA_OPTIONS, state.maF);
+        pushMultiSetTag(tags, "vmaF", "Volume x MA", VMA_OPTIONS, state.vmaF);
+        pushSetOrSelectTag(tags, "rsi", "RSI", els.rsiSelect, state.rsiF, state.rsi);
+        pushSetOrSelectTag(tags, "mfi", "MFI", els.mfiSelect, state.mfiF, state.mfi);
+        pushSetOrSelectTag(tags, "srsi", "StochRSI", els.srsiSelect, state.srsiF, state.srsi);
+        pushSetOrSelectTag(tags, "atr", "ATR", els.atrSelect, state.atrF, state.atr);
+        pushSetOrSelectTag(tags, "adr", "ADR", els.adrSelect, state.adrF, state.adr);
 
         if (state.search.trim()) {
-            tags.push("Cari: " + state.search.trim());
+            tags.push({ removeKey: "search", text: "Cari: " + state.search.trim() });
         }
 
         if (!tags.length) {
-            els.activeFilters.innerHTML = "";
+            els.activeFilters.innerHTML = '<span class="af-empty">Tidak ada aktif filter</span>';
             els.activeFilters.classList.add("is-empty");
             return;
         }
@@ -1888,13 +1993,20 @@
         els.activeFilters.classList.remove("is-empty");
         els.activeFilters.innerHTML = tags
             .map(function (tag) {
-                const withPrefix = tag.indexOf("Cari: ") === 0 ? tag : "Filter: " + tag;
-                return '<span class="af-tag">' + escapeHtml(withPrefix) + "</span>";
+                const text = tag.text || "";
+                const withPrefix = text.indexOf("Cari: ") === 0 ? text : "Filter: " + text;
+                return (
+                    '<button type="button" class="af-tag" data-remove-key="' +
+                    escapeHtml(tag.removeKey || "") +
+                    '">' +
+                    escapeHtml(withPrefix) +
+                    "</button>"
+                );
             })
             .join("");
     }
 
-    function pushSelectTag(target, label, selectEl, value, defaultValue) {
+    function pushSelectTag(target, removeKey, label, selectEl, value, defaultValue) {
         if (!selectEl) {
             return;
         }
@@ -1904,10 +2016,13 @@
         }
         const option = selectEl.options[selectEl.selectedIndex];
         const text = option ? option.textContent : value;
-        target.push(label + ": " + text);
+        target.push({
+            removeKey: removeKey,
+            text: label + ": " + text,
+        });
     }
 
-    function pushSetOrSelectTag(target, label, selectEl, selectedSet, fallbackValue) {
+    function pushSetOrSelectTag(target, removeKey, label, selectEl, selectedSet, fallbackValue) {
         if (!selectEl) {
             return;
         }
@@ -1922,14 +2037,17 @@
                 })
                 .filter(Boolean);
             if (labels.length) {
-                target.push(label + ": " + labels.join(", "));
+                target.push({
+                    removeKey: removeKey,
+                    text: label + ": " + labels.join(", "),
+                });
                 return;
             }
         }
-        pushSelectTag(target, label, selectEl, fallbackValue);
+        pushSelectTag(target, removeKey, label, selectEl, fallbackValue);
     }
 
-    function pushMultiSetTag(target, label, options, selectedSet) {
+    function pushMultiSetTag(target, removeKey, label, options, selectedSet) {
         if (!selectedSet || !selectedSet.size) {
             return;
         }
@@ -1941,8 +2059,87 @@
                 return opt.label;
             });
         if (labels.length) {
-            target.push(label + ": " + labels.join(", "));
+            target.push({
+                removeKey: removeKey,
+                text: label + ": " + labels.join(", "),
+            });
         }
+    }
+
+    function clearFilterByTagKey(key) {
+        if (!key) {
+            return;
+        }
+        if (key === "timeframe") {
+            switchTimeframe("1d");
+            return;
+        }
+        if (key === "search") {
+            state.search = "";
+            if (els.searchInput) {
+                els.searchInput.value = "";
+            }
+            applyFiltersAndRender();
+            return;
+        }
+
+        if (key === "preset") {
+            clearPresetSelection();
+        } else if (key === "idx") {
+            state.idx = "all";
+            state.idxF.clear();
+            if (els.idxSelect) {
+                els.idxSelect.value = "all";
+            }
+        } else if (key === "sektor") {
+            state.sektor = "all";
+            state.sektorF.clear();
+            if (els.sektorSelect) {
+                els.sektorSelect.value = "all";
+            }
+        } else if (key === "maF") {
+            state.maF.clear();
+            populateToggleSelect(els.maSelect, MA_OPTIONS, state.maF, "Price x MA");
+        } else if (key === "vmaF") {
+            state.vmaF.clear();
+            populateToggleSelect(els.vmaSelect, VMA_OPTIONS, state.vmaF, "Volume x MA");
+        } else if (key === "rsi") {
+            state.rsi = "all";
+            state.rsiF.clear();
+            if (els.rsiSelect) {
+                els.rsiSelect.value = "all";
+            }
+        } else if (key === "mfi") {
+            state.mfi = "all";
+            state.mfiF.clear();
+            if (els.mfiSelect) {
+                els.mfiSelect.value = "all";
+            }
+        } else if (key === "srsi") {
+            state.srsi = "all";
+            state.srsiF.clear();
+            if (els.srsiSelect) {
+                els.srsiSelect.value = "all";
+            }
+        } else if (key === "atr") {
+            state.atr = "all";
+            state.atrF.clear();
+            if (els.atrSelect) {
+                els.atrSelect.value = "all";
+            }
+        } else if (key === "adr") {
+            state.adr = "all";
+            state.adrF.clear();
+            if (els.adrSelect) {
+                els.adrSelect.value = "all";
+            }
+        } else {
+            return;
+        }
+
+        clearPresetIfLinkedFilterChanged(key);
+        renderFilterChecklists();
+        applyFiltersAndRender();
     }
 
     function renderCards() {
@@ -1978,7 +2175,7 @@
         const srsiZone = srsiLabel(item.stochRsi);
         const atrZone = rangeLabel(item.atrPct);
         const adrZone = rangeLabel(item.adrPct);
-        const maSquares = signalSquares(item.maStatus, MA_KEYS, ["P3", "P5", "P10", "P20", "P50", "P1", "P2"], "ma");
+        const maSquares = signalSquares(item.maStatus, MA_KEYS, ["E3", "E5", "E10", "E20", "S50", "S1", "S2"], "ma");
         const vmaSquares = signalSquares(item.maStatus, VOL_KEYS, ["V3", "V5", "V10", "V20", "V50", "V1", "V2"], "vol");
         const slAtrPrice =
             item.price != null && item.atrV != null ? Math.max(0, item.price - item.atrV * 1.5) : null;
@@ -1997,17 +2194,24 @@
             toneByStochRsi(item.stochRsi),
             true,
         );
-        const atrText = metricChip(
-            formatDec(item.atrV, 1) +
-                " · " +
-                formatDec(item.atrPct, 2) +
-                "% (" +
-                atrZone +
-                ") · SL: " +
-                formatPrice(slAtrPrice),
-            toneByRange(item.atrPct),
-            true,
-        );
+        const atrTone = toneByRange(item.atrPct);
+        const atrText =
+            '<span class="atr-stack">' +
+            metricChip(
+                formatDec(item.atrV, 1) + " · " + formatDec(item.atrPct, 2) + "% (" + atrZone + ")",
+                atrTone,
+                true,
+            ) +
+            metricChip("SL: " + formatPrice(slAtrPrice), atrTone, true) +
+            "</span>";
+        const priceText =
+            '<span class="price-inline"><span class="price-main">' +
+            escapeHtml(formatPrice(item.price)) +
+            '</span><span class="price-chg ' +
+            pctClass +
+            '">' +
+            escapeHtml(formatPct(item.pct)) +
+            "</span></span>";
         const adrText = metricChip(
             formatDec(item.adrPct, 2) + "% (" + adrZone + ")",
             toneByRange(item.adrPct),
@@ -2023,12 +2227,17 @@
         const hasIssi = indeksList.some(function (idx) {
             return String(idx || "").toUpperCase() === "ISSI";
         });
-        const indexBadges = indeksList
-            .map(function (idx) {
-                return badge(idx, idx === "ISSI" ? "issi" : "");
+        const primaryIssiBadge = hasIssi ? badge("ISSI", "issi") : badge("Non-ISSI", "non-issi");
+        const otherIndexBadges = indeksList
+            .filter(function (idx) {
+                return String(idx || "").toUpperCase() !== "ISSI";
             })
-            .join("") +
-            (hasIssi ? "" : badge("Non-ISSI", "non-issi"));
+            .map(function (idx) {
+                return badge(idx);
+            })
+            .join("");
+        const lineOneBadges = primaryIssiBadge + otherIndexBadges;
+        const lineTwoBadges = badge(item.sektor) + badge(item.papan);
 
         return (
             '<article class="stock-card">' +
@@ -2039,31 +2248,28 @@
             symbolUrl +
             '" target="_blank" rel="noopener noreferrer">' +
             escapeHtml(item.ticker) +
-            '</a><span class="title-price">' +
-            formatPrice(item.price) +
-            '</span><span class="title-pct ' +
-            pctClass +
-            '">' +
-            formatPct(item.pct) +
-            '</span></div><div class="card-company">' +
+            '</a></div><div class="card-company">' +
             escapeHtml(companyDisplayName(item.company)) +
             "</div></div>" +
             "</div>" +
             '<div class="badges">' +
-            indexBadges +
-            badge(item.sektor) +
-            badge(item.papan) +
+            '<div class="badges-line badges-line-top">' +
+            lineOneBadges +
+            '</div><div class="badges-line badges-line-bottom">' +
+            lineTwoBadges +
+            "</div>" +
             "</div>" +
             "</div>" +
             '<div class="card-grid">' +
-            cardItem("Price x MA", maSquares) +
-            cardItem("Volume x MA", vmaSquares) +
-            cardItem("1% Trx Hari Ini", formatRupiah(item.pct1today)) +
-            cardItem("1% Trx 20 Hari", formatRupiah(item.pct120d)) +
+            cardItem("Price", priceText, "kv-price") +
+            cardItem("Price x MA", maSquares, "kv-squares") +
+            cardItem("Volume x MA", vmaSquares, "kv-squares") +
+            cardItem("1% Trx Hari Ini", formatRupiah(item.pct1today), "kv-trx") +
+            cardItem("1% Trx 20 Hari", formatRupiah(item.pct120d), "kv-trx") +
             cardItem("MFI", mfiText) +
             cardItem("RSI", rsiText) +
             cardItem("StochRSI", srsiText) +
-            cardItem("ATR", atrText) +
+            cardItem("ATR", atrText, "kv-atr") +
             cardItem("ADR", adrText) +
             cardItem("MACD", macdChip) +
             cardItem("Skor", '<span class="score ' + score.cls + '">' + formatDec(item.score, 1) + "</span>") +
@@ -2162,13 +2368,13 @@
         if (value == null) {
             return "neutral";
         }
-        if (value >= 50 && value <= 70) {
+        if (value < 30) {
             return "good";
         }
-        if (value < 40 || value > 80) {
+        if (value > 80) {
             return "bad";
         }
-        return "warn";
+        return "neutral";
     }
 
     function toneByMfi(value) {
@@ -2181,10 +2387,7 @@
         if (value > 80) {
             return "bad";
         }
-        if (value >= 50) {
-            return "good";
-        }
-        return "warn";
+        return "neutral";
     }
 
     function toneByStochRsi(value) {
@@ -2197,20 +2400,17 @@
         if (value >= 80) {
             return "bad";
         }
-        return "warn";
+        return "neutral";
     }
 
     function toneByRange(value) {
         if (value == null) {
             return "neutral";
         }
-        if (value < 1.5) {
-            return "bad";
-        }
-        if (value < 5) {
+        if (value >= 5) {
             return "good";
         }
-        return "warn";
+        return "neutral";
     }
 
     function badge(text, cls) {
